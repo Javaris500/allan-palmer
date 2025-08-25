@@ -134,6 +134,41 @@ const photos = [
     title: "Professional Portrait",
     description: "Elegant professional performance in navy suit at modern venue.",
   },
+  {
+    id: 19,
+    src: "/images/gallery/indian-wedding-ceremony.png",
+    alt: "Allan Palmer performing at Indian wedding ceremony with bride and groom",
+    title: "Indian Wedding Ceremony",
+    description: "Elegant performance at a traditional Indian wedding with ornate decorations and crystal chandeliers.",
+  },
+  {
+    id: 20,
+    src: "/images/gallery/outdoor-garden-wedding.png",
+    alt: "Allan Palmer with couple at outdoor garden wedding ceremony",
+    title: "Garden Wedding Celebration",
+    description: "Beautiful outdoor garden wedding with blue drapery and natural stone setting.",
+  },
+  {
+    id: 21,
+    src: "/images/gallery/countryside-wedding.png",
+    alt: "Allan Palmer with couple in scenic countryside wedding setting",
+    title: "Countryside Wedding",
+    description: "Picturesque countryside wedding with rolling green hills and natural beauty.",
+  },
+  {
+    id: 22,
+    src: "/images/gallery/wedding-ceremony-performance.png",
+    alt: "Allan Palmer performing during outdoor wedding ceremony for seated guests",
+    title: "Live Wedding Performance",
+    description: "Performing live violin music during an outdoor wedding ceremony for guests.",
+  },
+  {
+    id: 23,
+    src: "/images/gallery/outdoor-park-wedding.png",
+    alt: "Allan Palmer with couple at outdoor park wedding",
+    title: "Park Wedding Celebration",
+    description: "Elegant outdoor park wedding celebration with professional violin accompaniment.",
+  },
 ]
 
 export function PhotoGalleryCarousel() {

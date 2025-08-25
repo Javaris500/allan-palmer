@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { BackToTop } from "@/components/back-to-top"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Suspense } from "react"
+import { BackgroundMusicProvider } from "@/contexts/background-music-context"
 
 // Optimized font loading
 const inter = Inter({
@@ -92,7 +93,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-    generator: 'v0.app'
+  generator: "v0.app",
 }
 
 // Loading component for Suspense
@@ -124,14 +125,16 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <ErrorBoundary>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="flex min-h-screen flex-col">
-              <Navigation />
-              <Suspense fallback={<PageLoading />}>
-                <main className="flex-1">{children}</main>
-              </Suspense>
-              <Footer />
-              <BackToTop />
-            </div>
+            <BackgroundMusicProvider>
+              <div className="flex min-h-screen flex-col">
+                <Navigation />
+                <Suspense fallback={<PageLoading />}>
+                  <main className="flex-1">{children}</main>
+                </Suspense>
+                <Footer />
+                <BackToTop />
+              </div>
+            </BackgroundMusicProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

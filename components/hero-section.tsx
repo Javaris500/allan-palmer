@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Calendar, Music, Star } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { memo } from "react"
 
@@ -11,14 +10,10 @@ const HeroSection = memo(function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <Image
+        <img
           src="/images/hero-background-outdoor.jpeg"
           alt="Allan Palmer performing violin outdoors"
-          fill
-          className="object-cover object-[center_top] sm:object-[center_20%] md:object-[center_30%] lg:object-[center_25%] xl:object-[center_20%]"
-          priority
-          quality={85}
-          sizes="100vw"
+          className="w-full h-full object-cover object-[center_20%] md:object-[center_30%] lg:object-[center_25%] xl:object-[center_20%]"
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />

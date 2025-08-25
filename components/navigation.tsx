@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Music, Menu, X, Home, User, Calendar, MessageSquare, Film } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { BackgroundMusicToggle } from "@/components/background-music-toggle"
 import { motion } from "framer-motion"
 import { AnimatedButton } from "@/components/ui/animated-button"
 import { MobileMenu } from "@/components/mobile-menu"
@@ -112,6 +113,7 @@ export function Navigation() {
           </motion.nav>
 
           <div className="flex items-center space-x-2 sm:space-x-4">
+            <BackgroundMusicToggle />
             <ThemeToggle variant="icon" />
 
             <motion.div

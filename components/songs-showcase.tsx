@@ -1,5 +1,7 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
+import { useBackgroundMusic } from "@/contexts/background-music-context"
+import { useAudioStore } from "@/stores/audio-store"
 import { AnimatedElement } from "@/components/animated-element"
 import { StaggeredContainer, StaggeredItem } from "@/components/staggered-container"
 import { Card, CardContent } from "@/components/ui/card"
@@ -10,9 +12,9 @@ import Link from "next/link"
 import Image from "next/image"
 
 export function SongsShowcase() {
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<string | null>(null)
-  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({})
+  const { muteForOtherAudio, unmuteAfterOtherAudio, setStopFeaturedPerformances } = useBackgroundMusic()
+  const { currentTrack, isPlaying, playAudio, pauseAudio, stopAudio } = useAudioStore()
 
   const featuredSongs = [
     {
@@ -23,7 +25,8 @@ export function SongsShowcase() {
       duration: "3:45",
       description: "A timeless classic performed against the stunning Irish countryside",
       coverImage: "/images/songs/somewhere-over-the-rainbow.jpg",
-      audioSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Somewhere%20Over%20the%20Rainbow%20Mix%202-a4qyF6z7AlrapLl6b2cakmK6FomgT1.mp3",
+      audioUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Somewhere%20Over%20the%20Rainbow%20Mix%202-LkxgMx5yX3tj6LBGYGddBsd5DjS1Kw.mp3",
     },
     {
       id: "historia-de-un-amor",
@@ -33,7 +36,8 @@ export function SongsShowcase() {
       duration: "4:12",
       description: "Passionate Latin ballad with rich emotional depth and beautiful violin arrangements",
       coverImage: "/images/songs/historia-de-un-amor.jpg",
-      audioSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hdua%20master-J0tSAdXM6H6aIY0ya2zC61F17jqf2f.mp3",
+      audioUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hdua%20master-E4v3tqBtfOoS5LTpV4b1Yggm4UT2jJ.mp3",
     },
     {
       id: "what-a-wonderful-world",
@@ -43,7 +47,8 @@ export function SongsShowcase() {
       duration: "3:28",
       description: "Uplifting jazz standard that celebrates life's beautiful moments",
       coverImage: "/images/songs/what-a-wonderful-world.jpg",
-      audioSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/What%20a%20Wonderful%20World%20Master-BNlWK5wv0GDYsfajxE4gi2CUm0LmFQ.mp3",
+      audioUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/What%20a%20Wonderful%20World%20Master-JABmURSW0VZ53HYwZV3wGjLkjrgUcE.mp3",
     },
     {
       id: "bella-ciao",
@@ -53,7 +58,8 @@ export function SongsShowcase() {
       duration: "3:52",
       description: "Passionate Italian folk song with deep cultural significance and beautiful melodic lines",
       coverImage: "/images/songs/bella-ciao.jpg",
-      audioSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/7494-ec49-4177-b1d8-9f9050281eef-PaCqFSEvFK4pLL20iynIvNLb8qAQBJ.mp3",
+      audioUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/7494-ec49-4177-b1d8-9f9050281eef-z3fhi0xnkvLcwbVHLJfejIs5W8Ki9t.mp3",
     },
     {
       id: "fly-me-to-the-moon",
@@ -63,7 +69,8 @@ export function SongsShowcase() {
       duration: "4:05",
       description: "Romantic jazz standard that captures the magic of love and dreams",
       coverImage: "/images/songs/fly-me-to-the-moon.jpg",
-      audioSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bd9e-0e62-408f-9954-d7de2da8f574-QJ0QV5BvfAdP40Lf4qkmkOPOJQ2DKe.mp3",
+      audioUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bd9e-0e62-408f-9954-d7de2da8f574-QJ0QV5BvfAdP40Lf4qkmkOPOJQ2DKe.mp3",
     },
     {
       id: "cant-help-falling-in-love",
@@ -73,59 +80,46 @@ export function SongsShowcase() {
       duration: "3:15",
       description: "Tender romantic ballad perfect for weddings and intimate moments",
       coverImage: "/images/songs/cant-help-falling-in-love.png",
-      audioSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Cant%20Help%20Falling%20in%20Love-ueC6wBRenKYE8pAnqSJmCYxxjzsJyS.mp3",
+      audioUrl:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Cant%20Help%20Falling%20in%20Love-gdzO839wZruU5nHq2wwSwsabROGJhT.mp3",
     },
   ]
 
   useEffect(() => {
-    // Initialize audio elements
-    featuredSongs.forEach((song) => {
-      if (!audioRefs.current[song.id]) {
-        const audio = new Audio(song.audioSrc)
-        audio.preload = "metadata"
-        audio.addEventListener("loadedmetadata", () => {
-          if (isLoading === song.id) {
-            setIsLoading(null)
-          }
-        })
-        audio.addEventListener("ended", () => {
-          setCurrentlyPlaying(null)
-        })
-        audioRefs.current[song.id] = audio
+    const stopAllFeaturedAudio = () => {
+      if (currentTrack) {
+        stopAudio()
       }
-    })
+    }
+
+    setStopFeaturedPerformances(stopAllFeaturedAudio)
 
     return () => {
-      // Cleanup
-      Object.values(audioRefs.current).forEach((audio) => {
-        audio.pause()
-        audio.src = ""
-      })
+      setStopFeaturedPerformances(null)
     }
-  }, [])
+  }, [setStopFeaturedPerformances, currentTrack, stopAudio])
 
   const togglePlayPause = async (songId: string) => {
-    const audio = audioRefs.current[songId]
-    if (!audio) return
+    const song = featuredSongs.find((s) => s.id === songId)
+    if (!song) return
 
-    if (currentlyPlaying === songId) {
-      audio.pause()
-      setCurrentlyPlaying(null)
-    } else {
-      // Pause any currently playing audio
-      if (currentlyPlaying) {
-        audioRefs.current[currentlyPlaying]?.pause()
-      }
+    console.log("[v0] Toggle play/pause for:", songId)
 
+    if (currentTrack !== songId || !isPlaying) {
+      muteForOtherAudio()
       setIsLoading(songId)
+
       try {
-        await audio.play()
-        setCurrentlyPlaying(songId)
-        setIsLoading(null)
+        await playAudio(songId, song.audioUrl)
+        console.log("[v0] Successfully started playing:", songId)
       } catch (error) {
-        console.error("Error playing audio:", error)
+        console.error("[v0] Error playing audio:", error)
+      } finally {
         setIsLoading(null)
       }
+    } else {
+      pauseAudio()
+      unmuteAfterOtherAudio()
     }
   }
 
@@ -178,7 +172,6 @@ export function SongsShowcase() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                      {/* Play button overlay */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Button
                           size="lg"
@@ -188,7 +181,7 @@ export function SongsShowcase() {
                         >
                           {isLoading === song.id ? (
                             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          ) : currentlyPlaying === song.id ? (
+                          ) : currentTrack === song.id && isPlaying ? (
                             <Pause className="w-6 h-6 text-white" />
                           ) : (
                             <Play className="w-6 h-6 text-white ml-1" />
@@ -196,8 +189,7 @@ export function SongsShowcase() {
                         </Button>
                       </div>
 
-                      {/* Now playing indicator */}
-                      {currentlyPlaying === song.id && (
+                      {currentTrack === song.id && isPlaying && (
                         <div className="absolute top-4 right-4 flex items-center gap-2 bg-primary/90 text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
                           <Volume2 className="w-4 h-4" />
                           <span>Playing</span>
@@ -233,7 +225,7 @@ export function SongsShowcase() {
                               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
                               Loading...
                             </>
-                          ) : currentlyPlaying === song.id ? (
+                          ) : currentTrack === song.id && isPlaying ? (
                             <>
                               <Pause className="w-4 h-4 mr-2" />
                               Pause
