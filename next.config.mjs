@@ -24,7 +24,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
-    optimizeCss: true,
+    optimizeCss: false, // Disabled to prevent issues with critters
     webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB'],
   },
   compiler: {
