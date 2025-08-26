@@ -57,7 +57,6 @@ export function AboutPhilosophy() {
               <motion.div
                 className="relative h-[300px] md:h-[350px] rounded-lg overflow-hidden shadow-xl"
                 whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.5 }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
