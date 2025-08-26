@@ -67,6 +67,7 @@ export const useAudioStore = create<AudioState>((set, get) => ({
 
     const newAudio = new Audio(url)
     newAudio.volume = 1
+    newAudio.muted = false // Ensure the audio is not muted
 
     newAudio.addEventListener("loadeddata", () => {
       newAudio
@@ -102,13 +103,10 @@ export const useAudioStore = create<AudioState>((set, get) => ({
 
   toggleMute: () => {
     const state = get()
-    const newMuted = !state.isMuted
-
-    if (state.backgroundAudio) {
-      state.backgroundAudio.volume = newMuted ? 0 : 0.3
+    if (state.audio) {
+      state.audio.muted = !state.audio.muted
+      set({ isMuted: !state.isMuted })
     }
-
-    set({ isMuted: newMuted })
   },
 
   stopAudio: () => {

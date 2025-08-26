@@ -43,20 +43,6 @@ export function AboutPhilosophy() {
               <motion.div
                 className="relative h-[300px] md:h-[350px] rounded-lg overflow-hidden shadow-xl"
                 whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_7174-cwqxklcNH52UiwhVpLkZQVY4NfCLoK.jpeg"
-                  alt="Allan Palmer teaching a young girl how to play violin"
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </motion.div>
-
-              <motion.div
-                className="relative h-[300px] md:h-[350px] rounded-lg overflow-hidden shadow-xl"
-                whileHover={{ scale: 1.02 }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
