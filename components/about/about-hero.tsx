@@ -1,10 +1,13 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { Music, Award, Users, Calendar } from "lucide-react"
 import { AnimatedElement } from "@/components/animated-element"
 import { AnimatedButton } from "@/components/ui/animated-button"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 const stats = [
   { icon: Calendar, label: "Years Experience", value: "15+" },
@@ -57,15 +60,26 @@ export function AboutHero() {
 
             <AnimatedElement variant="fade-up" delay={0.4}>
               <div className="flex flex-col sm:flex-row gap-4">
-                <AnimatedButton
-                  href="/contact"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3"
-                >
-                  Book Allan
-                </AnimatedButton>
-                <AnimatedButton href="/services" variant="outline" className="px-8 py-3">
-                  View Services
-                </AnimatedButton>
+                <Link href="/contact" className="inline-block">
+                  <button
+                    className={cn(
+                      buttonVariants({ variant: "default" }),
+                      "bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3"
+                    )}
+                  >
+                    Book Allan
+                  </button>
+                </Link>
+                <Link href="/services" className="inline-block">
+                  <button
+                    className={cn(
+                      buttonVariants({ variant: "outline" }),
+                      "px-8 py-3"
+                    )}
+                  >
+                    View Services
+                  </button>
+                </Link>
               </div>
             </AnimatedElement>
           </div>
