@@ -14,7 +14,7 @@ import Image from "next/image"
 export function SongsShowcase() {
   const [isLoading, setIsLoading] = useState<string | null>(null)
   const { muteForOtherAudio, unmuteAfterOtherAudio, setStopFeaturedPerformances } = useBackgroundMusic()
-  const { currentTrack, isPlaying, playAudio, pauseAudio, stopAudio } = useAudioStore()
+  const { currentlyPlaying, isPlaying, playAudio, pauseAudio, stopAudio } = useAudioStore()
 
   const featuredSongs = [
     {
@@ -87,7 +87,7 @@ export function SongsShowcase() {
 
   useEffect(() => {
     const stopAllFeaturedAudio = () => {
-      if (currentTrack) {
+      if (currentlyPlaying) {
         stopAudio()
       }
     }
@@ -97,23 +97,20 @@ export function SongsShowcase() {
     return () => {
       setStopFeaturedPerformances(null)
     }
-  }, [setStopFeaturedPerformances, currentTrack, stopAudio])
+  }, [setStopFeaturedPerformances, currentlyPlaying, stopAudio])
 
   const togglePlayPause = async (songId: string) => {
     const song = featuredSongs.find((s) => s.id === songId)
     if (!song) return
 
-    console.log("[v0] Toggle play/pause for:", songId)
-
-    if (currentTrack !== songId || !isPlaying) {
+    if (currentlyPlaying !== songId || !isPlaying) {
       muteForOtherAudio()
       setIsLoading(songId)
 
       try {
         await playAudio(songId, song.audioUrl)
-        console.log("[v0] Successfully started playing:", songId)
       } catch (error) {
-        console.error("[v0] Error playing audio:", error)
+        console.error("Error playing audio:", error)
       } finally {
         setIsLoading(null)
       }
@@ -181,7 +178,7 @@ export function SongsShowcase() {
                         >
                           {isLoading === song.id ? (
                             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          ) : currentTrack === song.id && isPlaying ? (
+                          ) : currentlyPlaying === song.id && isPlaying ? (
                             <Pause className="w-6 h-6 text-white" />
                           ) : (
                             <Play className="w-6 h-6 text-white ml-1" />
@@ -189,7 +186,7 @@ export function SongsShowcase() {
                         </Button>
                       </div>
 
-                      {currentTrack === song.id && isPlaying && (
+                      {currentlyPlaying === song.id && isPlaying && (
                         <div className="absolute top-4 right-4 flex items-center gap-2 bg-primary/90 text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
                           <Volume2 className="w-4 h-4" />
                           <span>Playing</span>
@@ -225,7 +222,7 @@ export function SongsShowcase() {
                               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
                               Loading...
                             </>
-                          ) : currentTrack === song.id && isPlaying ? (
+                          ) : currentlyPlaying === song.id && isPlaying ? (
                             <>
                               <Pause className="w-4 h-4 mr-2" />
                               Pause

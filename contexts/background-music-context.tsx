@@ -40,7 +40,7 @@ export function BackgroundMusicProvider({ children }: { children: React.ReactNod
   const stopFeaturedPerformancesRef = useRef<(() => void) | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  const { stopAllAudio } = useAudioStore()
+  const { stopAudio } = useAudioStore()
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -111,7 +111,7 @@ export function BackgroundMusicProvider({ children }: { children: React.ReactNod
       if (stopFeaturedPerformancesRef.current) {
         stopFeaturedPerformancesRef.current()
       }
-      stopAllAudio()
+      stopAudio()
 
       try {
         await audioRef.current?.play()

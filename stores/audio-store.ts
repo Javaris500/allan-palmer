@@ -12,7 +12,7 @@ interface AudioState {
   playAudio: (songId: string, audioUrl: string) => void
   pauseAudio: () => void
   toggleMute: () => void
-  stopAllAudio: () => void
+  stopAudio: () => void
   setBackgroundMusic: (enabled: boolean) => void
 }
 
@@ -61,29 +61,24 @@ export const useAudioStore = create<AudioState>((set, get) => ({
     // Use provided URL or get from audioUrls
     const url = audioUrl || audioUrls[songId]
     if (!url) {
-      console.error("[v0] No audio URL found for:", songId)
+      console.error("No audio URL found for:", songId)
       return
     }
-
-    console.log("[v0] Playing audio:", songId, "URL:", url)
 
     const newAudio = new Audio(url)
     newAudio.volume = 1
 
     newAudio.addEventListener("loadeddata", () => {
-      console.log("[v0] Audio loaded successfully:", songId)
       newAudio
         .play()
-        .then(() => {
-          console.log("[v0] Successfully started playing:", songId)
-        })
+        .then(() => {})
         .catch((error) => {
-          console.error("[v0] Error playing audio:", error)
+          console.error("Error playing audio:", error)
         })
     })
 
     newAudio.addEventListener("error", (e) => {
-      console.error("[v0] Audio loading error:", e)
+      console.error("Audio loading error:", e)
     })
 
     newAudio.addEventListener("ended", () => {
@@ -116,7 +111,7 @@ export const useAudioStore = create<AudioState>((set, get) => ({
     set({ isMuted: newMuted })
   },
 
-  stopAllAudio: () => {
+  stopAudio: () => {
     const state = get()
     if (state.audio) {
       state.audio.pause()
