@@ -6,6 +6,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  output: 'standalone',
+  // Disable automatic static optimization for error pages
+  unstable_excludeFiles: ['**/node_modules/critters/**/*', '**/404*', '**/500*'],
   images: {
     remotePatterns: [
       {
