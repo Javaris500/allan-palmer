@@ -10,14 +10,14 @@ import Image from "next/image"
 const photos = [
   {
     id: 1,
-    src: "/images/gallery/wedding-couple-dance.png",
+    src: "/images/gallery/wedding-couple-dance.png?v=1",
     alt: "Allan Palmer performing at a wedding while couple dances",
     title: "Wedding First Dance",
     description: "Creating magical moments with violin music for a couple's first dance.",
   },
   {
     id: 2,
-    src: "/images/gallery/performer-closeup.png",
+    src: "/images/gallery/performer-closeup.png?v=1",
     alt: "Close up of Allan Palmer performing on violin",
     title: "Professional Performance",
     description: "Elegant violin performance showcasing technical skill and artistry.",
@@ -250,11 +250,12 @@ export function PhotoGalleryCarousel() {
                   src={photos[currentIndex]?.src || "/placeholder.svg"}
                   alt={photos[currentIndex]?.alt || "Gallery image"}
                   fill
+                  unoptimized={currentIndex === 0 || currentIndex === 1}
                   className={`transition-transform duration-500 group-hover:scale-105 ${
                     currentIndex === 7 ? "object-contain" : "object-cover"
                   }`}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                  priority={currentIndex === 0}
+                  priority={currentIndex === 0 || currentIndex === 1}
                 />
               </motion.div>
             </AnimatePresence>
@@ -328,8 +329,10 @@ export function PhotoGalleryCarousel() {
                   src={photo.src || "/placeholder.svg"}
                   alt={photo.alt}
                   fill
+                  unoptimized={index === 0 || index === 1}
                   className={`transition-transform duration-300 ${index === 7 ? "object-contain" : "object-cover"}`}
                   sizes="80px"
+                  priority={index === 0 || index === 1}
                 />
                 <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300" />
               </button>
