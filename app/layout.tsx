@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
+import { SimpleFooter } from "@/components/simple-footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BackToTop } from "@/components/back-to-top"
 import { ErrorBoundary } from "@/components/error-boundary"
@@ -131,7 +131,7 @@ export default function RootLayout({
                 <Suspense fallback={<PageLoading />}>
                   <main className="flex-1">{children}</main>
                 </Suspense>
-                <Footer />
+                <SimpleFooter />
                 <BackToTop />
               </div>
             </BackgroundMusicProvider>

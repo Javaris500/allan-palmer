@@ -10,41 +10,48 @@ import Image from "next/image"
 const photos = [
   {
     id: 1,
+    src: "/images/gallery/wedding-couple-dance.jpeg",
+    alt: "Allan Palmer performing at a wedding while couple dances",
+    title: "Wedding First Dance",
+    description: "Creating magical moments with violin music for a couple's first dance.",
+  },
+  {
+    id: 2,
+    src: "/images/gallery/performer-closeup.jpeg",
+    alt: "Close up of Allan Palmer performing on violin",
+    title: "Professional Performance",
+    description: "Elegant violin performance showcasing technical skill and artistry.",
+  },
+  {
+    id: 3,
     src: "/images/gallery/wedding-ceremony-elegant.png",
     alt: "Allan Palmer performing at elegant wedding ceremony",
     title: "Elegant Wedding Ceremony",
     description: "Creating magical moments at an upscale wedding with beautiful floral arrangements.",
   },
   {
-    id: 2,
+    id: 4,
     src: "/images/gallery/wedding-couple-photo.jpeg",
     alt: "Allan Palmer with bride and groom after wedding ceremony",
     title: "Wedding Celebration",
     description: "Celebrating with the happy couple after providing beautiful ceremony music.",
   },
   {
-    id: 3,
+    id: 5,
     src: "/images/gallery/outdoor-ceremony-pavilion.png",
     alt: "Allan Palmer performing at outdoor wedding ceremony with pavilion",
     title: "Outdoor Ceremony Performance",
     description: "Performing for a large outdoor wedding ceremony in a picturesque pavilion setting.",
   },
   {
-    id: 4,
-    src: "/images/gallery/outdoor-performance-casual.png",
-    alt: "Allan Palmer outdoor performance in casual setting",
-    title: "Outdoor Event Performance",
-    description: "Bringing musical elegance to outdoor events and gatherings.",
-  },
-  {
-    id: 5,
+    id: 6,
     src: "/images/gallery/performance-1.jpeg",
     alt: "Allan Palmer Concert Performance",
     title: "Concert Performance",
     description: "Professional concert setting showcasing Allan's stage presence and violin mastery.",
   },
   {
-    id: 6,
+    id: 7,
     src: "/images/gallery/performance-2.jpeg",
     alt: "Allan Palmer Sacred Music Performance",
     title: "Sacred Music Performance",
@@ -240,8 +247,8 @@ export function PhotoGalleryCarousel() {
                 className="absolute inset-0"
               >
                 <Image
-                  src={photos[currentIndex].src || "/placeholder.svg"}
-                  alt={photos[currentIndex].alt}
+                  src={photos[currentIndex]?.src || "/placeholder.svg"}
+                  alt={photos[currentIndex]?.alt || "Gallery image"}
                   fill
                   className={`transition-transform duration-500 group-hover:scale-105 ${
                     currentIndex === 7 ? "object-contain" : "object-cover"

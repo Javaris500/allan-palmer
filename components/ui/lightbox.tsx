@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, ChevronLeft, ChevronRight, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -36,8 +36,8 @@ export function Lightbox({ images, currentIndex, onClose, onNavigate }: Lightbox
     if (navigator.share) {
       try {
         await navigator.share({
-          title: images[currentIndex].title,
-          text: images[currentIndex].description,
+          title: images[currentIndex]?.title || "Gallery Image",
+          text: images[currentIndex]?.description || "Gallery image from Allan Palmer",
           url: window.location.href,
         })
       } catch (error) {
@@ -74,7 +74,13 @@ export function Lightbox({ images, currentIndex, onClose, onNavigate }: Lightbox
     }
   }, [])
 
-  const currentImage = images[currentIndex]
+  const currentImage = images[currentIndex] || { 
+    id: 0, 
+    src: "/placeholder.svg", 
+    alt: "Gallery image", 
+    title: "Gallery image", 
+    description: "" 
+  }
 
   return (
     <AnimatePresence>
@@ -89,13 +95,13 @@ export function Lightbox({ images, currentIndex, onClose, onNavigate }: Lightbox
         <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/50 to-transparent">
           <div className="flex items-center justify-between">
             <div className="text-white">
-              <h3 className="text-lg font-semibold">{currentImage.title}</h3>
+              <h3 className="text-lg font-semibold">{currentImage?.title || "Gallery Image"}</h3>
               <p className="text-sm text-white/70">
                 {currentIndex + 1} of {images.length}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {navigator.share && (
+              {typeof navigator !== 'undefined' && 'share' in navigator && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -124,7 +130,7 @@ export function Lightbox({ images, currentIndex, onClose, onNavigate }: Lightbox
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
             className="relative max-w-7xl max-h-full w-full h-full"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
             <Image
               src={currentImage.src || "/placeholder.svg"}
