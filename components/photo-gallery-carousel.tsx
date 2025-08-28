@@ -236,11 +236,12 @@ export function PhotoGalleryCarousel() {
                   src={photos[currentIndex]?.src || "/placeholder.svg"}
                   alt={photos[currentIndex]?.alt || "Gallery image"}
                   fill
+                  unoptimized={currentIndex === 0 || currentIndex === 1} 
                   className={`transition-transform duration-500 group-hover:scale-105 ${
                     currentIndex === 5 ? "object-contain" : "object-cover"
                   }`}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                  priority={currentIndex === 0}
+                  priority={currentIndex === 0 || currentIndex === 1}
                 />
               </motion.div>
             </AnimatePresence>
