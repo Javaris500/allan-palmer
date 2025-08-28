@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { PhotoGalleryCarousel } from "@/components/photo-gallery-carousel"
 import { VideoThumbnailGrid } from "@/components/video-thumbnail-grid"
-import { GalleryPreloadImages } from "@/components/gallery-preload-images"
 import { Play } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -27,9 +26,6 @@ export const metadata: Metadata = {
 export default function GalleryPage() {
   return (
     <div className="min-h-screen">
-      {/* Preload images */}
-      <GalleryPreloadImages />
-      
       {/* Photo Gallery */}
       <PhotoGalleryCarousel />
 
