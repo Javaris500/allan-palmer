@@ -10,14 +10,14 @@ import Image from "next/image"
 const photos = [
   {
     id: 1,
-    src: "/images/gallery/wedding-couple-dance.jpeg",
+    src: "/images/gallery/wedding-couple-dance.png",
     alt: "Allan Palmer performing at a wedding while couple dances",
     title: "Wedding First Dance",
     description: "Creating magical moments with violin music for a couple's first dance.",
   },
   {
     id: 2,
-    src: "/images/gallery/performer-closeup.jpeg",
+    src: "/images/gallery/performer-closeup.png",
     alt: "Close up of Allan Palmer performing on violin",
     title: "Professional Performance",
     description: "Elegant violin performance showcasing technical skill and artistry.",
