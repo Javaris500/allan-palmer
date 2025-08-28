@@ -7,7 +7,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   output: 'standalone',
-  // Don't use unstable_excludeFiles as it's not recognized
   images: {
     remotePatterns: [
       {
@@ -17,16 +16,16 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-    formats: ['image/webp', 'image/avif'], // Only allowed formats
+    formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60, // Set to 60 seconds for better performance
+    minimumCacheTTL: 60,
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
-    optimizeCss: false, // Disabled to prevent issues with critters
+    optimizeCss: false,
     webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB'],
   },
   compiler: {
@@ -49,28 +48,6 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin',
           },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
-        ],
-      },
-      {
-        source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
         ],
       },
     ];
@@ -79,7 +56,6 @@ const nextConfig = {
   compress: true,
   reactStrictMode: true,
   swcMinify: true,
-  output: 'standalone',
   async redirects() {
     return [
       {
