@@ -29,12 +29,7 @@ export function AboutHero() {
           <div className="space-y-8">
             <AnimatedElement variant="fade-up">
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-2 text-sm font-medium mb-4">
-                  <Music className="h-4 w-4" />
-                  Professional Violinist
-                </div>
-                <br />
-                Allan Palmer
+                Meet Allan Palmer
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
                 A passionate violinist dedicated to creating unforgettable musical experiences for life's most precious
@@ -97,6 +92,14 @@ export function AboutHero() {
                 priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              
+              {/* Professional Violinist Badge - positioned above head */}
+              <div className="absolute top-6 left-1/2 transform -translate-x-1/2">
+                <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm text-primary rounded-full px-4 py-2 text-sm font-medium border border-primary/20">
+                  <Music className="h-4 w-4" />
+                  Professional Violinist
+                </div>
+              </div>
             </div>
 
             {/* Floating Stats Card */}
