@@ -10,7 +10,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 const stats = [
-  { icon: Calendar, label: "Years Experience", value: "15+" },
+  { icon: Calendar, label: "Years Experience", value: "20+" },
   { icon: Users, label: "Events Performed", value: "500+" },
   { icon: Music, label: "Songs in Repertoire", value: "200+" },
   { icon: Award, label: "Satisfied Clients", value: "100%" },
@@ -44,7 +44,7 @@ export function AboutHero() {
             <AnimatedElement variant="fade-up" delay={0.2}>
               <div className="prose prose-lg max-w-none text-muted-foreground">
                 <p>
-                  With over 15 years of professional experience, Allan Palmer brings exceptional artistry and technical
+                  With over 20 years of professional experience, Allan Palmer brings exceptional artistry and technical
                   mastery to every performance. From intimate wedding ceremonies to grand concert halls, Allan's
                   versatile repertoire and passionate delivery create magical moments that resonate long after the last
                   note.

@@ -22,7 +22,7 @@ export const SITE_CONFIG = {
 } as const
 
 export const CONTACT_INFO = {
-  email: "Palmerar@myumanito-ba.ca",
+  email: "palmerar@myumanito-ba.ca",
   phone: "(204) 898-9699",
   location: "Winnipeg, Manitoba",
   socialMedia: {
