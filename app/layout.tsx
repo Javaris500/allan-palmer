@@ -31,13 +31,13 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Allan Palmer - Professional Classical Violinist",
+    default: "Allan Palmer - Professional Violinist for Events of All Types",
     template: "%s | Allan Palmer Violinist",
   },
   description:
-    "Professional classical violinist Allan Palmer brings elegance and sophistication to weddings, corporate events, and private functions. Book your memorable performance today.",
+    "Professional violinist Allan Palmer brings elegance and sophistication to weddings, corporate events, and private functions. Book your memorable performance today.",
   keywords: [
-    "classical violinist",
+    "violinist for events",
     "wedding musician",
     "corporate entertainment",
     "private events",
@@ -64,24 +64,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://allanpalmerviolinist.com",
-    siteName: "Allan Palmer - Professional Classical Violinist",
-    title: "Allan Palmer - Professional Classical Violinist",
+    siteName: "Allan Palmer - Professional Violinist for Events of All Types",
+    title: "Allan Palmer - Professional Violinist for Events of All Types",
     description:
-      "Professional classical violinist bringing elegance to your special events. Wedding ceremonies, corporate functions, and private performances.",
+      "Professional violinist bringing elegance to your special events. Wedding ceremonies, corporate functions, and private performances.",
     images: [
       {
         url: "/images/allan-portrait-bw.jpeg",
         width: 1200,
         height: 630,
-        alt: "Allan Palmer - Professional Classical Violinist",
+        alt: "Allan Palmer - Professional Violinist for Events of All Types",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Allan Palmer - Professional Classical Violinist",
+    title: "Allan Palmer - Professional Violinist for Events of All Types",
     description:
-      "Professional classical violinist bringing elegance to your special events. Wedding ceremonies, corporate functions, and private performances.",
+      "Professional violinist bringing elegance to your special events. Wedding ceremonies, corporate functions, and private performances.",
     images: ["/images/allan-portrait-bw.jpeg"],
   },
   robots: {

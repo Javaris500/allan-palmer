@@ -13,7 +13,7 @@ export const SITE_CONFIG = {
     "wedding violinist Manitoba",
     "private event music",
     "violin lessons Winnipeg",
-    "classical violinist",
+    "violinist for events",
     "professional musician",
     "Winnipeg wedding music",
     "violin teacher",

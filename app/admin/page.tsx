@@ -62,7 +62,7 @@ const contentSections: ContentSection[] = [
       { field: "Social Media Links", description: "Instagram, YouTube, TikTok, Spotify, Facebook URLs — shown in footer and contact page", type: "URLs" },
       { field: "Hero Image", description: "Fallback hero background image if no video is set", type: "Image" },
       { field: "Hero Title", description: "Main heading on the homepage (default: 'Allan Palmer')", type: "Text" },
-      { field: "Hero Subtitle", description: "Sub-heading below title (default: 'Classical Violinist')", type: "Text" },
+      { field: "Hero Subtitle", description: "Sub-heading below title (default: 'Violinist for Events of All Types')", type: "Text" },
       { field: "Hero Description", description: "Short tagline below subtitle on homepage", type: "Long Text" },
     ],
   },

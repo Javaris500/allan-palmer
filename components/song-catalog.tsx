@@ -89,7 +89,6 @@ export function SongCatalog() {
     { title: "Lambada", artist: "Kaoma" },
     { title: "La Paloma", artist: "Traditional Spanish" },
     { title: "La Vie En Rose", artist: "Édith Piaf" },
-    { title: "Let it Be", artist: "The Beatles" },
     { title: "Let It Be Me", artist: "The Everly Brothers" },
     { title: "Let Me Love You", artist: "Mario" },
     { title: "Let's Get Loud", artist: "Jennifer Lopez" },

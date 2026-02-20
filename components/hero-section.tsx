@@ -244,7 +244,7 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            Classical Violinist
+            Violinist for Events of All Types
           </motion.p>
 
           <motion.p

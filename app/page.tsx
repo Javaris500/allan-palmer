@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "professional violinist",
     "violin lessons Winnipeg",
     "live wedding music",
-    "classical violinist",
+    "violinist for events",
     "event entertainment",
   ],
   openGraph: {

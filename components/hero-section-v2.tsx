@@ -31,7 +31,7 @@ interface HeroSectionProps {
 
 export function HeroSection({
   heroTitle = "Allan Palmer",
-  heroSubtitle = "Classical Violinist",
+  heroSubtitle = "Violinist for Events of All Types",
   heroBadge = "Professional Violinist",
   heroDescription = "Bringing elegance and sophistication to your most cherished moments",
   ctaPrimaryText = "Book Performance",
@@ -365,7 +365,7 @@ export function HeroSection({
             </motion.div>
 
             <motion.h1
-              className="font-serif text-5xl font-bold tracking-tight mb-2 text-white drop-shadow-2xl"
+              className="font-serif text-3xl font-bold tracking-tight mb-2 text-white drop-shadow-2xl"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -374,7 +374,7 @@ export function HeroSection({
             </motion.h1>
 
             <motion.p
-              className="text-xl text-gold font-light mb-4 drop-shadow-lg"
+              className="text-base text-gold font-light mb-3 drop-shadow-lg tracking-wide"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -383,7 +383,7 @@ export function HeroSection({
             </motion.p>
 
             <motion.p
-              className="max-w-sm text-white/80 text-base leading-relaxed mb-8 font-light drop-shadow-lg"
+              className="max-w-xs text-white/70 text-sm leading-relaxed mb-6 font-light drop-shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -484,7 +484,7 @@ export function HeroSection({
       </div>
 
       {/* ── Hero Text ── */}
-      <div className="relative z-10 pt-24 pb-6 md:pt-32 md:pb-10">
+      <div className="relative z-10 pt-20 pb-4 md:pt-28 md:pb-6">
         <div className="container mx-auto px-4 text-center text-foreground">
           <motion.div
             className="mb-5"
@@ -502,7 +502,7 @@ export function HeroSection({
           </motion.div>
 
           <motion.h1
-            className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-3 leading-tight"
+            className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-2 leading-tight"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -511,7 +511,7 @@ export function HeroSection({
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl text-gold font-light mb-5"
+            className="text-base md:text-lg text-gold font-light mb-4 tracking-wide"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -520,7 +520,7 @@ export function HeroSection({
           </motion.p>
 
           <motion.p
-            className="mx-auto max-w-xl text-muted-foreground text-base md:text-lg leading-relaxed mb-8 font-light"
+            className="mx-auto max-w-lg text-muted-foreground text-sm md:text-base leading-relaxed mb-6 font-light"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
