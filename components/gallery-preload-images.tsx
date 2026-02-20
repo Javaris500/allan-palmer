@@ -1,22 +1,24 @@
 "use client"
 
-import React from 'react'
+import Image from "next/image"
 
 export function GalleryPreloadImages() {
   return (
-    <div className="hidden">
-      {/* Preload the images */}
-      <img 
+    <div className="hidden" aria-hidden="true">
+      {/* Preload gallery images for better performance */}
+      <Image 
         src="/images/gallery/IMG_9924.jpeg" 
-        alt="Preload first gallery image"
+        alt=""
         width={1} 
         height={1}
+        priority
       />
-      <img 
+      <Image 
         src="/images/gallery/IMG_9923.jpeg" 
-        alt="Preload second gallery image"
+        alt=""
         width={1} 
         height={1}
+        priority
       />
     </div>
   )

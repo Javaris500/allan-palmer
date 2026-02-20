@@ -1,235 +1,185 @@
 "use client"
 
-import type React from "react"
-import Link from "next/link"
-
-import { Music, GraduationCap, Heart } from "lucide-react"
-import { AnimatedElement } from "@/components/animated-element"
 import { motion } from "framer-motion"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState } from "react"
+import { Music, Heart, GraduationCap, Check, Star } from "lucide-react"
+import { cn } from "@/lib/utils"
 
-export function ServicesSection() {
-  const [activeTab, setActiveTab] = useState("weddings")
-
-  const services = {
-    weddings: {
-      title: "Wedding Services",
-      description: "Create unforgettable moments with elegant violin music for your special day.",
-      icon: Music,
-      items: [
-        "Pre-Ceremony Music",
-        "Ceremony Music",
-        "Processional & Recessional",
-        "First Dance Music",
-        "Cocktail Hour",
-        "Reception Entertainment",
-        "Bachelorette Parties",
-        "Bridal Showers",
-        "Custom Song Arrangements",
-        "Amplification Available",
-        "Multiple Location Setup",
-      ],
-    },
-    private: {
-      title: "Private Functions",
-      description: "Personalized violin performances for your intimate gatherings and special occasions.",
-      icon: Heart,
-      items: [
-        "Dinner Parties",
-        "Birthday Parties",
-        "Anniversaries",
-        "Proposals",
-        "Celebrations of Life",
-        "Funerals",
-        "Baby Showers",
-        "Nursing Homes",
-        "Family Gatherings",
-        "Holiday Celebrations",
-        "Memorial Services",
-        "Corporate Events",
-        "Galas & Fundraisers",
-        "Product Launches",
-        "Holiday Parties",
-        "Client Appreciation Events",
-      ],
-    },
-    lessons: {
-      title: "Violin Lessons",
-      description: "Learn violin from a professional with personalized instruction for all skill levels.",
-      icon: GraduationCap,
-      items: [
-        "Beginner to Advanced",
-        "Classical & Contemporary",
-        "Online & In-Person",
-        "Personalized Curriculum",
-        "Structured Practice Plans",
-        "Digital Learning Materials",
-        "Performance Opportunities",
-      ],
-    },
-  }
-
-  const iconVariants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: { scale: 1, opacity: 1, transition: { duration: 0.5 } },
-  }
-
-  return (
-    <section className="container py-16 md:py-24">
-      <AnimatedElement variant="fade-up" className="text-center">
-        <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">Services Offered</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          Elevate your event with beautiful violin music or enhance your skills with professional lessons.
-        </p>
-      </AnimatedElement>
-
-      <div className="mt-12">
-        <Tabs defaultValue="weddings" value={activeTab} onValueChange={setActiveTab} className="mx-auto max-w-4xl">
-          <div className="relative overflow-hidden rounded-lg border">
-            <TabsList className="flex w-full justify-between bg-background">
-              <TabsTrigger
-                value="weddings"
-                className="flex-1 flex items-center justify-center gap-2 px-2 py-3 data-[state=active]:bg-muted/50 sm:px-4"
-              >
-                <motion.div
-                  variants={iconVariants}
-                  initial="hidden"
-                  animate={activeTab === "weddings" ? "visible" : "hidden"}
-                  className="hidden h-6 w-6 items-center justify-center rounded-full bg-primary/10 sm:flex"
-                >
-                  <div className="flex h-4 w-4 items-center justify-center">
-                    <Music className="h-4 w-4 text-primary" />
-                  </div>
-                </motion.div>
-                <span className="text-sm sm:text-base">Weddings</span>
-              </TabsTrigger>
-
-              <TabsTrigger
-                value="private"
-                className="flex-1 flex items-center justify-center gap-2 px-2 py-3 data-[state=active]:bg-muted/50 sm:px-4"
-              >
-                <motion.div
-                  variants={iconVariants}
-                  initial="hidden"
-                  animate={activeTab === "private" ? "visible" : "hidden"}
-                  className="hidden h-6 w-6 items-center justify-center rounded-full bg-primary/10 sm:flex"
-                >
-                  <div className="flex h-4 w-4 items-center justify-center">
-                    <Heart className="h-4 w-4 text-primary" />
-                  </div>
-                </motion.div>
-                <span className="text-sm sm:text-base">Private Events</span>
-              </TabsTrigger>
-
-              <TabsTrigger
-                value="lessons"
-                className="flex-1 flex items-center justify-center gap-2 px-2 py-3 data-[state=active]:bg-muted/50 sm:px-4"
-              >
-                <motion.div
-                  variants={iconVariants}
-                  initial="hidden"
-                  animate={activeTab === "lessons" ? "visible" : "hidden"}
-                  className="hidden h-6 w-6 items-center justify-center rounded-full bg-primary/10 sm:flex"
-                >
-                  <div className="flex h-4 w-4 items-center justify-center">
-                    <GraduationCap className="h-4 w-4 text-primary" />
-                  </div>
-                </motion.div>
-                <span className="text-sm sm:text-base">Lessons</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          <div className="mt-8">
-            <TabsContent value="weddings" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <ServiceDetail service={services.weddings} />
-            </TabsContent>
-
-            <TabsContent value="private" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <ServiceDetail service={services.private} />
-            </TabsContent>
-
-            <TabsContent value="lessons" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-              <ServiceDetail service={services.lessons} />
-            </TabsContent>
-          </div>
-        </Tabs>
-      </div>
-
-      <div className="mx-auto mt-12 max-w-3xl rounded-lg bg-muted/50 p-4 sm:p-6 dark:bg-muted/20">
-        <h3 className="text-center text-lg font-medium">Need more information?</h3>
-        <p className="mt-2 text-center text-sm sm:text-base text-muted-foreground">
-          Contact Allan directly to discuss your specific requirements or to request a custom quote.
-        </p>
-        <div className="mt-4 flex justify-center">
-          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
-            <Link
-              href="/services"
-              className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Book Allan Palmer
-            </Link>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  )
+interface ServiceTier {
+  name: string
+  description: string
+  icon: React.ElementType
+  featured?: boolean
+  includes: string[]
 }
 
-interface ServiceDetailProps {
-  service: {
-    title: string
-    description: string
-    icon: React.ElementType
-    items: string[]
-  }
-}
+const serviceTiers: ServiceTier[] = [
+  {
+    name: "Wedding Services",
+    description: "Elegant violin music for every moment of your special day",
+    icon: Music,
+    featured: true,
+    includes: [
+      "Pre-Ceremony Music",
+      "Ceremony Music",
+      "Processional & Recessional",
+      "First Dance Music",
+      "Cocktail Hour",
+      "Reception Entertainment",
+      "Bachelorette Parties",
+      "Bridal Showers",
+      "Custom Song Arrangements",
+      "Amplification Available",
+      "Multiple Location Setup",
+    ],
+  },
+  {
+    name: "Private & Corporate",
+    description: "Personalized performances for gatherings of all kinds",
+    icon: Heart,
+    includes: [
+      "Dinner Parties",
+      "Birthday Parties",
+      "Anniversaries",
+      "Proposals",
+      "Celebrations of Life",
+      "Funerals & Memorials",
+      "Baby Showers",
+      "Nursing Homes",
+      "Corporate Events",
+      "Galas & Fundraisers",
+      "Product Launches",
+      "Holiday Parties",
+      "Client Appreciation Events",
+    ],
+  },
+  {
+    name: "Violin Lessons",
+    description: "Professional instruction tailored to your skill level",
+    icon: GraduationCap,
+    includes: [
+      "Beginner to Advanced",
+      "Classical & Contemporary",
+      "Online & In-Person",
+      "Personalized Curriculum",
+      "Structured Practice Plans",
+      "Digital Learning Materials",
+      "Performance Opportunities",
+    ],
+  },
+]
 
-function ServiceDetail({ service }: ServiceDetailProps) {
-  const Icon = service.icon
+function ServiceCard({ tier, index }: { tier: ServiceTier; index: number }) {
+  const Icon = tier.icon
 
   return (
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      <div>
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Icon className="h-6 w-6 text-primary" />
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.15 }}
+      className={cn(
+        "relative flex flex-col rounded-2xl border-2 p-6 md:p-8 transition-all duration-300",
+        tier.featured
+          ? "border-gold bg-gold/5 shadow-xl shadow-gold/10"
+          : "border-gold/20 bg-transparent hover:border-gold/40"
+      )}
+    >
+      {/* Featured badge */}
+      {tier.featured && (
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+          <div className="flex items-center gap-1.5 bg-gold text-black px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+            <Star className="h-3 w-3 fill-black" />
+            Most Popular
           </div>
-          <h3 className="font-serif text-2xl font-semibold">{service.title}</h3>
         </div>
-        <p className="mt-4 text-muted-foreground">{service.description}</p>
+      )}
+
+      {/* Header */}
+      <div className="text-center mb-6 pt-2">
+        <div className={cn(
+          "inline-flex items-center justify-center w-14 h-14 rounded-full mb-4",
+          tier.featured ? "bg-gold/20" : "bg-gold/10"
+        )}>
+          <Icon className={cn("h-7 w-7", tier.featured ? "text-gold" : "text-gold/80")} />
+        </div>
+        <h3 className="font-serif text-xl md:text-2xl font-bold text-foreground">
+          {tier.name}
+        </h3>
+        <p className="text-sm text-muted-foreground mt-2">
+          {tier.description}
+        </p>
       </div>
-      <div>
-        <h4 className="mb-4 font-medium">What's Included:</h4>
-        <ul className="space-y-2">
-          {service.items.map((item, index) => (
+
+      {/* Divider */}
+      <div className={cn(
+        "h-px w-full mb-6",
+        tier.featured ? "bg-gold/30" : "bg-gold/10"
+      )} />
+
+      {/* Includes list */}
+      <div className="flex-1">
+        <p className="text-xs font-semibold uppercase tracking-wider text-gold mb-4">
+          What's Included
+        </p>
+        <ul className="space-y-3">
+          {tier.includes.map((item, i) => (
             <motion.li
-              key={index}
-              className="flex items-start gap-2"
+              key={item}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ duration: 0.3, delay: 0.3 + i * 0.03 }}
+              className="flex items-start gap-3"
             >
-              <div className="flex h-5 w-5 items-center justify-center shrink-0 mt-0.5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-primary"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <div className={cn(
+                "flex-shrink-0 mt-0.5 flex items-center justify-center w-5 h-5 rounded-full",
+                tier.featured ? "bg-gold/20" : "bg-gold/10"
+              )}>
+                <Check className={cn(
+                  "h-3 w-3",
+                  tier.featured ? "text-gold" : "text-gold/70"
+                )} />
               </div>
-              <span>{item}</span>
+              <span className="text-sm text-foreground/80">{item}</span>
             </motion.li>
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
+  )
+}
+
+export function ServicesSection() {
+  return (
+    <section className="py-16 md:py-24 bg-background dark:bg-black">
+      <div className="container">
+        {/* Section Header */}
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold tracking-tight">
+            Services <span className="text-gold">Offered</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            From intimate ceremonies to grand celebrations, Allan brings artistry and professionalism to every occasion.
+          </p>
+        </div>
+
+        {/* Pricing Comparison Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+          {serviceTiers.map((tier, index) => (
+            <ServiceCard key={tier.name} tier={tier} index={index} />
+          ))}
+        </div>
+
+        {/* Bottom Note */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-12 text-center"
+        >
+          <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+            Every event is unique. Contact Allan to discuss your specific needs and receive a personalized quote.
+          </p>
+        </motion.div>
+      </div>
+    </section>
   )
 }

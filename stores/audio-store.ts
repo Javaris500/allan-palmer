@@ -135,7 +135,7 @@ export const useAudioStore = create<AudioState>((set, get) => ({
         // Shuffle to next song
         const currentIndex = backgroundMusicUrls.indexOf(bgAudio.src)
         const nextIndex = (currentIndex + 1) % backgroundMusicUrls.length
-        bgAudio.src = backgroundMusicUrls[nextIndex]
+        bgAudio.src = backgroundMusicUrls[nextIndex] ?? backgroundMusicUrls[0] ?? ""
         bgAudio.play()
       })
 

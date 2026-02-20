@@ -38,7 +38,7 @@ export function Footer() {
                 <Youtube className="h-5 w-5" />
               </a>
               <a
-                href={CONTACT_INFO.socialMedia.facebook}
+                href="https://www.facebook.com/"
                 className="flex h-5 w-5 items-center justify-center text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Follow Allan Palmer on Facebook"
                 target="_blank"

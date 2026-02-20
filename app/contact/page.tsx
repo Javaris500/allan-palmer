@@ -1,6 +1,15 @@
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import { PageTransition } from "@/components/page-transition"
-import { ContactInfo } from "@/components/contact/contact-info"
+
+const ContactFormSection = dynamic(
+  () => import("@/components/contact/contact-form-section").then(mod => ({ default: mod.ContactFormSection })),
+  { ssr: true }
+)
+const ContactInfo = dynamic(
+  () => import("@/components/contact/contact-info").then(mod => ({ default: mod.ContactInfo })),
+  { ssr: true }
+)
 
 export const metadata: Metadata = {
   title: "Contact Allan Palmer | Professional Violinist",
@@ -27,25 +36,23 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <PageTransition>
-      <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="py-16 md:py-24 bg-gradient-to-br from-primary/30 to-background">
-          <div className="container">
-            <div className="text-center mb-16">
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                Contact Allan
-              </h1>
-              <p className="mx-auto max-w-3xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Ready to discuss your musical needs? Get in touch to book Allan for your special event or inquire about
-                violin lessons.
-              </p>
+      {/* Bento Grid Contact Form & Info */}
+      <section className="py-16 md:py-24 bg-background dark:bg-black">
+        <div className="container">
+          {/* Asymmetric Bento Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
+            {/* Contact Info — shown first on mobile for quick access */}
+            <div className="lg:col-span-2 lg:order-2 space-y-6">
+              <ContactInfo />
+            </div>
+
+            {/* Contact Form — takes 3 columns on desktop */}
+            <div className="lg:col-span-3 lg:order-1">
+              <ContactFormSection />
             </div>
           </div>
-        </section>
-
-        {/* Contact Info */}
-        <ContactInfo />
-      </div>
+        </div>
+      </section>
     </PageTransition>
   )
 }

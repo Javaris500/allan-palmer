@@ -16,7 +16,7 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(optio
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setIsVisible(true)
           if (triggerOnce && ref.current) {
             observer.unobserve(ref.current)

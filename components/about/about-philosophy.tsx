@@ -35,7 +35,7 @@ export function AboutPhilosophy() {
   ]
 
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-16 md:py-24 bg-background dark:bg-black">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <AnimatedElement variant="fade-right">
@@ -91,8 +91,8 @@ export function AboutPhilosophy() {
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary/10">
-                    <point.icon className="h-5 w-5 text-primary" />
+                  <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary/10 dark:bg-gold/10">
+                    <point.icon className="h-5 w-5 text-primary dark:text-gold" />
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">{point.title}</h3>

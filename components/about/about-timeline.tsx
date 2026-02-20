@@ -59,7 +59,7 @@ const timelineEvents = [
 
 export function AboutTimeline() {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-muted/30 to-background">
+    <section className="py-16 md:py-24 bg-background dark:bg-black">
       <div className="container">
         <AnimatedElement variant="fade-up" className="text-center mb-16">
           <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl mb-4">Musical Journey</h2>
@@ -71,7 +71,7 @@ export function AboutTimeline() {
 
         <StaggeredContainer className="relative max-w-4xl mx-auto">
           {/* Timeline line */}
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/20 via-primary to-primary/20 transform md:-translate-x-0.5" />
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[2px] bg-gold/30 dark:bg-gold/20 transform md:-translate-x-0.5" />
 
           {timelineEvents.map((event, index) => {
             const IconComponent = event.icon
@@ -81,27 +81,27 @@ export function AboutTimeline() {
               <StaggeredItem key={event.year}>
                 <div className={`relative flex items-center mb-12 ${isEven ? "md:flex-row" : "md:flex-row-reverse"}`}>
                   {/* Timeline dot */}
-                  <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background shadow-lg transform md:-translate-x-2 z-10" />
+                  <div className="absolute left-8 md:left-1/2 w-5 h-5 bg-gold rounded-full border-4 border-background dark:border-black shadow-lg shadow-gold/20 transform md:-translate-x-2.5 z-20" />
 
                   {/* Content card */}
-                  <div className={`flex-1 ml-16 md:ml-0 ${isEven ? "md:pr-8" : "md:pl-8"}`}>
-                    <Card className="group hover:shadow-lg transition-all duration-300 border-none bg-background/60 backdrop-blur-sm">
+                  <div className={`flex-1 ml-16 md:ml-0 ${isEven ? "md:pr-12" : "md:pl-12"}`}>
+                    <Card className="relative z-10 group hover:shadow-2xl hover:shadow-gold/5 transition-all duration-300 border-2 border-gold/20 bg-white dark:bg-black hover:border-gold/40">
                       <CardContent className="p-6">
                         <div className="flex items-start gap-4">
-                          <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                            <IconComponent className="w-6 h-6 text-primary" />
+                          <div className="flex-shrink-0 w-12 h-12 bg-gold/10 dark:bg-gold/15 rounded-full flex items-center justify-center group-hover:bg-gold/20 dark:group-hover:bg-gold/25 transition-colors duration-300 border border-gold/20">
+                            <IconComponent className="w-6 h-6 text-gold" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <span className="text-2xl font-bold text-primary">{event.year}</span>
-                              <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                              <span className="text-2xl font-bold text-gold">{event.year}</span>
+                              <span className="text-xs font-medium text-foreground/70 dark:text-foreground/60 bg-gold/10 dark:bg-gold/20 px-3 py-1 rounded-full border border-gold/20">
                                 {event.age}
                               </span>
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors duration-300">
+                            <h3 className="text-xl font-bold mb-2 text-foreground dark:text-white group-hover:text-gold transition-colors duration-300">
                               {event.title}
                             </h3>
-                            <p className="text-muted-foreground leading-relaxed">{event.description}</p>
+                            <p className="text-foreground/70 dark:text-foreground/80 leading-relaxed">{event.description}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -114,7 +114,7 @@ export function AboutTimeline() {
         </StaggeredContainer>
 
         <AnimatedElement variant="fade-up" className="text-center mt-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary font-medium">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-gold/10 rounded-full text-primary dark:text-gold font-medium">
             <Music className="w-4 h-4" />
             <span>The journey continues...</span>
           </div>

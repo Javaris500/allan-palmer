@@ -1,9 +1,23 @@
 import type { Metadata } from "next"
-import { HeroSection } from "@/components/hero-section"
-import { ServicesSection } from "@/components/services-section"
-import { TestimonialsSection } from "@/components/testimonials-section"
-import { SongsShowcase } from "@/components/songs-showcase"
+import dynamic from "next/dynamic"
+import { HeroSection } from "@/components/hero-section-v2"
 import { Suspense } from "react"
+
+// Dynamic imports for below-the-fold content - reduces initial JS bundle
+const SplitScreenTestimonials = dynamic(
+  () => import("@/components/split-screen-testimonials").then(mod => ({ default: mod.SplitScreenTestimonials })),
+  { ssr: true }
+)
+
+const TestimonialsSection = dynamic(
+  () => import("@/components/testimonials-section").then(mod => ({ default: mod.TestimonialsSection })),
+  { ssr: true }
+)
+
+const SongsShowcase = dynamic(
+  () => import("@/components/songs-showcase").then(mod => ({ default: mod.SongsShowcase })),
+  { ssr: true }
+)
 
 export const metadata: Metadata = {
   title: "Professional Violinist for Weddings & Events in Winnipeg",
@@ -30,7 +44,6 @@ export const metadata: Metadata = {
   },
 }
 
-// Loading components for each section
 function SectionLoading() {
   return (
     <div className="py-16 md:py-24">
@@ -52,18 +65,20 @@ function SectionLoading() {
 export default function Home() {
   return (
     <>
-      {/* Hero loads immediately - no suspense needed */}
+      {/* Hero Section with Portrait Video */}
       <HeroSection />
 
-      {/* Lazy load other sections */}
+      {/* Split-Screen Testimonials */}
       <Suspense fallback={<SectionLoading />}>
-        <ServicesSection />
+        <SplitScreenTestimonials />
       </Suspense>
 
+      {/* Client Reviews Carousel */}
       <Suspense fallback={<SectionLoading />}>
         <TestimonialsSection />
       </Suspense>
 
+      {/* Songs Showcase */}
       <Suspense fallback={<SectionLoading />}>
         <SongsShowcase />
       </Suspense>

@@ -2,16 +2,21 @@
 import { useState, useEffect } from "react"
 import { useBackgroundMusic } from "@/contexts/background-music-context"
 import { useAudioStore } from "@/stores/audio-store"
-import { AnimatedElement } from "@/components/animated-element"
-import { StaggeredContainer, StaggeredItem } from "@/components/staggered-container"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Music, Calendar, ListMusic, Play, Pause, Volume2 } from "lucide-react"
-import { motion } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 
-export function SongsShowcase() {
+interface SongsShowcaseProps {
+  sectionTitle?: string
+  sectionDescription?: string
+}
+
+export function SongsShowcase({
+  sectionTitle = "Featured Performances",
+  sectionDescription = "Experience Allan's artistry through these beautiful violin renditions of beloved classics.",
+}: SongsShowcaseProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null)
   const { muteForOtherAudio, unmuteAfterOtherAudio, setStopFeaturedPerformances } = useBackgroundMusic()
   const { currentlyPlaying, isPlaying, playAudio, pauseAudio, stopAudio } = useAudioStore()
@@ -121,26 +126,21 @@ export function SongsShowcase() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-muted/30 py-16 md:py-24 dark:bg-muted/10">
-      <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-background/80" />
+    <section className="relative overflow-hidden bg-background py-16 md:py-24">
       <div className="container relative">
-        <AnimatedElement variant="fade-up" className="text-center">
+        <div className="text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-6">
             <Music className="h-8 w-8 text-primary" />
           </div>
-          <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">Featured Performances</h2>
+          <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">{sectionTitle}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Experience Allan's artistry through these beautiful violin renditions of beloved classics.
+            {sectionDescription}
           </p>
-        </AnimatedElement>
+        </div>
 
-        <AnimatedElement variant="fade-up">
+        <div>
           <div className="mx-auto mt-8 mb-12 max-w-2xl">
-            <motion.div
-              className="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-2xl"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-2xl hover:scale-[1.02] transition-transform duration-500">
               <Image
                 src="/allan-performance-professional.jpg"
                 alt="Allan Palmer performing violin in professional setting"
@@ -149,16 +149,15 @@ export function SongsShowcase() {
                 sizes="(max-width: 768px) 100vw, 66vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            </motion.div>
+            </div>
           </div>
-        </AnimatedElement>
+        </div>
 
-        <StaggeredContainer className="mx-auto mt-12 max-w-4xl" staggerDelay={0.1}>
+        <div className="mx-auto mt-12 max-w-4xl">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredSongs.map((song, index) => (
-              <StaggeredItem key={song.id}>
-                <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
-                  <Card className="group overflow-hidden border-none bg-background/80 backdrop-blur-sm transition-all duration-300 hover:bg-background/90 hover:shadow-xl dark:bg-background/60 dark:hover:bg-background/80">
+              <div key={song.id} className="hover:-translate-y-1 transition-transform duration-200">
+                <Card className="group overflow-hidden border-none bg-background/80 backdrop-blur-sm transition-all duration-300 hover:bg-background/90 hover:shadow-xl dark:bg-background/60 dark:hover:bg-background/80">
                     <div className="relative aspect-square overflow-hidden">
                       <Image
                         src={song.coverImage || "/placeholder.svg"}
@@ -175,13 +174,14 @@ export function SongsShowcase() {
                           className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm border-2 border-white/50"
                           onClick={() => togglePlayPause(song.id)}
                           disabled={isLoading === song.id}
+                          aria-label={currentlyPlaying === song.id && isPlaying ? `Pause ${song.title}` : `Play ${song.title}`}
                         >
                           {isLoading === song.id ? (
-                            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
                           ) : currentlyPlaying === song.id && isPlaying ? (
-                            <Pause className="w-6 h-6 text-white" />
+                            <Pause className="w-6 h-6 text-white" aria-hidden="true" />
                           ) : (
-                            <Play className="w-6 h-6 text-white ml-1" />
+                            <Play className="w-6 h-6 text-white ml-1" aria-hidden="true" />
                           )}
                         </Button>
                       </div>
@@ -237,13 +237,12 @@ export function SongsShowcase() {
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
-              </StaggeredItem>
+              </div>
             ))}
           </div>
-        </StaggeredContainer>
+        </div>
 
-        <AnimatedElement variant="fade-up" className="mt-12 text-center">
+        <div className="mt-12 text-center">
           <div className="mx-auto max-w-2xl rounded-lg bg-background/60 backdrop-blur-sm p-6 border border-border/50">
             <h3 className="text-lg font-semibold mb-2">Love what you hear?</h3>
             <p className="text-muted-foreground mb-4">
@@ -269,7 +268,7 @@ export function SongsShowcase() {
               </Button>
             </div>
           </div>
-        </AnimatedElement>
+        </div>
       </div>
     </section>
   )

@@ -6,11 +6,11 @@ export function rateLimit(identifier: string, limit = 5, windowMs = 60000) {
   const key = identifier
 
   // Clean up expired entries
-  for (const [k, v] of rateLimitMap.entries()) {
+  rateLimitMap.forEach((v, k) => {
     if (now > v.resetTime) {
       rateLimitMap.delete(k)
     }
-  }
+  })
 
   const current = rateLimitMap.get(key)
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export function AboutMedia() {
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-16 bg-background dark:bg-black">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -28,7 +28,7 @@ export function AboutMedia() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-card dark:bg-white/[0.03] rounded-lg shadow-lg overflow-hidden dark:border dark:border-gold/10">
             <div className="aspect-video bg-black relative">
               <iframe
                 src="https://www.youtube.com/embed/OmtV745R3fw"
@@ -47,7 +47,7 @@ export function AboutMedia() {
                     professional violin performance and music education.
                   </p>
                 </div>
-                <Button variant="outline" size="sm" asChild className="shrink-0 bg-transparent">
+                <Button variant="outline" size="sm" asChild className="shrink-0 bg-transparent dark:border-gold/30 dark:text-gold dark:hover:bg-gold/10">
                   <a
                     href="https://youtu.be/OmtV745R3fw?si=_59sexEQ5lv-I5Im"
                     target="_blank"

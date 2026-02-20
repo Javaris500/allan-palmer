@@ -2,13 +2,15 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
-import { Navigation } from "@/components/navigation"
+import { FloatingNav } from "@/components/floating-nav"
 import { SimpleFooter } from "@/components/simple-footer"
 import { ThemeProvider } from "@/components/theme-provider"
-import { BackToTop } from "@/components/back-to-top"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Suspense } from "react"
 import { BackgroundMusicProvider } from "@/contexts/background-music-context"
+import { AuthModalProvider } from "@/contexts/auth-modal-context"
+import { AuthModal } from "@/components/auth/auth-modal"
+import { SessionProvider } from "@/components/session-provider"
 
 // Optimized font loading
 const inter = Inter({
@@ -113,28 +115,42 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preconnect to external domains */}
+        {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://image.mux.com" />
+        <link rel="preconnect" href="https://stream.mux.com" />
         <link rel="dns-prefetch" href="https://stream.mux.com" />
 
-        {/* Preload critical resources */}
-        <link rel="preload" href="/images/hero-background-outdoor.jpeg" as="image" type="image/jpeg" />
+        {/* Prefetch critical navigation routes for faster page transitions */}
+        <link rel="prefetch" href="/about" as="document" />
+        <link rel="prefetch" href="/services" as="document" />
+        <link rel="prefetch" href="/contact" as="document" />
       </head>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <ErrorBoundary>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <SessionProvider>
             <BackgroundMusicProvider>
-              <div className="flex min-h-screen flex-col">
-                <Navigation />
-                <Suspense fallback={<PageLoading />}>
-                  <main className="flex-1">{children}</main>
-                </Suspense>
-                <SimpleFooter />
-                <BackToTop />
-              </div>
+              <AuthModalProvider>
+                {/* Skip to content link for accessibility */}
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none"
+                >
+                  Skip to main content
+                </a>
+                <div className="flex min-h-screen flex-col">
+                  <Suspense fallback={<PageLoading />}>
+                    <main id="main-content" className="flex-1">{children}</main>
+                  </Suspense>
+                  <SimpleFooter />
+                  <FloatingNav />
+                </div>
+                <AuthModal />
+              </AuthModalProvider>
             </BackgroundMusicProvider>
+            </SessionProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

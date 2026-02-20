@@ -24,7 +24,7 @@ const OptimizedVideoThumbnail = memo<OptimizedVideoThumbnailProps>(function Opti
   const [isLoading, setIsLoading] = useState(true)
 
   const config = getVideoConfig(playbackId)
-  const thumbnails = generateResponsiveThumbnails(playbackId, config?.optimalTime || 12)
+  const thumbnails = generateResponsiveThumbnails(playbackId, config?.thumbnailTime || 12)
   const fallbackData = generateThumbnailWithFallbacks(playbackId)
 
   const handleImageError = useCallback(() => {

@@ -44,7 +44,7 @@ export function BackgroundMusicProvider({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      audioRef.current = new Audio(songs[currentSongIndex].src)
+      audioRef.current = new Audio(songs[currentSongIndex]!.src)
       audioRef.current.volume = volume
       audioRef.current.muted = isMuted
       audioRef.current.loop = false
@@ -70,7 +70,7 @@ export function BackgroundMusicProvider({ children }: { children: React.ReactNod
     if (audioRef.current) {
       const wasPlaying = isPlaying
       audioRef.current.pause()
-      audioRef.current.src = songs[currentSongIndex].src
+      audioRef.current.src = songs[currentSongIndex]!.src
       audioRef.current.load()
 
       if (wasPlaying && !isMuted) {
@@ -151,7 +151,7 @@ export function BackgroundMusicProvider({ children }: { children: React.ReactNod
       value={{
         isPlaying,
         isMuted,
-        currentSong: songs[currentSongIndex].title,
+        currentSong: songs[currentSongIndex]?.title ?? "",
         togglePlay,
         toggleMute,
         volume,

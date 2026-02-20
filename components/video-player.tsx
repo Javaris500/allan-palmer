@@ -104,7 +104,6 @@ const VideoPlayer = memo<VideoPlayerProps>(function VideoPlayer({
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           quality={90}
           onError={handleThumbnailError}
-          onLoad={() => console.log("Thumbnail loaded successfully for:", playbackId)}
         />
 
         {/* Overlay Gradient */}
@@ -139,11 +138,17 @@ const VideoPlayer = memo<VideoPlayerProps>(function VideoPlayer({
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={title ? `Playing: ${title}` : "Video player"}
+        >
           <div className="relative w-full max-w-4xl">
             <button
               onClick={handleCloseModal}
               className="absolute -top-12 right-0 text-white hover:text-gray-300 text-xl font-bold z-10"
+              aria-label="Close video player"
             >
               ✕ Close
             </button>

@@ -40,8 +40,8 @@ export function Lightbox({ images, currentIndex, onClose, onNavigate }: Lightbox
           text: images[currentIndex]?.description || "Gallery image from Allan Palmer",
           url: window.location.href,
         })
-      } catch (error) {
-        console.log("Error sharing:", error)
+      } catch {
+        // Share cancelled or not supported - silently ignore
       }
     }
   }
