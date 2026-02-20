@@ -51,7 +51,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma as never),
   session: {
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60, // 7 days
