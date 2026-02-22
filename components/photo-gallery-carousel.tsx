@@ -162,6 +162,55 @@ const photos = [
     title: "Park Wedding Celebration",
     description: "Elegant outdoor park wedding celebration with professional violin accompaniment.",
   },
+  {
+    id: 24,
+    src: "/images/gallery/outdoor-ceremony-golden-hour.jpeg",
+    alt: "Allan Palmer performing for seated wedding guests at golden hour outdoor ceremony",
+    title: "Golden Hour Ceremony",
+    description: "Serenading guests during a stunning outdoor wedding ceremony at golden hour.",
+  },
+  {
+    id: 25,
+    src: "/images/gallery/autumn-garden-wedding.jpeg",
+    alt: "Allan Palmer with bride and groom in an autumn garden setting",
+    title: "Autumn Garden Wedding",
+    description: "A beautiful autumn wedding celebration surrounded by rich fall foliage and warm colours.",
+  },
+  {
+    id: 26,
+    src: "/images/gallery/floral-arch-ceremony.jpeg",
+    alt: "Allan Palmer performing under a floral arch at an outdoor wedding ceremony",
+    title: "Floral Arch Performance",
+    description: "Performing beneath an elegant floral arch under a clear blue sky.",
+  },
+  {
+    id: 27,
+    src: "/images/gallery/autumn-couple-portrait.jpeg",
+    alt: "Allan Palmer with bride and groom among autumn foliage",
+    title: "Fall Wedding Portrait",
+    description: "Capturing a joyful moment with the happy couple amid vibrant autumn colours.",
+  },
+  {
+    id: 28,
+    src: "/images/gallery/urban-venue-portrait.jpeg",
+    alt: "Allan Palmer playing violin at an outdoor urban venue with birch trees",
+    title: "Urban Garden Performance",
+    description: "Elegant outdoor performance at a modern urban venue surrounded by birch trees.",
+  },
+  {
+    id: 29,
+    src: "/images/gallery/ceremony-aisle-performance.jpeg",
+    alt: "Allan Palmer walking the aisle performing violin at an outdoor wedding ceremony",
+    title: "Aisle Processional",
+    description: "Walking the aisle and serenading guests during a memorable outdoor wedding processional.",
+  },
+  {
+    id: 30,
+    src: "/images/gallery/pond-wedding-portrait.jpeg",
+    alt: "Allan Palmer with bride and groom beside a lily pad pond",
+    title: "Pond Side Wedding",
+    description: "A lovely post-ceremony portrait with the newlyweds beside a serene lily pad pond.",
+  },
 ]
 
 export function PhotoGalleryCarousel() {
