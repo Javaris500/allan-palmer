@@ -27,6 +27,7 @@ export function HeroSection() {
   const [isMuted, setIsMuted] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
+  const [isPreloaded, setIsPreloaded] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
@@ -43,10 +44,71 @@ export function HeroSection() {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  // Initialize HLS
+  // Pre-initialize HLS on mount so video is ready before user clicks
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    let cancelled = false
+
+    async function preload() {
+      if (!video) return
+
+      // Safari / iOS native HLS
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = hlsUrl
+        video.preload = "auto"
+        if (!cancelled) setIsPreloaded(true)
+        return
+      }
+
+      try {
+        const Hls = (await import("hls.js")).default
+        if (cancelled) return
+
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: false,
+            startLevel: -1,
+            maxBufferLength: 60,
+            maxMaxBufferLength: 120,
+            abrEwmaDefaultEstimate: 5000000,
+          })
+
+          hls.loadSource(hlsUrl)
+          hls.attachMedia(video!)
+
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            if (!cancelled) setIsPreloaded(true)
+          })
+
+          hls.on(Hls.Events.ERROR, (_: any, data: any) => {
+            if (data.fatal) console.warn("HLS preload error:", data.details)
+          })
+
+          hlsRef.current = hls
+        }
+      } catch (err) {
+        console.warn("HLS preload failed:", err)
+      }
+    }
+
+    preload()
+
+    return () => {
+      cancelled = true
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Initialize HLS (used as fallback if preload didn't complete)
   const initializeVideo = useCallback(async () => {
     const video = videoRef.current
     if (!video) return false
+
+    // Already initialized by preload
+    if (hlsRef.current || video.src) return true
 
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = hlsUrl
@@ -57,13 +119,10 @@ export function HeroSection() {
       const Hls = (await import("hls.js")).default
 
       if (Hls.isSupported()) {
-        if (hlsRef.current) hlsRef.current.destroy()
-
         const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: false,
           startLevel: -1,
-          capLevelToPlayerSize: false,
           maxBufferLength: 60,
           maxMaxBufferLength: 120,
           abrEwmaDefaultEstimate: 5000000,
@@ -161,12 +220,15 @@ export function HeroSection() {
 
     if (!hasStarted) {
       setHasStarted(true)
-      setIsLoading(true)
-      const success = await initializeVideo()
-      if (!success) {
-        setIsLoading(false)
-        setHasStarted(false)
-        return
+      // If preload already set up HLS, just play immediately
+      if (!isPreloaded) {
+        setIsLoading(true)
+        const success = await initializeVideo()
+        if (!success) {
+          setIsLoading(false)
+          setHasStarted(false)
+          return
+        }
       }
     }
 
@@ -312,7 +374,7 @@ export function HeroSection() {
                 ref={videoRef}
                 muted={isMuted}
                 playsInline
-                preload="none"
+                preload="auto"
                 className="absolute inset-0 w-full h-full object-cover"
               />
 
