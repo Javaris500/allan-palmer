@@ -48,7 +48,7 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
     }
 
     const config = thumbnailConfigs[id] || { time: 10, width: 854, height: 480 }
-    return `https://image.mux.com/${id}/thumbnail.png?width=${config.width}&height=${config.height}&time=${config.time}&fit_mode=pad`
+    return `https://image.mux.com/${id}/thumbnail.png?width=${config.width}&height=${config.height}&time=${config.time}&fit_mode=smartcrop`
   }
 
   const thumbnailUrl = getThumbnailUrl(playbackId)

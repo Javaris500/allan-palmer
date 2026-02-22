@@ -146,10 +146,10 @@ export function BookingSuccess({
           Back to Home
         </Link>
         <Link
-          href="/services"
+          href={`/my-bookings?email=${encodeURIComponent(email)}`}
           className="inline-flex items-center gap-2 bg-muted text-foreground font-medium px-6 py-2.5 rounded-full text-sm hover:bg-muted/80 transition-colors active:scale-[0.98]"
         >
-          View Services
+          View My Bookings
         </Link>
       </motion.div>
     </motion.div>

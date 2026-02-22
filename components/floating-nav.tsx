@@ -4,14 +4,13 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, User, Music, Film, Calendar, ArrowUp } from "lucide-react"
+import { Menu, X, Home, User, Music, Film, Calendar, ClipboardList, ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { BackgroundMusicToggle } from "@/components/background-music-toggle"
 import { cn } from "@/lib/utils"
 import { NAVIGATION_ITEMS } from "@/lib/constants"
 
-// Map icons to navigation items
 const navIcons: Record<string, React.ElementType> = {
   "/": Home,
   "/about": User,
@@ -19,6 +18,7 @@ const navIcons: Record<string, React.ElementType> = {
   "/gallery": Film,
   "/booking": Calendar,
   "/services": Calendar,
+  "/my-bookings": ClipboardList,
 }
 
 const navItems: { href: string; label: string; icon: React.ElementType; highlight?: boolean }[] = [
@@ -27,6 +27,7 @@ const navItems: { href: string; label: string; icon: React.ElementType; highligh
     label: item.label as string,
     icon: navIcons[item.href] || Home,
   })),
+  { href: "/my-bookings", label: "My Bookings", icon: ClipboardList },
   { href: "/services", label: "Services", icon: Calendar, highlight: true },
 ]
 
@@ -36,29 +37,23 @@ export function FloatingNav() {
   const [isVisible, setIsVisible] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
 
-  // Show floating nav after scrolling past hero (100vh) on homepage, 
-  // always visible on other pages
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY
-      // On homepage, show after scrolling 100px. On other pages, always show.
       const isHomepage = pathname === "/"
       setIsVisible(isHomepage ? scrolled > 100 : true)
-      // Show scroll-to-top after 500px
       setShowScrollTop(scrolled > 500)
     }
 
     window.addEventListener("scroll", handleScroll)
-    handleScroll() // Check initial state
+    handleScroll()
     return () => window.removeEventListener("scroll", handleScroll)
   }, [pathname])
 
-  // Close menu when route changes
   useEffect(() => {
     setIsOpen(false)
   }, [pathname])
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
@@ -75,14 +70,12 @@ export function FloatingNav() {
     setIsOpen(false)
   }
 
-  // Hide floating nav on booking page
   if (pathname?.startsWith("/booking")) {
     return null
   }
 
   return (
     <>
-      {/* Backdrop when menu is open */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -95,7 +88,6 @@ export function FloatingNav() {
         )}
       </AnimatePresence>
 
-      {/* Floating Navigation */}
       <AnimatePresence>
         {(isVisible || isOpen) && (
           <motion.div
@@ -105,7 +97,6 @@ export function FloatingNav() {
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Expanded Menu */}
             <AnimatePresence>
               {isOpen && (
                 <motion.div
@@ -115,7 +106,6 @@ export function FloatingNav() {
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {/* Navigation Links */}
                   <motion.div
                     className="bg-background/95 backdrop-blur-md border border-border rounded-2xl p-3 shadow-lg"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -157,17 +147,14 @@ export function FloatingNav() {
                       })}
                     </nav>
 
-                    {/* Divider */}
                     <div className="h-px bg-border my-2" />
 
-                    {/* Utilities Row */}
                     <div className="flex items-center justify-between px-2">
                       <div className="flex items-center gap-1">
                         <BackgroundMusicToggle />
                         <ThemeToggle variant="icon" />
                       </div>
-                      
-                      {/* Scroll to Top */}
+
                       {showScrollTop && (
                         <Button
                           variant="ghost"
@@ -185,9 +172,7 @@ export function FloatingNav() {
               )}
             </AnimatePresence>
 
-            {/* Bottom row: persistent toggles + FAB */}
             <div className="flex items-center gap-2">
-              {/* Persistent utility toggles (visible when menu is closed) */}
               <AnimatePresence>
                 {!isOpen && (
                   <motion.div
@@ -203,11 +188,7 @@ export function FloatingNav() {
                 )}
               </AnimatePresence>
 
-              {/* Main Toggle Button */}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   onClick={() => setIsOpen(!isOpen)}
                   size="icon"
@@ -220,31 +201,31 @@ export function FloatingNav() {
                   aria-label={isOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isOpen}
                 >
-                <AnimatePresence mode="wait">
-                  {isOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <X className="h-6 w-6" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Menu className="h-6 w-6" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Button>
-            </motion.div>
+                  <AnimatePresence mode="wait">
+                    {isOpen ? (
+                      <motion.div
+                        key="close"
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <X className="h-6 w-6" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="menu"
+                        initial={{ rotate: 90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: -90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Menu className="h-6 w-6" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
         )}

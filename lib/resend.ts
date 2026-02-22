@@ -13,7 +13,7 @@ const LOGO_URL = `${SITE_URL}/images/allan-logo.png`
 // Single source of truth for header, footer, and styling. Every email
 // passes its body through this wrapper so the brand is consistent.
 
-function emailLayout({
+export function emailLayout({
   preheader,
   body,
 }: {
@@ -117,7 +117,7 @@ function emailLayout({
 }
 
 // Helper: renders a key-value detail row inside a details card
-function detailRow(label: string, value: string, isGold = false): string {
+export function detailRow(label: string, value: string, isGold = false): string {
   return `<tr>
     <td style="color:#888;padding:10px 12px;font-size:14px;border-bottom:1px solid #1a1a1a;white-space:nowrap;">${label}</td>
     <td style="color:${isGold ? "#d4a843" : "#e5e5e5"};padding:10px 12px;font-size:14px;border-bottom:1px solid #1a1a1a;text-align:right;">${value}</td>
@@ -125,14 +125,14 @@ function detailRow(label: string, value: string, isGold = false): string {
 }
 
 // Helper: wraps rows in a styled details card
-function detailsCard(rows: string): string {
+export function detailsCard(rows: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:24px 0;">
     ${rows}
   </table>`
 }
 
 // Helper: gold CTA button
-function ctaButton(text: string, href: string): string {
+export function ctaButton(text: string, href: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px auto;">
     <tr>
       <td align="center" style="background-color:#d4a843;border-radius:999px;">
@@ -145,7 +145,7 @@ function ctaButton(text: string, href: string): string {
 }
 
 // Helper: muted info block (tip, note, etc.)
-function infoBlock(title: string, content: string): string {
+export function infoBlock(title: string, content: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#141209,#0d0d0d);border:1px solid rgba(212,168,67,0.15);border-radius:12px;margin:24px 0;">
     <tr>
       <td style="padding:20px 24px;">

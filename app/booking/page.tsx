@@ -1,51 +1,26 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { useAuthModal } from "@/contexts/auth-modal-context"
 import { useBookingStore } from "@/hooks/use-booking-store"
 import { motion } from "framer-motion"
 import { Calendar } from "lucide-react"
 import { BookingChat } from "@/components/booking/booking-chat"
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Booking Page
+// Booking Page — authless
+// Phase 0: Leia introduces herself
+// After Get Started: hands off to the booking chat flow
 // ═══════════════════════════════════════════════════════════════════════════
-// Phase 0: Leia introduces herself with auth gate
-// After auth: hands off to the booking chat flow
 
 export default function BookingPage() {
-  const { data: session, status } = useSession()
-  const { openAuthModal } = useAuthModal()
   const store = useBookingStore()
 
-  const isAuthenticated = !!session?.user
-  const userName = session?.user?.name || ""
-  const userEmail = session?.user?.email || ""
-
-  // Still loading auth
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold border-t-transparent" />
-      </div>
-    )
+  // Already in the chat flow
+  if (store.currentPhase >= 1 && !store.completed) {
+    return <BookingChat userName="" userEmail="" />
   }
 
-  // ─── Authenticated: Show booking chat flow ─────────────────────────────
-  // (Phase 5 / completed redirects to /booking/success via the chat component)
-  if (isAuthenticated && store.currentPhase >= 1 && !store.completed) {
-    return <BookingChat userName={userName} userEmail={userEmail} />
-  }
-
-  // ─── Phase 0: Leia introduces herself ──────────────────────────────────
   const handleGetStarted = () => {
-    if (isAuthenticated) {
-      // Already signed in — jump to phase 1
-      store.goToPhase(1, 0)
-    } else {
-      // Open auth modal, then start
-      openAuthModal()
-    }
+    store.goToPhase(1, 0)
   }
 
   return (
@@ -66,7 +41,6 @@ export default function BookingPage() {
           <span className="text-2xl font-serif font-bold text-gold">L</span>
         </motion.div>
 
-        {/* Typewriter intro */}
         <motion.p
           className="text-sm font-medium text-gold mb-3"
           initial={{ opacity: 0 }}
@@ -94,7 +68,6 @@ export default function BookingPage() {
           I&rsquo;ll help you book Allan for yours.
         </motion.p>
 
-        {/* CTA */}
         <motion.button
           onClick={handleGetStarted}
           className="inline-flex items-center gap-2 bg-gold text-gray-950 font-semibold px-8 py-3.5 rounded-full text-base hover:bg-gold/90 transition-colors active:scale-[0.98]"
@@ -108,7 +81,6 @@ export default function BookingPage() {
           Get Started
         </motion.button>
       </motion.div>
-
     </div>
   )
 }

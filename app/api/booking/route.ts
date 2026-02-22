@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { randomUUID } from "crypto"
 import { rateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
 import { sendBookingReceived, sendNewBookingAlert } from "@/lib/resend"
 import { format, isAfter, addDays, startOfDay } from "date-fns"
 
@@ -105,17 +104,6 @@ export async function POST(request: NextRequest) {
     const rand = randomUUID().slice(0, 4).toUpperCase()
     const bookingRef = `BK-${dateStr}-${rand}`
 
-    // Require authentication
-    const session = await auth()
-    const userId = session?.user?.id
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Please sign in to submit a booking" },
-        { status: 401 },
-      )
-    }
-
     // Resolve event type display
     const eventType =
       bookingData.eventType === "other"
@@ -133,7 +121,6 @@ export async function POST(request: NextRequest) {
       await prisma.booking.create({
         data: {
           reference: bookingRef,
-          userId,
           status: "PENDING",
           eventType,
           eventDate,
