@@ -354,33 +354,11 @@ function ReelCard({
           </motion.div>
         </div>
 
-        {/* Category badge - top */}
-        {video.category && (
-          <div className="absolute top-3 left-3">
-            <span className="bg-black/60 backdrop-blur-sm text-white text-[10px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
-              <Tag className="h-2.5 w-2.5 text-gold" />
-              {video.category}
-            </span>
-          </div>
-        )}
-
         {/* Reel number indicator - top right */}
         <div className="absolute top-3 right-3">
           <span className="bg-gold/90 text-black text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">
             {index + 1}
           </span>
-        </div>
-
-        {/* Title & info - bottom */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-white text-sm font-semibold leading-tight line-clamp-2 mb-1">
-            {video.title.replace("Allan Palmer - ", "")}
-          </h3>
-          {video.description && (
-            <p className="text-white/60 text-[11px] leading-snug line-clamp-2">
-              {video.description.substring(0, 60)}...
-            </p>
-          )}
         </div>
 
         {/* Side action icons - right side like social media */}

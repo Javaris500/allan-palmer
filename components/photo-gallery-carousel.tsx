@@ -294,11 +294,7 @@ export function PhotoGalleryCarousel() {
                       sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
                     />
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h4 className="text-white font-medium text-sm md:text-base line-clamp-1">{photo.title}</h4>
-                        <p className="text-white/70 text-xs md:text-sm line-clamp-1 mt-1">{photo.description}</p>
-                      </div>
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300">
                       <div className="absolute top-3 right-3">
                         <div className="bg-gold/90 rounded-full p-2">
                           <Expand className="h-4 w-4 text-black" />
@@ -381,11 +377,6 @@ export function PhotoGalleryCarousel() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Image Info Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-              <h3 className="text-white font-semibold text-lg">{photos[currentIndex]?.title}</h3>
-              <p className="text-white/70 text-sm mt-1 line-clamp-1">{photos[currentIndex]?.description}</p>
-            </div>
 
             {/* Navigation arrows */}
             <Button
@@ -463,9 +454,6 @@ export function PhotoGalleryCarousel() {
                   {index === currentIndex && (
                     <div className="absolute inset-0 bg-gold/10" />
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
-                    <p className="text-white text-xs font-medium line-clamp-1">{photo.title}</p>
-                  </div>
                 </button>
               ))}
             </div>
