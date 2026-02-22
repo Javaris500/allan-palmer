@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion"
 import { Music, Heart, GraduationCap, Check, Star } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface ServiceTier {
@@ -143,6 +145,17 @@ function ServiceCard({ tier, index }: { tier: ServiceTier; index: number }) {
           ))}
         </ul>
       </div>
+
+      {/* Book Now CTA */}
+      <div className="mt-8">
+        <Button
+          asChild
+          variant={tier.featured ? "gold" : "outline"}
+          className="w-full"
+        >
+          <Link href="/booking">Book Now</Link>
+        </Button>
+      </div>
     </motion.div>
   )
 }
@@ -178,6 +191,9 @@ export function ServicesSection() {
           <p className="text-sm text-muted-foreground max-w-xl mx-auto">
             Every event is unique. Contact Allan to discuss your specific needs and receive a personalized quote.
           </p>
+          <Button asChild variant="gold" className="mt-6">
+            <Link href="/booking">Book Allan Now</Link>
+          </Button>
         </motion.div>
       </div>
     </section>

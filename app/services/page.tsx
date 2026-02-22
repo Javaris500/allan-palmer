@@ -1,7 +1,9 @@
 import React from "react"
 import type { Metadata } from "next"
 import dynamic from "next/dynamic"
+import Link from "next/link"
 import { PageTransition } from "@/components/page-transition"
+import { Button } from "@/components/ui/button"
 import { Briefcase } from "lucide-react"
 
 const ServicesComparisonChart = dynamic(
@@ -60,6 +62,11 @@ export default function ServicesPage() {
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               From wedding ceremonies to private events and one-on-one violin lessons — find the perfect musical experience for your occasion.
             </p>
+            <div className="mt-8">
+              <Button asChild variant="gold" size="lg">
+                <Link href="/booking">Book Now</Link>
+              </Button>
+            </div>
           </div>
         </section>
 
