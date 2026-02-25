@@ -164,9 +164,7 @@ export async function POST(request: NextRequest) {
       timePreference: bookingData.timePreference,
       duration,
     }).catch((err) => {
-      if (process.env.NODE_ENV === "development") {
-        console.error("Failed to send booking confirmation email:", err)
-      }
+      console.error("Failed to send booking confirmation email:", err)
     })
 
     sendNewBookingAlert({
@@ -185,9 +183,7 @@ export async function POST(request: NextRequest) {
       songRequests: bookingData.songRequests,
       specialRequirements: bookingData.specialRequirements,
     }).catch((err) => {
-      if (process.env.NODE_ENV === "development") {
-        console.error("Failed to send admin booking alert:", err)
-      }
+      console.error("Failed to send admin booking alert:", err)
     })
 
     return NextResponse.json({
