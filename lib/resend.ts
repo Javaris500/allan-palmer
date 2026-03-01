@@ -566,7 +566,72 @@ export async function sendPasswordResetEmail({
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 7. GENERIC ADMIN NOTIFICATION — for system alerts to Allan
+// 7. BOOKING INQUIRY — sent to Allan from the simple booking form
+// ═══════════════════════════════════════════════════════════════════════════
+
+export async function sendBookingInquiry({
+  name,
+  email,
+  phone,
+  eventType,
+  eventDate,
+  venue,
+  message,
+}: {
+  name: string
+  email: string
+  phone: string
+  eventType: string
+  eventDate: string
+  venue?: string
+  message?: string
+}) {
+  const rows =
+    detailRow("Name", name) +
+    detailRow("Email", email) +
+    detailRow("Phone", phone) +
+    detailRow("Event Type", eventType, true) +
+    detailRow("Event Date", eventDate) +
+    (venue ? detailRow("Venue", venue) : "")
+
+  const body = `
+    <h2 style="margin:0 0 4px;font-size:22px;color:#fff;font-weight:600;">
+      New Booking Inquiry
+    </h2>
+    <p style="margin:0 0 24px;font-size:14px;color:#d4a843;">
+      ${name} &mdash; ${eventType}
+    </p>
+
+    ${detailsCard(rows)}
+
+    ${message
+      ? `<p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">
+           Message
+         </p>
+         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:8px 0 24px;">
+           <tr><td style="padding:16px 20px;font-size:14px;color:#ccc;line-height:1.65;">${message}</td></tr>
+         </table>`
+      : ""}
+
+    <p style="margin:0;font-size:13px;color:#666;text-align:center;">
+      Reply directly to <a href="mailto:${email}" style="color:#d4a843;text-decoration:none;">${email}</a>
+      or call <strong style="color:#888;">${phone}</strong>
+    </p>`
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: ADMIN_EMAIL,
+    replyTo: email,
+    subject: `New Booking Inquiry: ${eventType} — ${name}`,
+    html: emailLayout({
+      preheader: `${name} wants to book you for a ${eventType.toLowerCase()} on ${eventDate}.`,
+      body,
+    }),
+  })
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 8. GENERIC ADMIN NOTIFICATION — for system alerts to Allan
 // ═══════════════════════════════════════════════════════════════════════════
 
 export async function sendAdminNotification({

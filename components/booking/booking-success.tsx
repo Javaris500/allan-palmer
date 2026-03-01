@@ -10,13 +10,12 @@ import Link from "next/link"
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface BookingSuccessProps {
-  bookingId: string
+  bookingId?: string
   email: string
   className?: string
 }
 
 export function BookingSuccess({
-  bookingId,
   email,
   className = "",
 }: BookingSuccessProps) {
@@ -101,16 +100,6 @@ export function BookingSuccess({
       >
         Your booking request has been submitted!
       </motion.h2>
-
-      <motion.p
-        className="text-sm text-muted-foreground mb-1"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.7 }}
-      >
-        Booking Reference:{" "}
-        <span className="font-mono text-foreground">{bookingId}</span>
-      </motion.p>
 
       <motion.p
         className="text-sm text-muted-foreground max-w-sm mb-2"
