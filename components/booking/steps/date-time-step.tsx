@@ -69,7 +69,7 @@ export function DateTimeStep({
           When is your event?
         </h3>
         <p className="text-muted-foreground">
-          Select a date at least 2 weeks in advance
+          Select your preferred date and time. Allan will confirm his availability.
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export function DateTimeStep({
         <div>
           <h4 className="font-medium mb-4 flex items-center gap-2">
             <Clock className="w-4 h-4" />
-            Preferred Time
+            Your Preferred Time
           </h4>
           <div className="space-y-3">
             {timeSlots.map((slot) => (

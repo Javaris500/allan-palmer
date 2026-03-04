@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Calendar, Send } from "lucide-react"
+import { CONTACT_INFO } from "@/lib/constants"
 
 const EVENT_TYPES = [
   "Wedding",
@@ -17,15 +17,13 @@ const EVENT_TYPES = [
 const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0]
 
 export default function BookingPage() {
-  const router = useRouter()
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState("")
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
     eventType: "",
     eventDate: "",
+    preferredTime: "",
     venue: "",
     message: "",
   })
@@ -38,32 +36,32 @@ export default function BookingPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitting(true)
-    setError("")
 
-    try {
-      const res = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      })
-      const data = await res.json()
+    const subject = `Booking Inquiry: ${form.eventType} — ${form.name}`
+    const bodyLines = [
+      `Hi Allan,`,
+      ``,
+      `I'd like to book you for an upcoming event. Here are the details:`,
+      ``,
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      `Phone: ${form.phone}`,
+      `Event Type: ${form.eventType}`,
+      `Event Date: ${form.eventDate}`,
+      form.preferredTime ? `Preferred Time: ${form.preferredTime}` : "",
+      form.venue ? `Venue: ${form.venue}` : "",
+      ``,
+      form.message ? `Additional Details:\n${form.message}` : "",
+      ``,
+      `Looking forward to hearing from you!`,
+    ]
+      .filter(Boolean)
+      .join("\n")
 
-      if (!res.ok) {
-        setError(data.error || "Something went wrong. Please try again.")
-        return
-      }
-
-      router.push(
-        `/booking/success?name=${encodeURIComponent(form.name)}&email=${encodeURIComponent(form.email)}`,
-      )
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
-      setSubmitting(false)
-    }
+    const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`
+    window.location.href = mailtoUrl
   }
 
   const inputClass =
@@ -83,7 +81,7 @@ export default function BookingPage() {
             Book Allan Palmer
           </h1>
           <p className="text-muted-foreground">
-            Fill out the form below and Allan will be in touch within 24 hours.
+            Fill out the form below to send Allan a booking request directly via email.
           </p>
         </div>
 
@@ -169,6 +167,24 @@ export default function BookingPage() {
 
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
+              Preferred Time
+            </label>
+            <select
+              name="preferredTime"
+              value={form.preferredTime}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="">Select a preferred time (optional)</option>
+              <option value="Morning (9 AM – 12 PM)">Morning (9 AM – 12 PM)</option>
+              <option value="Afternoon (12 PM – 5 PM)">Afternoon (12 PM – 5 PM)</option>
+              <option value="Evening (5 PM – 9 PM)">Evening (5 PM – 9 PM)</option>
+            </select>
+            <p className="text-xs text-muted-foreground mt-1">Allan will confirm his availability after receiving your request.</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
               Venue / Location
             </label>
             <input
@@ -194,15 +210,12 @@ export default function BookingPage() {
             />
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
-
           <button
             type="submit"
-            disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 bg-gold text-gray-950 font-semibold px-6 py-3 rounded-full text-base hover:bg-gold/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 bg-gold text-gray-950 font-semibold px-6 py-3 rounded-full text-base hover:bg-gold/90 transition-colors"
           >
             <Send className="h-4 w-4" />
-            {submitting ? "Sending..." : "Send Booking Request"}
+            Send Booking Request
           </button>
         </form>
       </motion.div>

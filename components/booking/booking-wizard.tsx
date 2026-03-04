@@ -10,6 +10,7 @@ import { EventDetailsStep } from "./steps/event-details-step"
 import { ContactInfoStep } from "./steps/contact-info-step"
 import { ReviewConfirmStep } from "./steps/review-confirm-step"
 import { BookingData, initialBookingData } from "./multi-step-booking-form"
+import { CONTACT_INFO } from "@/lib/constants"
 
 const steps = [
   { id: "service", title: "Service", description: "Choose your service" },
@@ -66,28 +67,42 @@ export function BookingWizard() {
     }
   }, [currentStep])
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true)
-    
-    try {
-      // Here you would send the booking data to your backend
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bookingData),
-      })
-      
-      if (!response.ok) {
-        throw new Error("Booking submission failed")
-      }
-      
-      setIsComplete(true)
-    } catch (error) {
-      console.error("Booking error:", error)
-      // You could add error handling UI here
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleSubmit = () => {
+    const eventDate = bookingData.date
+      ? bookingData.date.toLocaleDateString()
+      : "Not specified"
+
+    const subject = `Booking Inquiry: ${bookingData.service || "Event"} — ${bookingData.name || "Guest"}`
+    const bodyLines = [
+      `Hi Allan,`,
+      ``,
+      `I'd like to book you for an upcoming event. Here are the details:`,
+      ``,
+      `Name: ${bookingData.name || ""}`,
+      `Email: ${bookingData.email || ""}`,
+      `Phone: ${bookingData.phone || ""}`,
+      `Service: ${bookingData.service || ""}`,
+      bookingData.serviceType ? `Service Type: ${bookingData.serviceType}` : "",
+      `Date: ${eventDate}`,
+      bookingData.timeSlot ? `Time: ${bookingData.timeSlot}` : "",
+      bookingData.location ? `Location: ${bookingData.location}` : "",
+      bookingData.numberOfAttendees
+        ? `Number of Attendees: ${bookingData.numberOfAttendees}`
+        : "",
+      ``,
+      bookingData.message ? `Message:\n${bookingData.message}` : "",
+      bookingData.specialRequests
+        ? `Special Requests:\n${bookingData.specialRequests}`
+        : "",
+      ``,
+      `Looking forward to hearing from you!`,
+    ]
+      .filter(Boolean)
+      .join("\n")
+
+    const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`
+    window.location.href = mailtoUrl
+    setIsComplete(true)
   }
 
   const resetWizard = () => {
