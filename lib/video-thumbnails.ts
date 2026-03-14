@@ -1,10 +1,10 @@
 export interface VideoConfig {
-  playbackId: string
-  title: string
-  description: string
-  duration?: string
-  category?: string
-  thumbnailTime?: number
+  playbackId: string;
+  title: string;
+  description: string;
+  duration?: string;
+  category?: string;
+  thumbnailTime?: number;
 }
 
 const videoConfigs: VideoConfig[] = [
@@ -248,59 +248,70 @@ const videoConfigs: VideoConfig[] = [
     category: "Performance",
     thumbnailTime: 8,
   },
-]
+  {
+    playbackId: "5uAESLK5W8TgWnj102XvCCOhYIPANvA8Fwgh02k0255rYc",
+    title: "Performance",
+    description: "",
+    category: "Performance",
+  },
+];
 
 export function getVideoConfig(playbackId: string): VideoConfig | undefined {
-  return videoConfigs.find((config) => config.playbackId === playbackId)
+  return videoConfigs.find((config) => config.playbackId === playbackId);
 }
 
 export function getAllVideoConfigs(): VideoConfig[] {
-  return videoConfigs
+  return videoConfigs;
 }
 
 export function getVideosByCategory(category: string): VideoConfig[] {
-  return videoConfigs.filter((config) => config.category === category)
+  return videoConfigs.filter((config) => config.category === category);
 }
 
 export interface ResponsiveThumbnails {
-  small: string
-  medium: string
-  large: string
-  xlarge: string
+  small: string;
+  medium: string;
+  large: string;
+  xlarge: string;
 }
 
 export interface ThumbnailWithFallbacks {
-  primary: string
-  fallbacks: string[]
+  primary: string;
+  fallbacks: string[];
 }
 
-export function generateResponsiveThumbnails(playbackId: string, thumbnailTime = 12): ResponsiveThumbnails {
-  const baseUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`
+export function generateResponsiveThumbnails(
+  playbackId: string,
+  thumbnailTime = 12,
+): ResponsiveThumbnails {
+  const baseUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 
   return {
     small: `${baseUrl}?time=${thumbnailTime}&width=320&height=180&fit_mode=smartcrop`,
     medium: `${baseUrl}?time=${thumbnailTime}&width=640&height=360&fit_mode=smartcrop`,
     large: `${baseUrl}?time=${thumbnailTime}&width=1280&height=720&fit_mode=smartcrop`,
     xlarge: `${baseUrl}?time=${thumbnailTime}&width=1920&height=1080&fit_mode=smartcrop`,
-  }
+  };
 }
 
-export function generateThumbnailWithFallbacks(playbackId: string): ThumbnailWithFallbacks {
-  const config = getVideoConfig(playbackId)
-  const thumbnailTime = config?.thumbnailTime || 12
-  const baseUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`
+export function generateThumbnailWithFallbacks(
+  playbackId: string,
+): ThumbnailWithFallbacks {
+  const config = getVideoConfig(playbackId);
+  const thumbnailTime = config?.thumbnailTime || 12;
+  const baseUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 
-  const primary = `${baseUrl}?time=${thumbnailTime}&width=1280&height=720&fit_mode=smartcrop`
+  const primary = `${baseUrl}?time=${thumbnailTime}&width=1280&height=720&fit_mode=smartcrop`;
 
   const fallbacks = [
     `${baseUrl}?time=${Math.max(0, thumbnailTime - 5)}&width=1280&height=720&fit_mode=smartcrop`,
     `${baseUrl}?time=${thumbnailTime + 5}&width=1280&height=720&fit_mode=smartcrop`,
     `${baseUrl}?time=0&width=1280&height=720&fit_mode=smartcrop`,
     `${baseUrl}?width=1280&height=720&fit_mode=smartcrop`,
-  ]
+  ];
 
   return {
     primary,
     fallbacks,
-  }
+  };
 }

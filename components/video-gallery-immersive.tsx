@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { MuxVideoPlayer } from "./mux-video-player"
-import { getAllVideoConfigs, VideoConfig } from "@/lib/video-thumbnails"
-import { Button } from "@/components/ui/button"
+import { useState, useRef, useEffect } from "react";
+import { MuxVideoPlayer } from "./mux-video-player";
+import { getAllVideoConfigs, VideoConfig } from "@/lib/video-thumbnails";
+import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,74 +13,80 @@ import {
   Tag,
   ChevronUp,
   ChevronDown,
-} from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import Image from "next/image"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 // Portrait thumbnail for reel-style cards
 const getReelThumbnail = (playbackId: string, time: number = 10) => {
-  return `https://image.mux.com/${playbackId}/thumbnail.png?width=400&height=712&time=${time}&fit_mode=crop`
-}
+  return `https://image.mux.com/${playbackId}/thumbnail.png?width=400&height=712&time=${time}&fit_mode=crop`;
+};
 
 // Landscape thumbnail for theater sidebar
 const getLandscapeThumbnail = (playbackId: string, time: number = 10) => {
-  return `https://image.mux.com/${playbackId}/thumbnail.png?width=400&height=225&time=${time}&fit_mode=crop`
-}
+  return `https://image.mux.com/${playbackId}/thumbnail.png?width=400&height=225&time=${time}&fit_mode=crop`;
+};
 
 export function VideoGalleryImmersive() {
-  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(null)
-  const allVideos = getAllVideoConfigs()
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(
+    null,
+  );
+  const allVideos = getAllVideoConfigs();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const selectedVideo = selectedVideoIndex !== null ? allVideos[selectedVideoIndex] : null
+  const selectedVideo =
+    selectedVideoIndex !== null ? allVideos[selectedVideoIndex] : null;
 
   const checkScrollState = () => {
-    if (!scrollRef.current) return
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
-    setCanScrollLeft(scrollLeft > 5)
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5)
-  }
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    setCanScrollLeft(scrollLeft > 5);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
 
   useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    checkScrollState()
-    el.addEventListener("scroll", checkScrollState)
-    window.addEventListener("resize", checkScrollState)
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScrollState();
+    el.addEventListener("scroll", checkScrollState);
+    window.addEventListener("resize", checkScrollState);
     return () => {
-      el.removeEventListener("scroll", checkScrollState)
-      window.removeEventListener("resize", checkScrollState)
-    }
-  }, [])
+      el.removeEventListener("scroll", checkScrollState);
+      window.removeEventListener("resize", checkScrollState);
+    };
+  }, []);
 
   const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return
-    const scrollAmount = scrollRef.current.clientWidth * 0.7
+    if (!scrollRef.current) return;
+    const scrollAmount = scrollRef.current.clientWidth * 0.7;
     scrollRef.current.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
-    })
-  }
+    });
+  };
 
   const goToPrevVideo = () => {
     if (selectedVideoIndex !== null && selectedVideoIndex > 0) {
-      setSelectedVideoIndex(selectedVideoIndex - 1)
+      setSelectedVideoIndex(selectedVideoIndex - 1);
     }
-  }
+  };
 
   const goToNextVideo = () => {
-    if (selectedVideoIndex !== null && selectedVideoIndex < allVideos.length - 1) {
-      setSelectedVideoIndex(selectedVideoIndex + 1)
+    if (
+      selectedVideoIndex !== null &&
+      selectedVideoIndex < allVideos.length - 1
+    ) {
+      setSelectedVideoIndex(selectedVideoIndex + 1);
     }
-  }
+  };
 
   const handleSurpriseMe = () => {
-    const randomIndex = Math.floor(Math.random() * allVideos.length)
-    setSelectedVideoIndex(randomIndex)
-  }
+    const randomIndex = Math.floor(Math.random() * allVideos.length);
+    setSelectedVideoIndex(randomIndex);
+  };
 
   // Theater Mode
   if (selectedVideo) {
@@ -118,14 +124,18 @@ export function VideoGalleryImmersive() {
             </div>
 
             {/* Video Player */}
-            <div className="flex-1 flex items-center justify-center p-4 pt-20">
+            <div className="flex-1 flex items-center justify-center p-4 pt-20 pb-8">
               <div className="w-full max-w-6xl">
-                <MuxVideoPlayer playbackId={selectedVideo.playbackId} className="w-full" priority />
+                <MuxVideoPlayer
+                  playbackId={selectedVideo.playbackId}
+                  className="w-full"
+                  priority
+                />
               </div>
             </div>
 
             {/* Navigation */}
-            <div className="p-6 bg-gradient-to-t from-black/80 to-transparent">
+            <div className="p-6 bg-gradient-to-t from-black/80 to-transparent relative z-20">
               {selectedVideo.description && (
                 <p className="text-white/70 text-sm max-w-3xl mb-4">
                   {selectedVideo.description}
@@ -144,7 +154,8 @@ export function VideoGalleryImmersive() {
                 </Button>
                 <div className="flex items-center gap-4">
                   <span className="text-white/50 text-sm">
-                    {selectedVideoIndex !== null ? selectedVideoIndex + 1 : 0} of {allVideos.length}
+                    {selectedVideoIndex !== null ? selectedVideoIndex + 1 : 0}{" "}
+                    of {allVideos.length}
                   </span>
                   <Button
                     variant="outline"
@@ -184,12 +195,15 @@ export function VideoGalleryImmersive() {
                     "w-full flex gap-3 p-2 rounded-lg transition-colors",
                     index === selectedVideoIndex
                       ? "bg-gold/20 border border-gold/30"
-                      : "hover:bg-white/10"
+                      : "hover:bg-white/10",
                   )}
                 >
                   <div className="relative w-28 h-16 rounded overflow-hidden flex-shrink-0 bg-gray-800">
                     <Image
-                      src={getLandscapeThumbnail(video.playbackId, video.thumbnailTime || 10)}
+                      src={getLandscapeThumbnail(
+                        video.playbackId,
+                        video.thumbnailTime || 10,
+                      )}
                       alt={video.title}
                       fill
                       className="object-cover"
@@ -202,14 +216,20 @@ export function VideoGalleryImmersive() {
                     )}
                   </div>
                   <div className="flex-1 text-left min-w-0">
-                    <p className={cn(
-                      "text-sm font-medium line-clamp-2",
-                      index === selectedVideoIndex ? "text-gold" : "text-white"
-                    )}>
+                    <p
+                      className={cn(
+                        "text-sm font-medium line-clamp-2",
+                        index === selectedVideoIndex
+                          ? "text-gold"
+                          : "text-white",
+                      )}
+                    >
                       {video.title.replace("Allan Palmer - ", "")}
                     </p>
                     {video.category && (
-                      <p className="text-xs text-white/50 mt-1">{video.category}</p>
+                      <p className="text-xs text-white/50 mt-1">
+                        {video.category}
+                      </p>
                     )}
                   </div>
                 </button>
@@ -218,7 +238,7 @@ export function VideoGalleryImmersive() {
           </div>
         </motion.div>
       </AnimatePresence>
-    )
+    );
   }
 
   // Reel-Style Gallery
@@ -312,7 +332,7 @@ export function VideoGalleryImmersive() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Individual Reel Card Component
@@ -321,9 +341,9 @@ function ReelCard({
   index,
   onClick,
 }: {
-  video: VideoConfig
-  index: number
-  onClick: () => void
+  video: VideoConfig;
+  index: number;
+  onClick: () => void;
 }) {
   return (
     <button
@@ -371,5 +391,5 @@ function ReelCard({
         </div>
       </div>
     </button>
-  )
+  );
 }
