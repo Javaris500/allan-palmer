@@ -195,7 +195,10 @@ export function Lightbox({
           </div>
 
           {/* Navigation bar */}
-          <div className="flex items-center justify-between px-4 pb-4 safe-bottom">
+          <div
+            className="flex items-center justify-between px-4 pb-4"
+            style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+          >
             <button
               onClick={(e) => {
                 e.stopPropagation();

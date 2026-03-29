@@ -100,8 +100,8 @@ export function AboutHero() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-              {/* Professional Violinist Badge - positioned above head */}
-              <div className="absolute top-6 left-1/2 transform -translate-x-1/2">
+              {/* Professional Violinist Badge - hidden on mobile to avoid covering face */}
+              <div className="hidden lg:block absolute top-6 left-1/2 transform -translate-x-1/2">
                 <div className="inline-flex items-center gap-2 bg-gold/20 backdrop-blur-sm text-gold rounded-full px-4 py-2 text-sm font-medium border border-gold/30">
                   <Music className="h-4 w-4" />
                   Professional Violinist
@@ -113,15 +113,15 @@ export function AboutHero() {
             <TiltCard
               tiltAmount={12}
               glareEnabled={true}
-              className="absolute -bottom-6 left-1/2 -translate-x-1/2 lg:-left-6 lg:translate-x-0"
+              className="absolute -bottom-6 left-4 right-4 lg:right-auto lg:-left-6 lg:w-auto"
             >
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
-                className="bg-gray-900/95 backdrop-blur-sm rounded-2xl p-5 shadow-xl border border-gold/20"
+                className="bg-gray-900/95 backdrop-blur-sm rounded-2xl p-4 sm:p-5 shadow-xl border border-gold/20"
               >
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                   {stats.map((stat, index) => (
                     <div key={index} className="text-center">
                       <div className="flex justify-center mb-1.5">

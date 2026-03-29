@@ -1,13 +1,13 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
-import "./globals.css"
-import { FloatingNav } from "@/components/floating-nav"
-import { SimpleFooter } from "@/components/simple-footer"
-import { ThemeProvider } from "@/components/theme-provider"
-import { ErrorBoundary } from "@/components/error-boundary"
-import { Suspense } from "react"
-import { BackgroundMusicProvider } from "@/contexts/background-music-context"
+import type React from "react";
+import type { Metadata, Viewport } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
+import "./globals.css";
+import { FloatingNav } from "@/components/floating-nav";
+import { SimpleFooter } from "@/components/simple-footer";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Suspense } from "react";
+import { BackgroundMusicProvider } from "@/contexts/background-music-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,7 +15,7 @@ const inter = Inter({
   display: "swap",
   preload: true,
   fallback: ["system-ui", "arial"],
-})
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -23,7 +23,7 @@ const playfair = Playfair_Display({
   display: "swap",
   preload: true,
   fallback: ["serif"],
-})
+});
 
 export const metadata: Metadata = {
   title: {
@@ -92,26 +92,34 @@ export const metadata: Metadata = {
     },
   },
   generator: "v0.app",
-}
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};
 
 function PageLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
-  )
+  );
 }
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link rel="preconnect" href="https://image.mux.com" />
         <link rel="preconnect" href="https://stream.mux.com" />
         <link rel="dns-prefetch" href="https://stream.mux.com" />
@@ -119,7 +127,9 @@ export default function RootLayout({
         <link rel="prefetch" href="/services" as="document" />
         <link rel="prefetch" href="/contact" as="document" />
       </head>
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+      >
         <ErrorBoundary>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <BackgroundMusicProvider>
@@ -131,7 +141,9 @@ export default function RootLayout({
               </a>
               <div className="flex min-h-screen flex-col">
                 <Suspense fallback={<PageLoading />}>
-                  <main id="main-content" className="flex-1">{children}</main>
+                  <main id="main-content" className="flex-1">
+                    {children}
+                  </main>
                 </Suspense>
                 <SimpleFooter />
                 <FloatingNav />
@@ -141,5 +153,5 @@ export default function RootLayout({
         </ErrorBoundary>
       </body>
     </html>
-  )
+  );
 }

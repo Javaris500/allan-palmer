@@ -135,7 +135,12 @@ export function VideoGalleryImmersive() {
             </div>
 
             {/* Navigation */}
-            <div className="p-4 sm:p-6 bg-gradient-to-t from-black/80 to-transparent relative z-20">
+            <div
+              className="px-4 pt-4 pb-8 sm:p-6 sm:pb-8 bg-gradient-to-t from-black/80 to-transparent relative z-20"
+              style={{
+                paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
+              }}
+            >
               {selectedVideo.description && (
                 <p className="text-white/70 text-xs sm:text-sm max-w-3xl mb-3 sm:mb-4 line-clamp-2">
                   {selectedVideo.description}
