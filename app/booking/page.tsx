@@ -182,7 +182,7 @@ export default function BookingPage() {
                       value={form.eventType}
                       onChange={handleChange}
                       required
-                      className={inputClass}
+                      className={`${inputClass} appearance-none`}
                     >
                       <option value="">Select an event type</option>
                       {EVENT_TYPES.map((t) => (

@@ -135,36 +135,37 @@ export function VideoGalleryImmersive() {
             </div>
 
             {/* Navigation */}
-            <div className="p-6 bg-gradient-to-t from-black/80 to-transparent relative z-20">
+            <div className="p-4 sm:p-6 bg-gradient-to-t from-black/80 to-transparent relative z-20">
               {selectedVideo.description && (
-                <p className="text-white/70 text-sm max-w-3xl mb-4">
+                <p className="text-white/70 text-xs sm:text-sm max-w-3xl mb-3 sm:mb-4 line-clamp-2">
                   {selectedVideo.description}
                 </p>
               )}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={goToPrevVideo}
                   disabled={selectedVideoIndex === 0}
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white disabled:opacity-30"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white disabled:opacity-30 px-2 sm:px-3"
                 >
-                  <ChevronLeft className="h-4 w-4 mr-2" />
-                  Previous
+                  <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Previous</span>
                 </Button>
-                <div className="flex items-center gap-4">
-                  <span className="text-white/50 text-sm">
-                    {selectedVideoIndex !== null ? selectedVideoIndex + 1 : 0}{" "}
-                    of {allVideos.length}
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <span className="text-white/50 text-xs sm:text-sm tabular-nums whitespace-nowrap">
+                    {selectedVideoIndex !== null ? selectedVideoIndex + 1 : 0}
+                    {" / "}
+                    {allVideos.length}
                   </span>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleSurpriseMe}
-                    className="bg-gold/20 border-gold/30 text-gold hover:bg-gold/30"
+                    className="bg-gold/20 border-gold/30 text-gold hover:bg-gold/30 px-2 sm:px-3"
                   >
-                    <Shuffle className="h-4 w-4 mr-2" />
-                    Shuffle
+                    <Shuffle className="h-4 w-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Shuffle</span>
                   </Button>
                 </div>
                 <Button
@@ -172,10 +173,10 @@ export function VideoGalleryImmersive() {
                   size="sm"
                   onClick={goToNextVideo}
                   disabled={selectedVideoIndex === allVideos.length - 1}
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white disabled:opacity-30"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white disabled:opacity-30 px-2 sm:px-3"
                 >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-2" />
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight className="h-4 w-4 sm:ml-1" />
                 </Button>
               </div>
             </div>
