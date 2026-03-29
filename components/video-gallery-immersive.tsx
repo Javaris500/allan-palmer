@@ -88,6 +88,21 @@ export function VideoGalleryImmersive() {
     setSelectedVideoIndex(randomIndex);
   };
 
+  // Hide floating nav when theater mode is active
+  useEffect(() => {
+    if (selectedVideo) {
+      document.documentElement.setAttribute("data-fullscreen-overlay", "true");
+      document.body.style.overflow = "hidden";
+    } else {
+      document.documentElement.removeAttribute("data-fullscreen-overlay");
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.removeAttribute("data-fullscreen-overlay");
+      document.body.style.overflow = "";
+    };
+  }, [selectedVideo]);
+
   // Theater Mode
   if (selectedVideo) {
     return (

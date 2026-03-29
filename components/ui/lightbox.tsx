@@ -73,11 +73,13 @@ export function Lightbox({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose, prevImage, nextImage]);
 
-  // Prevent body scroll when lightbox is open
+  // Prevent body scroll and hide floating nav when lightbox is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    document.documentElement.setAttribute("data-fullscreen-overlay", "true");
     return () => {
       document.body.style.overflow = "unset";
+      document.documentElement.removeAttribute("data-fullscreen-overlay");
     };
   }, []);
 

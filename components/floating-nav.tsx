@@ -1,15 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, User, Music, Film, Calendar, ClipboardList, ArrowUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { BackgroundMusicToggle } from "@/components/background-music-toggle"
-import { cn } from "@/lib/utils"
-import { NAVIGATION_ITEMS } from "@/lib/constants"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Menu,
+  X,
+  Home,
+  User,
+  Music,
+  Film,
+  Calendar,
+  ClipboardList,
+  ArrowUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { BackgroundMusicToggle } from "@/components/background-music-toggle";
+import { cn } from "@/lib/utils";
+import { NAVIGATION_ITEMS } from "@/lib/constants";
 
 const navIcons: Record<string, React.ElementType> = {
   "/": Home,
@@ -19,59 +29,79 @@ const navIcons: Record<string, React.ElementType> = {
   "/booking": Calendar,
   "/services": Calendar,
   "/my-bookings": ClipboardList,
-}
+};
 
-const navItems: { href: string; label: string; icon: React.ElementType; highlight?: boolean }[] = [
-  ...NAVIGATION_ITEMS.map(item => ({
+const navItems: {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  highlight?: boolean;
+}[] = [
+  ...NAVIGATION_ITEMS.map((item) => ({
     href: item.href as string,
     label: item.label as string,
     icon: navIcons[item.href] || Home,
   })),
   { href: "/my-bookings", label: "My Bookings", icon: ClipboardList },
   { href: "/services", label: "Services", icon: Calendar, highlight: true },
-]
+];
 
 export function FloatingNav() {
-  const pathname = usePathname()
-  const [isOpen, setIsOpen] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
-  const [showScrollTop, setShowScrollTop] = useState(false)
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [hasOverlay, setHasOverlay] = useState(false);
+
+  // Hide nav when a fullscreen overlay (lightbox/video theater) is open
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setHasOverlay(
+        document.documentElement.hasAttribute("data-fullscreen-overlay"),
+      );
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-fullscreen-overlay"],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.scrollY
-      const isHomepage = pathname === "/"
-      setIsVisible(isHomepage ? scrolled > 100 : true)
-      setShowScrollTop(scrolled > 500)
-    }
+      const scrolled = window.scrollY;
+      const isHomepage = pathname === "/";
+      setIsVisible(isHomepage ? scrolled > 100 : true);
+      setShowScrollTop(scrolled > 500);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    handleScroll()
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [pathname])
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   useEffect(() => {
-    setIsOpen(false)
-  }, [pathname])
+    setIsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = ""
-    }
-  }, [isOpen])
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    setIsOpen(false)
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsOpen(false);
+  };
 
-  if (pathname?.startsWith("/booking")) {
-    return null
+  if (pathname?.startsWith("/booking") || hasOverlay) {
+    return null;
   }
 
   return (
@@ -114,8 +144,8 @@ export function FloatingNav() {
                   >
                     <nav className="flex flex-col gap-1">
                       {navItems.map((item, index) => {
-                        const Icon = item.icon
-                        const isActive = pathname === item.href
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href;
                         return (
                           <motion.div
                             key={item.href}
@@ -130,10 +160,17 @@ export function FloatingNav() {
                                 "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200",
                                 "hover:bg-muted/80",
                                 isActive && "bg-muted text-primary font-medium",
-                                item.highlight && !isActive && "text-gold hover:bg-gold/10"
+                                item.highlight &&
+                                  !isActive &&
+                                  "text-gold hover:bg-gold/10",
                               )}
                             >
-                              <Icon className={cn("h-4 w-4", item.highlight && "text-gold")} />
+                              <Icon
+                                className={cn(
+                                  "h-4 w-4",
+                                  item.highlight && "text-gold",
+                                )}
+                              />
                               <span className="text-sm">{item.label}</span>
                               {isActive && (
                                 <motion.div
@@ -143,7 +180,7 @@ export function FloatingNav() {
                               )}
                             </Link>
                           </motion.div>
-                        )
+                        );
                       })}
                     </nav>
 
@@ -188,7 +225,10 @@ export function FloatingNav() {
                 )}
               </AnimatePresence>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button
                   onClick={() => setIsOpen(!isOpen)}
                   size="icon"
@@ -196,7 +236,7 @@ export function FloatingNav() {
                     "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
                     isOpen
                       ? "bg-muted hover:bg-muted/80 text-foreground"
-                      : "bg-gold hover:bg-gold/90 text-black"
+                      : "bg-gold hover:bg-gold/90 text-black",
                   )}
                   aria-label={isOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isOpen}
@@ -231,5 +271,5 @@ export function FloatingNav() {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }
