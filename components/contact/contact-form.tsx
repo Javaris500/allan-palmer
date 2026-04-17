@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Send,
   Loader2,
@@ -15,17 +15,18 @@ import {
   MessageSquare,
   Calendar as CalendarIcon,
   Music,
-} from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { CONTACT_INFO } from "@/lib/constants";
 
 interface FormData {
-  name: string
-  email: string
-  phone: string
-  eventType: string
-  eventDate: string
-  message: string
+  name: string;
+  email: string;
+  phone: string;
+  eventType: string;
+  eventDate: string;
+  message: string;
 }
 
 const initialFormData: FormData = {
@@ -35,7 +36,7 @@ const initialFormData: FormData = {
   eventType: "",
   eventDate: "",
   message: "",
-}
+};
 
 const eventTypes = [
   "Wedding",
@@ -44,71 +45,86 @@ const eventTypes = [
   "Concert",
   "Lesson Inquiry",
   "Other",
-]
+];
 
 export function ContactForm() {
-  const [formData, setFormData] = useState<FormData>(initialFormData)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {},
+  );
 
   const validateForm = () => {
-    const newErrors: Partial<Record<keyof FormData, string>> = {}
+    const newErrors: Partial<Record<keyof FormData, string>> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required"
+      newErrors.name = "Name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required"
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email"
+      newErrors.email = "Please enter a valid email";
     }
 
     if (formData.phone && !/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid phone number"
+      newErrors.phone = "Please enter a valid phone number";
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = "Please tell us about your event"
+      newErrors.message = "Please tell us about your event";
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-    if (!validateForm()) return
+    if (!validateForm()) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-
-      if (!response.ok) throw new Error("Failed to send")
-
-      setIsSuccess(true)
-      setFormData(initialFormData)
-    } catch (error) {
-      console.error("Contact form error:", error)
-      setErrors({ message: "Something went wrong. Please try again or contact us directly." })
-    } finally {
-      setIsSubmitting(false)
+    // Build a readable plain-text email body. Allan receives this directly
+    // from the sender's own email address so he can reply inline.
+    const lines: string[] = [
+      `Hi Allan,`,
+      ``,
+      `— Contact —`,
+      `Name:  ${formData.name}`,
+      `Email: ${formData.email}`,
+    ];
+    if (formData.phone) lines.push(`Phone: ${formData.phone}`);
+    if (formData.eventType || formData.eventDate) {
+      lines.push(``, `— Event —`);
+      if (formData.eventType) lines.push(`Type: ${formData.eventType}`);
+      if (formData.eventDate) lines.push(`Date: ${formData.eventDate}`);
     }
-  }
+    lines.push(``, `— Message —`, formData.message);
+    lines.push(``, `Thanks,`, formData.name);
+
+    const subject = formData.eventType
+      ? `Inquiry — ${formData.eventType}`
+      : `Inquiry from ${formData.name}`;
+    const body = lines.join("\n");
+    const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open the user's default email client with everything pre-filled
+    window.location.href = mailtoUrl;
+
+    setIsSuccess(true);
+    setFormData(initialFormData);
+    setIsSubmitting(false);
+  };
 
   const handleChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  }
+  };
 
   if (isSuccess) {
     return (
@@ -126,10 +142,23 @@ export function ContactForm() {
           <Check className="h-10 w-10 text-gold" />
         </motion.div>
         <h3 className="font-serif text-2xl md:text-3xl font-bold mb-3 text-foreground">
-          Thank You!
+          Almost there.
         </h3>
-        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-          Your message has been sent successfully. Allan will get back to you within 24-48 hours.
+        <p className="text-muted-foreground mb-4 max-w-md mx-auto">
+          Your email app just opened with the message pre-filled. Hit{" "}
+          <span className="text-foreground font-medium">Send</span> and
+          Allan&rsquo;ll get it directly — he&rsquo;ll respond within 24–48
+          hours.
+        </p>
+        <p className="text-xs text-muted-foreground/70 mb-6 max-w-md mx-auto">
+          If nothing opened, email Allan directly at{" "}
+          <a
+            href={`mailto:${CONTACT_INFO.email}`}
+            className="text-gold hover:underline"
+          >
+            {CONTACT_INFO.email}
+          </a>
+          .
         </p>
         <Button
           onClick={() => setIsSuccess(false)}
@@ -139,7 +168,7 @@ export function ContactForm() {
           Send Another Message
         </Button>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -157,7 +186,10 @@ export function ContactForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-foreground flex items-center gap-2">
+          <Label
+            htmlFor="name"
+            className="text-foreground flex items-center gap-2"
+          >
             <User className="h-4 w-4 text-gold" />
             Full Name <span className="text-gold">*</span>
           </Label>
@@ -169,7 +201,7 @@ export function ContactForm() {
             placeholder="John Doe"
             className={cn(
               "bg-background dark:bg-black border-gold/20 focus:border-gold",
-              errors.name && "border-red-500 focus:border-red-500"
+              errors.name && "border-red-500 focus:border-red-500",
             )}
           />
           <AnimatePresence>
@@ -189,7 +221,10 @@ export function ContactForm() {
         {/* Email & Phone */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-foreground flex items-center gap-2">
+            <Label
+              htmlFor="email"
+              className="text-foreground flex items-center gap-2"
+            >
               <Mail className="h-4 w-4 text-gold" />
               Email Address <span className="text-gold">*</span>
             </Label>
@@ -201,7 +236,7 @@ export function ContactForm() {
               placeholder="john@example.com"
               className={cn(
                 "bg-background dark:bg-black border-gold/20 focus:border-gold",
-                errors.email && "border-red-500 focus:border-red-500"
+                errors.email && "border-red-500 focus:border-red-500",
               )}
             />
             <AnimatePresence>
@@ -219,7 +254,10 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-foreground flex items-center gap-2">
+            <Label
+              htmlFor="phone"
+              className="text-foreground flex items-center gap-2"
+            >
               <Phone className="h-4 w-4 text-gold" />
               Phone Number
             </Label>
@@ -231,7 +269,7 @@ export function ContactForm() {
               placeholder="(204) 555-1234"
               className={cn(
                 "bg-background dark:bg-black border-gold/20 focus:border-gold",
-                errors.phone && "border-red-500 focus:border-red-500"
+                errors.phone && "border-red-500 focus:border-red-500",
               )}
             />
             <AnimatePresence>
@@ -252,7 +290,10 @@ export function ContactForm() {
         {/* Event Type & Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="eventType" className="text-foreground flex items-center gap-2">
+            <Label
+              htmlFor="eventType"
+              className="text-foreground flex items-center gap-2"
+            >
               <Music className="h-4 w-4 text-gold" />
               Event Type
             </Label>
@@ -272,7 +313,10 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="eventDate" className="text-foreground flex items-center gap-2">
+            <Label
+              htmlFor="eventDate"
+              className="text-foreground flex items-center gap-2"
+            >
               <CalendarIcon className="h-4 w-4 text-gold" />
               Event Date
             </Label>
@@ -289,7 +333,10 @@ export function ContactForm() {
 
         {/* Message */}
         <div className="space-y-2">
-          <Label htmlFor="message" className="text-foreground flex items-center gap-2">
+          <Label
+            htmlFor="message"
+            className="text-foreground flex items-center gap-2"
+          >
             <MessageSquare className="h-4 w-4 text-gold" />
             Tell Us About Your Event <span className="text-gold">*</span>
           </Label>
@@ -301,7 +348,7 @@ export function ContactForm() {
             rows={5}
             className={cn(
               "resize-none bg-background dark:bg-black border-gold/20 focus:border-gold",
-              errors.message && "border-red-500 focus:border-red-500"
+              errors.message && "border-red-500 focus:border-red-500",
             )}
           />
           <AnimatePresence>
@@ -338,9 +385,10 @@ export function ContactForm() {
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          By submitting this form, you agree to be contacted by Allan Palmer regarding your inquiry.
+          By submitting this form, you agree to be contacted by Allan Palmer
+          regarding your inquiry.
         </p>
       </form>
     </div>
-  )
+  );
 }

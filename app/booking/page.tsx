@@ -33,8 +33,10 @@ const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
 type SubmitState =
   | { status: "idle" }
   | { status: "submitting" }
-  | { status: "success"; reference: string }
+  | { status: "success" }
   | { status: "error"; message: string };
+
+const ALLAN_EMAIL = "palmerar@myumanitoba.ca";
 
 export default function BookingPage() {
   const [form, setForm] = useState({
@@ -57,33 +59,44 @@ export default function BookingPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setState({ status: "submitting" });
 
-    try {
-      const res = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setState({
-          status: "error",
-          message: data.error ?? "Something went wrong. Please try again.",
-        });
-        return;
-      }
-
-      setState({ status: "success", reference: data.reference });
-    } catch {
-      setState({
-        status: "error",
-        message: "Network error. Please check your connection and try again.",
-      });
+    // Build a clean, readable plain-text email body. Allan receives this
+    // directly from the client's own email address, so he can reply inline.
+    const lines: string[] = [
+      `Hi Allan,`,
+      ``,
+      `I'd like to book you for an event. Here are the details:`,
+      ``,
+      `— Contact —`,
+      `Name:  ${form.name}`,
+      `Email: ${form.email}`,
+      `Phone: ${form.phone}`,
+      ``,
+      `— Event —`,
+      `Type:  ${form.eventType}`,
+      `Date:  ${form.eventDate}`,
+    ];
+    if (form.preferredTime) lines.push(`Time:  ${form.preferredTime}`);
+    if (form.venue) lines.push(`Venue: ${form.venue}`);
+    if (form.message) {
+      lines.push(``, `— Additional Details —`, form.message);
     }
+    lines.push(``, `Thanks,`, form.name);
+
+    const subject = `Booking Request — ${form.eventType || "Event"} — ${form.eventDate}`;
+    const body = lines.join("\n");
+
+    // mailto URL — keep total length under ~1800 chars for broad client support
+    const mailtoUrl = `mailto:${ALLAN_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open the user's default email client
+    window.location.href = mailtoUrl;
+
+    // Move to the success state so the user knows what to do next
+    setState({ status: "success" });
   }
 
   function reset() {
@@ -134,20 +147,26 @@ export default function BookingPage() {
           </motion.div>
 
           <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground tracking-wide">
-            Thank you.
+            Almost there.
           </h1>
           <div className="mx-auto w-12 h-px bg-gold/40 mt-5 mb-6" />
           <p className="text-base text-muted-foreground leading-relaxed max-w-md mx-auto">
-            Your booking request is in. Allan will review the details and reach
-            out personally within 24&ndash;48 hours.
+            Your email app just opened with your request pre-filled. Hit{" "}
+            <span className="text-foreground font-medium">Send</span> and Allan
+            will receive your booking directly. He&rsquo;ll reach out within
+            24&ndash;48 hours.
           </p>
 
-          <div className="mt-10 inline-block">
-            <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-2">
-              Confirmation Reference
-            </p>
-            <p className="font-mono text-sm text-gold tracking-[0.15em]">
-              {state.reference}
+          <div className="mt-10 max-w-sm mx-auto text-xs text-muted-foreground/70 leading-relaxed">
+            <p>
+              If nothing opened, email Allan directly at{" "}
+              <a
+                href={`mailto:${ALLAN_EMAIL}`}
+                className="text-gold hover:underline"
+              >
+                {ALLAN_EMAIL}
+              </a>
+              .
             </p>
           </div>
 
