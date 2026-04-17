@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Sample data for previewing each email template
 // ═══════════════════════════════════════════════════════════════════════════
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-const LOGO_URL = `${SITE_URL}/images/allan-logo.png`
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const LOGO_URL = `${SITE_URL}/images/allan-logo.png`;
 
 // Shared helpers (duplicated from lib/resend.ts for client-side preview)
 function detailRow(label: string, value: string, isGold = false): string {
   return `<tr>
     <td style="color:#888;padding:10px 12px;font-size:14px;border-bottom:1px solid #1a1a1a;white-space:nowrap;">${label}</td>
     <td style="color:${isGold ? "#d4a843" : "#e5e5e5"};padding:10px 12px;font-size:14px;border-bottom:1px solid #1a1a1a;text-align:right;">${value}</td>
-  </tr>`
+  </tr>`;
 }
 
 function detailsCard(rows: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:24px 0;">
     ${rows}
-  </table>`
+  </table>`;
 }
 
 function ctaButton(text: string, href: string): string {
@@ -33,7 +33,7 @@ function ctaButton(text: string, href: string): string {
         </a>
       </td>
     </tr>
-  </table>`
+  </table>`;
 }
 
 function infoBlock(title: string, content: string): string {
@@ -44,7 +44,7 @@ function infoBlock(title: string, content: string): string {
         <p style="margin:0;font-size:14px;color:#aaa;line-height:1.7;">${content}</p>
       </td>
     </tr>
-  </table>`
+  </table>`;
 }
 
 function emailLayout(preheader: string, body: string): string {
@@ -91,7 +91,7 @@ function emailLayout(preheader: string, body: string): string {
                       <a href="#" style="color:#666;text-decoration:none;margin:0 8px;">TikTok</a>
                     </p>
                     <p style="margin:0 0 8px;font-size:12px;color:#444;">Allan Palmer &bull; Winnipeg, Manitoba &bull; (204) 898-9699</p>
-                    <p style="margin:0;font-size:11px;color:#333;"><a href="#" style="color:#444;text-decoration:none;">allanpalmer.com</a></p>
+                    <p style="margin:0;font-size:11px;color:#333;"><a href="#" style="color:#444;text-decoration:none;">allanpalmerviolinist.com</a></p>
                   </td>
                 </tr>
               </table>
@@ -102,7 +102,7 @@ function emailLayout(preheader: string, body: string): string {
     </tr>
   </table>
 </body>
-</html>`
+</html>`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -110,11 +110,11 @@ function emailLayout(preheader: string, body: string): string {
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface EmailTemplate {
-  id: string
-  name: string
-  description: string
-  subject: string
-  html: string
+  id: string;
+  name: string;
+  description: string;
+  subject: string;
+  html: string;
 }
 
 function getTemplates(): EmailTemplate[] {
@@ -130,10 +130,10 @@ function getTemplates(): EmailTemplate[] {
         <p style="margin:0 0 8px;font-size:16px;color:#ccc;line-height:1.65;">Hi Jane, thank you for your interest in having live violin at your event. Allan will review your request and get back to you within 24&ndash;48 hours.</p>
         ${detailsCard(
           detailRow("Reference", "BK-20260215-A3F7") +
-          detailRow("Event", "Wedding Ceremony", true) +
-          detailRow("Date", "Saturday, June 15, 2026") +
-          detailRow("Time", "Evening (5pm+)") +
-          detailRow("Duration", "2 hours")
+            detailRow("Event", "Wedding Ceremony", true) +
+            detailRow("Date", "Saturday, June 15, 2026") +
+            detailRow("Time", "Evening (5pm+)") +
+            detailRow("Duration", "2 hours"),
         )}
         ${infoBlock("What happens next?", "Allan will review the details of your event and reach out to discuss availability, pricing, and any special arrangements. You can check your booking status anytime from your dashboard.")}
         ${ctaButton("View My Booking", "#")}
@@ -152,20 +152,20 @@ function getTemplates(): EmailTemplate[] {
         <p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Event Details</p>
         ${detailsCard(
           detailRow("Reference", "BK-20260215-A3F7") +
-          detailRow("Event Type", "Wedding Ceremony", true) +
-          detailRow("Date", "Saturday, June 15, 2026") +
-          detailRow("Time", "Evening (5pm+)") +
-          detailRow("Venue", "The Fort Garry Hotel") +
-          detailRow("Guests", "100-200") +
-          detailRow("Setting", "Indoor") +
-          detailRow("Duration", "2 hours") +
-          detailRow("Music Styles", "Classical, Jazz & Standards")
+            detailRow("Event Type", "Wedding Ceremony", true) +
+            detailRow("Date", "Saturday, June 15, 2026") +
+            detailRow("Time", "Evening (5pm+)") +
+            detailRow("Venue", "The Fort Garry Hotel") +
+            detailRow("Guests", "100-200") +
+            detailRow("Setting", "Indoor") +
+            detailRow("Duration", "2 hours") +
+            detailRow("Music Styles", "Classical, Jazz & Standards"),
         )}
         <p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Contact Information</p>
         ${detailsCard(
           detailRow("Name", "Jane Smith") +
-          detailRow("Email", "jane@example.com") +
-          detailRow("Phone", "(204) 555-0123")
+            detailRow("Email", "jane@example.com") +
+            detailRow("Phone", "(204) 555-0123"),
         )}
         <p style="margin:24px 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Additional Notes</p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:8px 0 24px;">
@@ -192,8 +192,8 @@ function getTemplates(): EmailTemplate[] {
         <p style="margin:0 0 8px;font-size:15px;color:#ccc;line-height:1.65;text-align:center;">Hi Jane, great news — Allan has confirmed your booking. He's looking forward to performing at your event. The details are below.</p>
         ${detailsCard(
           detailRow("Reference", "BK-20260215-A3F7") +
-          detailRow("Event", "Wedding Ceremony", true) +
-          detailRow("Date", "Saturday, June 15, 2026")
+            detailRow("Event", "Wedding Ceremony", true) +
+            detailRow("Date", "Saturday, June 15, 2026"),
         )}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border-left:3px solid #d4a843;border-radius:0 12px 12px 0;margin:24px 0;">
           <tr>
@@ -221,8 +221,8 @@ function getTemplates(): EmailTemplate[] {
         <p style="margin:0 0 8px;font-size:15px;color:#ccc;line-height:1.65;text-align:center;">Hi Jane, your booking has been cancelled. If this was unexpected or you'd like to rebook, please don't hesitate to reach out.</p>
         ${detailsCard(
           detailRow("Reference", "BK-20260215-A3F7") +
-          detailRow("Event", "Wedding Ceremony", true) +
-          detailRow("Date", "Saturday, June 15, 2026")
+            detailRow("Event", "Wedding Ceremony", true) +
+            detailRow("Date", "Saturday, June 15, 2026"),
         )}
         ${ctaButton("View My Booking", "#")}
         <p style="margin:0;font-size:13px;color:#666;text-align:center;">Questions? Reply to this email or call <strong style="color:#888;">(204) 898-9699</strong></p>`,
@@ -274,10 +274,10 @@ function getTemplates(): EmailTemplate[] {
         <p style="margin:0 0 8px;font-size:15px;color:#ccc;line-height:1.65;text-align:center;">We received a request to reset your password. Click the button below to choose a new one. This link expires in <strong style="color:#fff;">1 hour</strong>.</p>
         ${ctaButton("Reset Password", "#")}
         <p style="margin:0 0 8px;font-size:13px;color:#666;text-align:center;">If you didn't request this, you can safely ignore this email.</p>
-        <p style="margin:0;font-size:12px;color:#444;text-align:center;">Or copy this link: <a href="#" style="color:#d4a843;text-decoration:none;">https://allanpalmer.com/reset/abc123...</a></p>`,
+        <p style="margin:0;font-size:12px;color:#444;text-align:center;">Or copy this link: <a href="#" style="color:#d4a843;text-decoration:none;">https://allanpalmerviolinist.com/reset/abc123...</a></p>`,
       ),
     },
-  ]
+  ];
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -285,12 +285,12 @@ function getTemplates(): EmailTemplate[] {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export default function EmailPreviewPage() {
-  const templates = getTemplates()
-  const [activeId, setActiveId] = useState(templates[0]?.id ?? "")
-  const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop")
+  const templates = getTemplates();
+  const [activeId, setActiveId] = useState(templates[0]?.id ?? "");
+  const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
 
-  const active = templates.find((t) => t.id === activeId) ?? templates[0]
-  if (!active) return null
+  const active = templates.find((t) => t.id === activeId) ?? templates[0];
+  if (!active) return null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -344,7 +344,8 @@ export default function EmailPreviewPage() {
               <div>
                 <h2 className="font-semibold">{active.name}</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  Subject: <span className="text-foreground">{active.subject}</span>
+                  Subject:{" "}
+                  <span className="text-foreground">{active.subject}</span>
                 </p>
               </div>
               <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
@@ -401,5 +402,5 @@ export default function EmailPreviewPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

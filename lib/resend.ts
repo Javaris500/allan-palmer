@@ -1,11 +1,13 @@
-import { Resend } from "resend"
+import { Resend } from "resend";
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+export const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "Allan Palmer <onboarding@resend.dev>"
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://allanpalmer.com"
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "palmerar@myumanitoba.ca"
-const LOGO_URL = `${SITE_URL}/images/allan-logo.png`
+const FROM_EMAIL =
+  process.env.EMAIL_FROM || "Allan Palmer <onboarding@resend.dev>";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://allanpalmerviolinist.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "palmerar@myumanitoba.ca";
+const LOGO_URL = `${SITE_URL}/images/allan-logo.png`;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Shared Email Layout
@@ -17,8 +19,8 @@ export function emailLayout({
   preheader,
   body,
 }: {
-  preheader: string
-  body: string
+  preheader: string;
+  body: string;
 }): string {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -113,22 +115,26 @@ export function emailLayout({
     </tr>
   </table>
 </body>
-</html>`
+</html>`;
 }
 
 // Helper: renders a key-value detail row inside a details card
-export function detailRow(label: string, value: string, isGold = false): string {
+export function detailRow(
+  label: string,
+  value: string,
+  isGold = false,
+): string {
   return `<tr>
     <td style="color:#888;padding:10px 12px;font-size:14px;border-bottom:1px solid #1a1a1a;white-space:nowrap;">${label}</td>
     <td style="color:${isGold ? "#d4a843" : "#e5e5e5"};padding:10px 12px;font-size:14px;border-bottom:1px solid #1a1a1a;text-align:right;">${value}</td>
-  </tr>`
+  </tr>`;
 }
 
 // Helper: wraps rows in a styled details card
 export function detailsCard(rows: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:24px 0;">
     ${rows}
-  </table>`
+  </table>`;
 }
 
 // Helper: gold CTA button
@@ -141,7 +147,7 @@ export function ctaButton(text: string, href: string): string {
         </a>
       </td>
     </tr>
-  </table>`
+  </table>`;
 }
 
 // Helper: muted info block (tip, note, etc.)
@@ -153,7 +159,7 @@ export function infoBlock(title: string, content: string): string {
         <p style="margin:0;font-size:14px;color:#aaa;line-height:1.7;">${content}</p>
       </td>
     </tr>
-  </table>`
+  </table>`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -169,13 +175,13 @@ export async function sendBookingReceived({
   timePreference,
   duration,
 }: {
-  to: string
-  name: string
-  reference: string
-  eventType: string
-  eventDate: string
-  timePreference: string
-  duration: string
+  to: string;
+  name: string;
+  reference: string;
+  eventType: string;
+  eventDate: string;
+  timePreference: string;
+  duration: string;
 }) {
   const body = `
     <h2 style="margin:0 0 16px;font-size:22px;color:#fff;font-weight:600;">
@@ -188,24 +194,24 @@ export async function sendBookingReceived({
 
     ${detailsCard(
       detailRow("Reference", reference) +
-      detailRow("Event", eventType, true) +
-      detailRow("Date", eventDate) +
-      detailRow("Time", timePreference) +
-      detailRow("Duration", duration)
+        detailRow("Event", eventType, true) +
+        detailRow("Date", eventDate) +
+        detailRow("Time", timePreference) +
+        detailRow("Duration", duration),
     )}
 
     ${infoBlock(
       "What happens next?",
       "Allan will review the details of your event and reach out to discuss " +
-      "availability, pricing, and any special arrangements. You can check your " +
-      "booking status anytime from your dashboard."
+        "availability, pricing, and any special arrangements. You can check your " +
+        "booking status anytime from your dashboard.",
     )}
 
     ${ctaButton("View My Booking", `${SITE_URL}/my-bookings`)}
 
     <p style="margin:0;font-size:13px;color:#666;text-align:center;">
       Questions? Reply to this email or call <strong style="color:#888;">(204) 898-9699</strong>
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -215,7 +221,7 @@ export async function sendBookingReceived({
       preheader: `Thank you, ${name}! Allan will review your ${eventType.toLowerCase()} booking and respond within 24-48 hours.`,
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -238,20 +244,20 @@ export async function sendNewBookingAlert({
   songRequests,
   specialRequirements,
 }: {
-  reference: string
-  contactName: string
-  contactEmail: string
-  contactPhone: string
-  eventType: string
-  eventDate: string
-  timePreference: string
-  venue?: string | null
-  guestCount?: string | null
-  setting?: string | null
-  duration: string
-  musicStyles: string[]
-  songRequests?: string | null
-  specialRequirements?: string | null
+  reference: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  eventType: string;
+  eventDate: string;
+  timePreference: string;
+  venue?: string | null;
+  guestCount?: string | null;
+  setting?: string | null;
+  duration: string;
+  musicStyles: string[];
+  songRequests?: string | null;
+  specialRequirements?: string | null;
 }) {
   const eventRows =
     detailRow("Reference", reference) +
@@ -262,12 +268,12 @@ export async function sendNewBookingAlert({
     (guestCount ? detailRow("Guests", guestCount) : "") +
     (setting ? detailRow("Setting", setting) : "") +
     detailRow("Duration", duration) +
-    detailRow("Music Styles", musicStyles.join(", "))
+    detailRow("Music Styles", musicStyles.join(", "));
 
   const contactRows =
     detailRow("Name", contactName) +
     detailRow("Email", contactEmail) +
-    detailRow("Phone", contactPhone)
+    detailRow("Phone", contactPhone);
 
   const notesHtml =
     (songRequests
@@ -279,7 +285,7 @@ export async function sendNewBookingAlert({
       ? `<p style="margin:0;font-size:14px;color:#ccc;line-height:1.6;">
            <strong style="color:#888;">Special Requirements:</strong><br/>${specialRequirements}
          </p>`
-      : "")
+      : "");
 
   const body = `
     <h2 style="margin:0 0 4px;font-size:22px;color:#fff;font-weight:600;">
@@ -299,21 +305,23 @@ export async function sendNewBookingAlert({
     </p>
     ${detailsCard(contactRows)}
 
-    ${notesHtml
-      ? `<p style="margin:24px 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">
+    ${
+      notesHtml
+        ? `<p style="margin:24px 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">
            Additional Notes
          </p>
          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:8px 0 24px;">
            <tr><td style="padding:16px 20px;">${notesHtml}</td></tr>
          </table>`
-      : ""}
+        : ""
+    }
 
     ${ctaButton("Review in Dashboard", `${SITE_URL}/admin`)}
 
     <p style="margin:0;font-size:13px;color:#666;text-align:center;">
       Reply directly to <a href="mailto:${contactEmail}" style="color:#d4a843;text-decoration:none;">${contactEmail}</a>
       or call <strong style="color:#888;">${contactPhone}</strong>
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -324,35 +332,42 @@ export async function sendNewBookingAlert({
       preheader: `${contactName} wants to book you for a ${eventType.toLowerCase()} on ${eventDate}.`,
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 3. BOOKING STATUS UPDATE — sent to user when Allan changes the status
 // ═══════════════════════════════════════════════════════════════════════════
 
-const STATUS_COPY: Record<string, { heading: string; message: string; color: string }> = {
+const STATUS_COPY: Record<
+  string,
+  { heading: string; message: string; color: string }
+> = {
   REVIEWED: {
     heading: "Your Booking Is Being Reviewed",
-    message: "Allan has reviewed your request and is checking availability. You'll hear back shortly with a confirmation or follow-up questions.",
+    message:
+      "Allan has reviewed your request and is checking availability. You'll hear back shortly with a confirmation or follow-up questions.",
     color: "#3b82f6", // blue
   },
   CONFIRMED: {
     heading: "Your Booking Is Confirmed!",
-    message: "Great news — Allan has confirmed your booking. He's looking forward to performing at your event. The details are below.",
+    message:
+      "Great news — Allan has confirmed your booking. He's looking forward to performing at your event. The details are below.",
     color: "#22c55e", // green
   },
   COMPLETED: {
     heading: "Thank You for Having Allan!",
-    message: "Your event has been marked as completed. Thank you for choosing Allan Palmer. If you enjoyed the performance, a review would mean the world.",
+    message:
+      "Your event has been marked as completed. Thank you for choosing Allan Palmer. If you enjoyed the performance, a review would mean the world.",
     color: "#d4a843", // gold
   },
   CANCELLED: {
     heading: "Booking Cancelled",
-    message: "Your booking has been cancelled. If this was unexpected or you'd like to rebook, please don't hesitate to reach out.",
+    message:
+      "Your booking has been cancelled. If this was unexpected or you'd like to rebook, please don't hesitate to reach out.",
     color: "#ef4444", // red
   },
-}
+};
 
 export async function sendBookingStatusUpdate({
   to,
@@ -363,23 +378,24 @@ export async function sendBookingStatusUpdate({
   status,
   adminMessage,
 }: {
-  to: string
-  name: string
-  reference: string
-  eventType: string
-  eventDate: string
-  status: string
-  adminMessage?: string | null
+  to: string;
+  name: string;
+  reference: string;
+  eventType: string;
+  eventDate: string;
+  status: string;
+  adminMessage?: string | null;
 }) {
   const copy = STATUS_COPY[status] || {
     heading: "Booking Update",
-    message: "There's been an update to your booking. Check your dashboard for the latest details.",
+    message:
+      "There's been an update to your booking. Check your dashboard for the latest details.",
     color: "#d4a843",
-  }
+  };
 
   const statusBadge = `<span style="display:inline-block;background-color:${copy.color};color:#000;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:0.5px;text-transform:uppercase;">
     ${status}
-  </span>`
+  </span>`;
 
   const body = `
     <div style="text-align:center;margin-bottom:24px;">
@@ -395,12 +411,13 @@ export async function sendBookingStatusUpdate({
 
     ${detailsCard(
       detailRow("Reference", reference) +
-      detailRow("Event", eventType, true) +
-      detailRow("Date", eventDate)
+        detailRow("Event", eventType, true) +
+        detailRow("Date", eventDate),
     )}
 
-    ${adminMessage
-      ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border-left:3px solid #d4a843;border-radius:0 12px 12px 0;margin:24px 0;">
+    ${
+      adminMessage
+        ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border-left:3px solid #d4a843;border-radius:0 12px 12px 0;margin:24px 0;">
            <tr>
              <td style="padding:16px 20px;">
                <p style="margin:0 0 6px;font-size:12px;color:#d4a843;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Message from Allan</p>
@@ -408,13 +425,14 @@ export async function sendBookingStatusUpdate({
              </td>
            </tr>
          </table>`
-      : ""}
+        : ""
+    }
 
     ${ctaButton("View My Booking", `${SITE_URL}/my-bookings`)}
 
     <p style="margin:0;font-size:13px;color:#666;text-align:center;">
       Questions? Reply to this email or call <strong style="color:#888;">(204) 898-9699</strong>
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -424,7 +442,7 @@ export async function sendBookingStatusUpdate({
       preheader: `${copy.heading} — Your ${eventType.toLowerCase()} booking (${reference}) has been updated.`,
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -438,11 +456,11 @@ export async function sendNewMessageNotification({
   eventType,
   messagePreview,
 }: {
-  to: string
-  name: string
-  reference: string
-  eventType: string
-  messagePreview: string
+  to: string;
+  name: string;
+  reference: string;
+  eventType: string;
+  messagePreview: string;
 }) {
   const body = `
     <h2 style="margin:0 0 16px;font-size:22px;color:#fff;font-weight:600;">
@@ -469,7 +487,7 @@ export async function sendNewMessageNotification({
 
     <p style="margin:0;font-size:13px;color:#666;text-align:center;">
       You can also reply directly to this email.
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -479,7 +497,7 @@ export async function sendNewMessageNotification({
       preheader: `Allan says: "${messagePreview.slice(0, 80)}${messagePreview.length > 80 ? "..." : ""}"`,
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -490,8 +508,8 @@ export async function sendWelcomeEmail({
   to,
   name,
 }: {
-  to: string
-  name: string
+  to: string;
+  name: string;
 }) {
   const body = `
     <h2 style="margin:0 0 16px;font-size:22px;color:#fff;font-weight:600;text-align:center;">
@@ -505,14 +523,14 @@ export async function sendWelcomeEmail({
     ${infoBlock(
       "What can you do?",
       "Browse services &bull; Request a booking &bull; " +
-      "Message Allan directly &bull; Track your booking status"
+        "Message Allan directly &bull; Track your booking status",
     )}
 
     ${ctaButton("Book Allan", `${SITE_URL}/booking`)}
 
     <p style="margin:0;font-size:13px;color:#666;text-align:center;">
       Need help? Reply to this email anytime.
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -522,7 +540,7 @@ export async function sendWelcomeEmail({
       preheader: `Welcome ${name}! Your Allan Palmer account is ready. Start booking live violin for your next event.`,
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -533,8 +551,8 @@ export async function sendPasswordResetEmail({
   to,
   resetUrl,
 }: {
-  to: string
-  resetUrl: string
+  to: string;
+  resetUrl: string;
 }) {
   const body = `
     <h2 style="margin:0 0 16px;font-size:22px;color:#fff;font-weight:600;text-align:center;">
@@ -552,7 +570,7 @@ export async function sendPasswordResetEmail({
     </p>
     <p style="margin:0;font-size:12px;color:#444;text-align:center;word-break:break-all;">
       Or copy this link: <a href="${resetUrl}" style="color:#d4a843;text-decoration:none;">${resetUrl}</a>
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -562,7 +580,7 @@ export async function sendPasswordResetEmail({
       preheader: "You requested a password reset. This link expires in 1 hour.",
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -578,13 +596,13 @@ export async function sendBookingInquiry({
   venue,
   message,
 }: {
-  name: string
-  email: string
-  phone: string
-  eventType: string
-  eventDate: string
-  venue?: string
-  message?: string
+  name: string;
+  email: string;
+  phone: string;
+  eventType: string;
+  eventDate: string;
+  venue?: string;
+  message?: string;
 }) {
   const rows =
     detailRow("Name", name) +
@@ -592,7 +610,7 @@ export async function sendBookingInquiry({
     detailRow("Phone", phone) +
     detailRow("Event Type", eventType, true) +
     detailRow("Event Date", eventDate) +
-    (venue ? detailRow("Venue", venue) : "")
+    (venue ? detailRow("Venue", venue) : "");
 
   const body = `
     <h2 style="margin:0 0 4px;font-size:22px;color:#fff;font-weight:600;">
@@ -604,19 +622,21 @@ export async function sendBookingInquiry({
 
     ${detailsCard(rows)}
 
-    ${message
-      ? `<p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">
+    ${
+      message
+        ? `<p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">
            Message
          </p>
          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:8px 0 24px;">
            <tr><td style="padding:16px 20px;font-size:14px;color:#ccc;line-height:1.65;">${message}</td></tr>
          </table>`
-      : ""}
+        : ""
+    }
 
     <p style="margin:0;font-size:13px;color:#666;text-align:center;">
       Reply directly to <a href="mailto:${email}" style="color:#d4a843;text-decoration:none;">${email}</a>
       or call <strong style="color:#888;">${phone}</strong>
-    </p>`
+    </p>`;
 
   return resend.emails.send({
     from: FROM_EMAIL,
@@ -627,19 +647,64 @@ export async function sendBookingInquiry({
       preheader: `${name} wants to book you for a ${eventType.toLowerCase()} on ${eventDate}.`,
       body,
     }),
-  })
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 8. GENERIC ADMIN NOTIFICATION — for system alerts to Allan
+// 8. MAGIC LINK SIGN-IN — sent by NextAuth Resend provider
+// ═══════════════════════════════════════════════════════════════════════════
+
+export async function sendMagicLinkEmail(params: {
+  identifier: string;
+  url: string;
+  provider: { from?: string };
+}) {
+  const { identifier: to, url } = params;
+  const host = new URL(url).host;
+
+  const body = `
+    <h2 style="margin:0 0 16px;font-size:22px;color:#fff;font-weight:600;text-align:center;">
+      Sign in to Allan Palmer
+    </h2>
+    <p style="margin:0 0 8px;font-size:15px;color:#ccc;line-height:1.65;text-align:center;">
+      Click the button below to sign in to your account. This link expires in
+      <strong style="color:#fff;">24 hours</strong> and can only be used once.
+    </p>
+
+    ${ctaButton("Sign In", url)}
+
+    <p style="margin:0 0 8px;font-size:13px;color:#666;text-align:center;">
+      If you didn't request this, you can safely ignore this email.
+    </p>
+    <p style="margin:0;font-size:12px;color:#444;text-align:center;word-break:break-all;">
+      Or copy this link: <a href="${url}" style="color:#d4a843;text-decoration:none;">${url}</a>
+    </p>`;
+
+  const result = await resend.emails.send({
+    from: params.provider.from ?? FROM_EMAIL,
+    to,
+    subject: `Sign in to ${host}`,
+    html: emailLayout({
+      preheader: `Your sign-in link for Allan Palmer. Expires in 24 hours.`,
+      body,
+    }),
+  });
+
+  if (result.error) {
+    throw new Error(`Magic link send failed: ${result.error.message}`);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 9. GENERIC ADMIN NOTIFICATION — for system alerts to Allan
 // ═══════════════════════════════════════════════════════════════════════════
 
 export async function sendAdminNotification({
   subject,
   body: content,
 }: {
-  subject: string
-  body: string
+  subject: string;
+  body: string;
 }) {
   const html = emailLayout({
     preheader: subject,
@@ -650,12 +715,12 @@ export async function sendAdminNotification({
       <div style="font-size:15px;color:#ccc;line-height:1.65;">
         ${content}
       </div>`,
-  })
+  });
 
   return resend.emails.send({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
     subject: `[Admin] ${subject}`,
     html,
-  })
+  });
 }

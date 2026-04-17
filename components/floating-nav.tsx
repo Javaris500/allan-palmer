@@ -12,12 +12,13 @@ import {
   Music,
   Film,
   Calendar,
-  ClipboardList,
+  HandHeart,
   ArrowUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BackgroundMusicToggle } from "@/components/background-music-toggle";
+import { LeahChatToggle } from "@/components/leah-chat-toggle";
 import { cn } from "@/lib/utils";
 import { NAVIGATION_ITEMS } from "@/lib/constants";
 
@@ -28,7 +29,7 @@ const navIcons: Record<string, React.ElementType> = {
   "/gallery": Film,
   "/booking": Calendar,
   "/services": Calendar,
-  "/my-bookings": ClipboardList,
+  "/support": HandHeart,
 };
 
 const navItems: {
@@ -42,8 +43,8 @@ const navItems: {
     label: item.label as string,
     icon: navIcons[item.href] || Home,
   })),
-  { href: "/my-bookings", label: "My Bookings", icon: ClipboardList },
   { href: "/services", label: "Services", icon: Calendar, highlight: true },
+  { href: "/support", label: "Donate", icon: HandHeart },
 ];
 
 export function FloatingNav() {
@@ -188,6 +189,7 @@ export function FloatingNav() {
 
                     <div className="flex items-center justify-between px-2">
                       <div className="flex items-center gap-1">
+                        <LeahChatToggle />
                         <BackgroundMusicToggle />
                         <ThemeToggle variant="icon" />
                       </div>
@@ -219,6 +221,7 @@ export function FloatingNav() {
                     exit={{ opacity: 0, x: 20, scale: 0.8 }}
                     transition={{ duration: 0.2 }}
                   >
+                    <LeahChatToggle />
                     <BackgroundMusicToggle />
                     <ThemeToggle variant="icon" />
                   </motion.div>

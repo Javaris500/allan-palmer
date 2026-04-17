@@ -1,110 +1,174 @@
-"use client"
+"use client";
 
-import { useState, useRef, useCallback, memo, useEffect } from "react"
-import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle } from "lucide-react"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { getVideoConfig } from "@/lib/video-thumbnails"
+import { useState, useRef, useCallback, memo, useEffect } from "react";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  AlertCircle,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { getVideoConfig } from "@/lib/video-thumbnails";
 
 interface MuxVideoPlayerProps {
-  playbackId: string
-  className?: string
-  priority?: boolean
+  playbackId: string;
+  className?: string;
+  priority?: boolean;
+  fluid?: boolean;
 }
 
 const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
   playbackId,
   className = "",
   priority = false,
+  fluid = false,
 }) {
-  const [showThumbnail, setShowThumbnail] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasError, setHasError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [isMuted, setIsMuted] = useState(false)
-  const [showControls, setShowControls] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const hlsRef = useRef<any>(null)
-  const retryCountRef = useRef(0)
+  const [showThumbnail, setShowThumbnail] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isMuted, setIsMuted] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hlsRef = useRef<any>(null);
+  const retryCountRef = useRef(0);
 
-  const config = getVideoConfig(playbackId)
+  const config = getVideoConfig(playbackId);
 
   // Generate optimized thumbnail URL with proper sizing
   const getThumbnailUrl = (id: string) => {
-    const thumbnailConfigs: Record<string, { time: number; width: number; height: number }> = {
-      "8XHHOLo2GkCfpOoPZSUCEIFE3k2aJkL7s92Qjkum00XU": { time: 12, width: 854, height: 480 },
-      ek42ypjXGaMH9NLc5yAMJOm00IZlqiEn4SlRjSB0002bk4: { time: 4, width: 854, height: 480 },
-      LDw3odZmUPkOV01owwlG5KU7p5Syk23X2ZycIsRoG4KQ: { time: 8, width: 854, height: 480 },
-      qQKZNjMdf2bZIGgymE1HhHb005dUN8hWn00kZEkNojugw: { time: 8, width: 854, height: 480 },
-      Mhrzlp01EwyQ84UFyHlPpAFnRpR6O3FtbsOmYpwKvpV8: { time: 4, width: 854, height: 480 },
-      UvL8y013AUE3rUQ9fGGeQYmtkkbyLjOtTBOvnGWCUphY: { time: 10, width: 854, height: 480 },
-      CMDtNWPBH6wyF501sNQN5WdyCXa01Hf6vuXMnvC6zeo4A: { time: 8, width: 854, height: 480 },
-      p101AC02IpZ00TXImqFnAtiTWPsU4ZqVerE6yxWABxzJEQ: { time: 5, width: 854, height: 480 },
-      ImhbTvedynawHayK1x6SgFflmuW00g02Vja5XJ4nDbHvk: { time: 8, width: 854, height: 480 },
-      og101R00uw6Nzs0101Es2xVJg86F2WNDawpU01LrL6Dp7pjQ: { time: 12, width: 854, height: 480 },
-      ZQMvVe46S02hgtwX98xJsc8Z4dBmU02Uiqu4RW02X01f2tk: { time: 5, width: 854, height: 480 },
-      "1KO10154BKx01kM7QqWpcO3LWk2RzfeYQd9ctqEjSJFUI": { time: 15, width: 854, height: 480 },
-    }
+    const thumbnailConfigs: Record<
+      string,
+      { time: number; width: number; height: number }
+    > = {
+      "8XHHOLo2GkCfpOoPZSUCEIFE3k2aJkL7s92Qjkum00XU": {
+        time: 12,
+        width: 854,
+        height: 480,
+      },
+      ek42ypjXGaMH9NLc5yAMJOm00IZlqiEn4SlRjSB0002bk4: {
+        time: 4,
+        width: 854,
+        height: 480,
+      },
+      LDw3odZmUPkOV01owwlG5KU7p5Syk23X2ZycIsRoG4KQ: {
+        time: 8,
+        width: 854,
+        height: 480,
+      },
+      qQKZNjMdf2bZIGgymE1HhHb005dUN8hWn00kZEkNojugw: {
+        time: 8,
+        width: 854,
+        height: 480,
+      },
+      Mhrzlp01EwyQ84UFyHlPpAFnRpR6O3FtbsOmYpwKvpV8: {
+        time: 4,
+        width: 854,
+        height: 480,
+      },
+      UvL8y013AUE3rUQ9fGGeQYmtkkbyLjOtTBOvnGWCUphY: {
+        time: 10,
+        width: 854,
+        height: 480,
+      },
+      CMDtNWPBH6wyF501sNQN5WdyCXa01Hf6vuXMnvC6zeo4A: {
+        time: 8,
+        width: 854,
+        height: 480,
+      },
+      p101AC02IpZ00TXImqFnAtiTWPsU4ZqVerE6yxWABxzJEQ: {
+        time: 5,
+        width: 854,
+        height: 480,
+      },
+      ImhbTvedynawHayK1x6SgFflmuW00g02Vja5XJ4nDbHvk: {
+        time: 8,
+        width: 854,
+        height: 480,
+      },
+      og101R00uw6Nzs0101Es2xVJg86F2WNDawpU01LrL6Dp7pjQ: {
+        time: 12,
+        width: 854,
+        height: 480,
+      },
+      ZQMvVe46S02hgtwX98xJsc8Z4dBmU02Uiqu4RW02X01f2tk: {
+        time: 5,
+        width: 854,
+        height: 480,
+      },
+      "1KO10154BKx01kM7QqWpcO3LWk2RzfeYQd9ctqEjSJFUI": {
+        time: 15,
+        width: 854,
+        height: 480,
+      },
+    };
 
-    const config = thumbnailConfigs[id] || { time: 10, width: 854, height: 480 }
-    return `https://image.mux.com/${id}/thumbnail.png?width=${config.width}&height=${config.height}&time=${config.time}&fit_mode=smartcrop`
-  }
+    const config = thumbnailConfigs[id] || {
+      time: 10,
+      width: 854,
+      height: 480,
+    };
+    return `https://image.mux.com/${id}/thumbnail.png?width=${config.width}&height=${config.height}&time=${config.time}&fit_mode=smartcrop`;
+  };
 
-  const thumbnailUrl = getThumbnailUrl(playbackId)
+  const thumbnailUrl = getThumbnailUrl(playbackId);
 
   // Load HLS.js dynamically
   const loadHLS = useCallback(async () => {
-    if (typeof window === "undefined") return null
+    if (typeof window === "undefined") return null;
 
     try {
-      const Hls = (await import("hls.js")).default
-      return Hls
+      const Hls = (await import("hls.js")).default;
+      return Hls;
     } catch (error) {
-      console.error("Failed to load HLS.js:", error)
-      return null
+      console.error("Failed to load HLS.js:", error);
+      return null;
     }
-  }, [])
+  }, []);
 
   const handlePlay = useCallback(async () => {
     if (!videoRef.current) {
-      console.error("Video ref not available for playbackId:", playbackId)
-      setHasError(true)
-      setErrorMessage("Video player not initialized")
-      return
+      console.error("Video ref not available for playbackId:", playbackId);
+      setHasError(true);
+      setErrorMessage("Video player not initialized");
+      return;
     }
 
     if (!document.contains(videoRef.current)) {
-      console.error("Video element not in DOM")
-      return
+      console.error("Video element not in DOM");
+      return;
     }
 
-    setShowThumbnail(false)
-    setIsLoading(true)
-    setHasError(false)
-    setErrorMessage("")
-    retryCountRef.current = 0
+    setShowThumbnail(false);
+    setIsLoading(true);
+    setHasError(false);
+    setErrorMessage("");
+    retryCountRef.current = 0;
 
-    const video = videoRef.current
-    const hlsUrl = `https://stream.mux.com/${playbackId}.m3u8`
+    const video = videoRef.current;
+    const hlsUrl = `https://stream.mux.com/${playbackId}.m3u8`;
 
     try {
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = hlsUrl
-        video.load()
+        video.src = hlsUrl;
+        video.load();
 
         try {
-          await video.play()
-          setIsPlaying(true)
-          setIsLoading(false)
-          return
+          await video.play();
+          setIsPlaying(true);
+          setIsLoading(false);
+          return;
         } catch (error) {}
       }
 
-      const Hls = await loadHLS()
+      const Hls = await loadHLS();
       if (Hls && Hls.isSupported()) {
         if (hlsRef.current) {
-          hlsRef.current.destroy()
+          hlsRef.current.destroy();
         }
 
         const hls = new Hls({
@@ -133,234 +197,256 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
           widevineLicenseUrl: undefined,
           drmSystems: {},
           requestMediaKeySystemAccessFunc: undefined,
-        })
+        });
 
-        hlsRef.current = hls
+        hlsRef.current = hls;
 
-        hls.on(Hls.Events.MEDIA_ATTACHED, () => {})
+        hls.on(Hls.Events.MEDIA_ATTACHED, () => {});
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           if (videoRef.current && document.contains(videoRef.current)) {
             video
               .play()
               .then(() => {
-                setIsPlaying(true)
-                setIsLoading(false)
+                setIsPlaying(true);
+                setIsLoading(false);
               })
               .catch((error) => {
-                console.error("HLS play failed:", error)
-                tryMP4Fallback()
-              })
+                console.error("HLS play failed:", error);
+                tryMP4Fallback();
+              });
           }
-        })
+        });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
-            console.error("Fatal HLS error:", data)
+            console.error("Fatal HLS error:", data);
             switch (data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
                 if (retryCountRef.current < 3) {
-                  retryCountRef.current++
-                  hls.startLoad()
+                  retryCountRef.current++;
+                  hls.startLoad();
                 } else {
-                  tryMP4Fallback()
+                  tryMP4Fallback();
                 }
-                break
+                break;
               case Hls.ErrorTypes.MEDIA_ERROR:
                 if (retryCountRef.current < 3) {
-                  retryCountRef.current++
-                  hls.recoverMediaError()
+                  retryCountRef.current++;
+                  hls.recoverMediaError();
                 } else {
-                  tryMP4Fallback()
+                  tryMP4Fallback();
                 }
-                break
+                break;
               default:
-                tryMP4Fallback()
-                break
+                tryMP4Fallback();
+                break;
             }
           } else {
             if (data.details === "bufferStalledError") {
               if (retryCountRef.current < 2) {
-                retryCountRef.current++
+                retryCountRef.current++;
                 setTimeout(() => {
-                  if (video && video.paused && isPlaying && document.contains(video)) {
-                    video.play().catch(console.error)
+                  if (
+                    video &&
+                    video.paused &&
+                    isPlaying &&
+                    document.contains(video)
+                  ) {
+                    video.play().catch(console.error);
                   }
-                }, 1000)
+                }, 1000);
               }
             }
           }
-        })
+        });
 
         hls.on(Hls.Events.BUFFER_APPENDED, () => {
-          retryCountRef.current = 0
-        })
+          retryCountRef.current = 0;
+        });
 
-        hls.loadSource(hlsUrl)
-        hls.attachMedia(video)
+        hls.loadSource(hlsUrl);
+        hls.attachMedia(video);
       } else {
-        tryMP4Fallback()
+        tryMP4Fallback();
       }
     } catch (error) {
-      console.error("HLS setup failed:", error)
-      tryMP4Fallback()
+      console.error("HLS setup failed:", error);
+      tryMP4Fallback();
     }
 
     function tryMP4Fallback() {
-      const mp4Url = `https://stream.mux.com/${playbackId}.mp4`
+      const mp4Url = `https://stream.mux.com/${playbackId}.mp4`;
 
       if (videoRef.current && document.contains(videoRef.current)) {
         if (hlsRef.current) {
-          hlsRef.current.destroy()
-          hlsRef.current = null
+          hlsRef.current.destroy();
+          hlsRef.current = null;
         }
 
-        videoRef.current.src = mp4Url
-        videoRef.current.load()
+        videoRef.current.src = mp4Url;
+        videoRef.current.load();
 
         videoRef.current
           .play()
           .then(() => {
-            setIsPlaying(true)
-            setIsLoading(false)
+            setIsPlaying(true);
+            setIsLoading(false);
           })
           .catch((mp4Error) => {
-            console.error("MP4 fallback failed:", mp4Error)
-            setHasError(true)
-            setErrorMessage("Unable to play video. Please check your connection and try again.")
-            setIsLoading(false)
-            setShowThumbnail(true)
-          })
+            console.error("MP4 fallback failed:", mp4Error);
+            setHasError(true);
+            setErrorMessage(
+              "Unable to play video. Please check your connection and try again.",
+            );
+            setIsLoading(false);
+            setShowThumbnail(true);
+          });
       }
     }
-  }, [playbackId, loadHLS, isPlaying])
+  }, [playbackId, loadHLS, isPlaying]);
 
   useEffect(() => {
     return () => {
       if (hlsRef.current) {
-        hlsRef.current.destroy()
-        hlsRef.current = null
+        hlsRef.current.destroy();
+        hlsRef.current = null;
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const handleVideoError = useCallback(
     (e: any) => {
-      console.error("Video element error for playbackId:", playbackId, e.target?.error)
+      console.error(
+        "Video element error for playbackId:",
+        playbackId,
+        e.target?.error,
+      );
 
-      let errorMsg = "Video playback error"
+      let errorMsg = "Video playback error";
       if (e.target?.error) {
         switch (e.target.error.code) {
           case 1:
-            errorMsg = "Video loading was aborted"
-            break
+            errorMsg = "Video loading was aborted";
+            break;
           case 2:
-            errorMsg = "Network error occurred while loading video"
-            break
+            errorMsg = "Network error occurred while loading video";
+            break;
           case 3:
-            errorMsg = "Video format not supported by your browser"
-            break
+            errorMsg = "Video format not supported by your browser";
+            break;
           case 4:
-            errorMsg = "Video source not found or unavailable"
-            break
+            errorMsg = "Video source not found or unavailable";
+            break;
           default:
-            errorMsg = `Video error (code: ${e.target.error.code})`
+            errorMsg = `Video error (code: ${e.target.error.code})`;
         }
       }
 
-      setErrorMessage(errorMsg)
-      setHasError(true)
-      setIsLoading(false)
-      setShowThumbnail(true)
-      setIsPlaying(false)
+      setErrorMessage(errorMsg);
+      setHasError(true);
+      setIsLoading(false);
+      setShowThumbnail(true);
+      setIsPlaying(false);
     },
     [playbackId],
-  )
+  );
 
   const handleVideoCanPlay = useCallback(() => {
-    setIsLoading(false)
-  }, [playbackId])
+    setIsLoading(false);
+  }, [playbackId]);
 
   const handleVideoLoadStart = useCallback(() => {
-    setIsLoading(true)
-  }, [playbackId])
+    setIsLoading(true);
+  }, [playbackId]);
 
   const handleVideoPlay = useCallback(() => {
-    setIsPlaying(true)
-    setIsLoading(false)
-  }, [])
+    setIsPlaying(true);
+    setIsLoading(false);
+  }, []);
 
   const handleVideoPause = useCallback(() => {
-    setIsPlaying(false)
-  }, [])
+    setIsPlaying(false);
+  }, []);
 
   const handleVideoEnded = useCallback(() => {
-    setIsPlaying(false)
-    setShowThumbnail(true)
-    setShowControls(false)
-  }, [])
+    setIsPlaying(false);
+    setShowThumbnail(true);
+    setShowControls(false);
+  }, []);
 
   const handleVideoWaiting = useCallback(() => {
-    setIsLoading(true)
-  }, [playbackId])
+    setIsLoading(true);
+  }, [playbackId]);
 
   const handleVideoCanPlayThrough = useCallback(() => {
-    setIsLoading(false)
-  }, [playbackId])
+    setIsLoading(false);
+  }, [playbackId]);
 
   const togglePlayPause = useCallback(() => {
-    if (!videoRef.current || !document.contains(videoRef.current)) return
+    if (!videoRef.current || !document.contains(videoRef.current)) return;
 
     if (isPlaying) {
-      videoRef.current.pause()
+      videoRef.current.pause();
     } else {
       videoRef.current.play().catch((error) => {
-        console.error("Play failed:", error)
-        setHasError(true)
-        setErrorMessage("Failed to resume playback")
-      })
+        console.error("Play failed:", error);
+        setHasError(true);
+        setErrorMessage("Failed to resume playback");
+      });
     }
-  }, [isPlaying])
+  }, [isPlaying]);
 
   const toggleMute = useCallback(() => {
-    if (!videoRef.current || !document.contains(videoRef.current)) return
+    if (!videoRef.current || !document.contains(videoRef.current)) return;
 
-    videoRef.current.muted = !videoRef.current.muted
-    setIsMuted(videoRef.current.muted)
-  }, [])
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  }, []);
 
   const toggleFullscreen = useCallback(() => {
-    if (!videoRef.current || !document.contains(videoRef.current)) return
+    if (!videoRef.current || !document.contains(videoRef.current)) return;
 
     if (document.fullscreenElement) {
-      document.exitFullscreen()
+      document.exitFullscreen();
     } else {
-      videoRef.current.requestFullscreen()
+      videoRef.current.requestFullscreen();
     }
-  }, [])
+  }, []);
+
+  const containerSizing = fluid
+    ? "relative w-full h-full bg-muted rounded-lg overflow-hidden"
+    : "relative w-full max-w-2xl mx-auto aspect-video bg-muted rounded-lg overflow-hidden";
+  const playerSizing = fluid
+    ? "relative w-full h-full bg-black rounded-lg overflow-hidden shadow-lg"
+    : "relative w-full max-w-2xl mx-auto aspect-video bg-black rounded-lg overflow-hidden shadow-lg";
 
   if (hasError) {
     return (
-      <div
-        className={`relative w-full max-w-2xl mx-auto aspect-video bg-muted rounded-lg overflow-hidden ${className}`}
-      >
+      <div className={`${containerSizing} ${className}`}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center p-6">
             <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground font-medium mb-2">Video Unavailable</p>
-            <p className="text-sm text-muted-foreground/70 mb-2">{errorMessage}</p>
-            <p className="text-xs text-muted-foreground/50 mb-4">PlaybackId: {playbackId.slice(0, 12)}...</p>
+            <p className="text-muted-foreground font-medium mb-2">
+              Video Unavailable
+            </p>
+            <p className="text-sm text-muted-foreground/70 mb-2">
+              {errorMessage}
+            </p>
+            <p className="text-xs text-muted-foreground/50 mb-4">
+              PlaybackId: {playbackId.slice(0, 12)}...
+            </p>
             <button
               onClick={() => {
-                setHasError(false)
-                setShowThumbnail(true)
-                setIsLoading(false)
-                setErrorMessage("")
-                setIsPlaying(false)
-                retryCountRef.current = 0
+                setHasError(false);
+                setShowThumbnail(true);
+                setIsLoading(false);
+                setErrorMessage("");
+                setIsPlaying(false);
+                retryCountRef.current = 0;
                 if (hlsRef.current) {
-                  hlsRef.current.destroy()
-                  hlsRef.current = null
+                  hlsRef.current.destroy();
+                  hlsRef.current = null;
                 }
               }}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90 transition-colors"
@@ -370,19 +456,22 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div
-      className={`relative w-full max-w-2xl mx-auto aspect-video bg-black rounded-lg overflow-hidden shadow-lg ${className}`}
+      className={`${playerSizing} ${className}`}
       onMouseEnter={() => !showThumbnail && setShowControls(true)}
       onMouseLeave={() => !showThumbnail && setShowControls(false)}
     >
       {showThumbnail && (
         <div className="absolute inset-0 z-10">
           <Image
-            src={thumbnailUrl || "/placeholder.svg?height=480&width=854&text=Video+Thumbnail"}
+            src={
+              thumbnailUrl ||
+              "/placeholder.svg?height=480&width=854&text=Video+Thumbnail"
+            }
             alt={config?.title || "Video thumbnail"}
             fill
             className="object-cover"
@@ -390,9 +479,10 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
             priority={priority}
             quality={90}
             onError={(e) => {
-              console.error("Thumbnail load error for playbackId:", playbackId)
-              const target = e.target as HTMLImageElement
-              target.src = "/placeholder.svg?height=480&width=854&text=Video+Thumbnail"
+              console.error("Thumbnail load error for playbackId:", playbackId);
+              const target = e.target as HTMLImageElement;
+              target.src =
+                "/placeholder.svg?height=480&width=854&text=Video+Thumbnail";
             }}
           />
 
@@ -404,7 +494,10 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
               whileTap={{ scale: 0.95 }}
               aria-label="Play video"
             >
-              <Play className="w-6 h-6 md:w-8 md:h-8 text-black ml-1" fill="currentColor" />
+              <Play
+                className="w-6 h-6 md:w-8 md:h-8 text-black ml-1"
+                fill="currentColor"
+              />
             </motion.button>
           </div>
         </div>
@@ -440,9 +533,15 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
-                  <Pause className="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" />
+                  <Pause
+                    className="w-4 h-4 md:w-5 md:h-5 text-white"
+                    fill="currentColor"
+                  />
                 ) : (
-                  <Play className="w-4 h-4 md:w-5 md:h-5 text-white ml-0.5" fill="currentColor" />
+                  <Play
+                    className="w-4 h-4 md:w-5 md:h-5 text-white ml-0.5"
+                    fill="currentColor"
+                  />
                 )}
               </button>
 
@@ -481,7 +580,7 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
         </div>
       )}
     </div>
-  )
-})
+  );
+});
 
-export { MuxVideoPlayer }
+export { MuxVideoPlayer };

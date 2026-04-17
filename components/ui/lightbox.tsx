@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import Image from "next/image";
+import { EASE_OUT } from "@/lib/motion";
 
 interface LightboxImage {
   id: number;
@@ -28,6 +28,8 @@ export function Lightbox({
   onNavigate,
 }: LightboxProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const reduced = useReducedMotion();
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   const nextImage = useCallback(() => {
     onNavigate((currentIndex + 1) % images.length);
@@ -48,12 +50,12 @@ export function Lightbox({
           url: window.location.href,
         });
       } catch {
-        // Share cancelled or not supported - silently ignore
+        // Share cancelled or not supported — silently ignore
       }
     }
   };
 
-  // Keyboard navigation
+  // Keyboard nav
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -68,15 +70,15 @@ export function Lightbox({
           break;
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose, prevImage, nextImage]);
 
-  // Prevent body scroll and hide floating nav when lightbox is open
+  // Lock body scroll, hide floating nav, focus close button
   useEffect(() => {
     document.body.style.overflow = "hidden";
     document.documentElement.setAttribute("data-fullscreen-overlay", "true");
+    closeBtnRef.current?.focus();
     return () => {
       document.body.style.overflow = "unset";
       document.documentElement.removeAttribute("data-fullscreen-overlay");
@@ -94,55 +96,69 @@ export function Lightbox({
   return (
     <AnimatePresence>
       <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-label={currentImage.title}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm"
+        transition={
+          reduced ? { duration: 0 } : { duration: 0.4, ease: EASE_OUT }
+        }
+        className="fixed inset-0 z-50 bg-[hsl(var(--bg))]/96 backdrop-blur-md backdrop-saturate-50"
         onClick={onClose}
       >
-        {/* Header */}
-        <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/50 to-transparent">
-          <div className="flex items-center justify-between">
-            <div className="text-white min-w-0 flex-1 mr-4">
-              <h3 className="text-base sm:text-lg font-semibold truncate">
-                {currentImage?.title || "Gallery Image"}
-              </h3>
-            </div>
-            <div className="flex items-center gap-2">
-              {typeof navigator !== "undefined" && "share" in navigator && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-white/20"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleShare();
-                  }}
-                >
-                  <Share2 className="w-5 h-5" />
-                </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/20"
-                onClick={onClose}
-              >
-                <X className="w-6 h-6" />
-              </Button>
-            </div>
-          </div>
+        {/* Corner ornament — thin-stroke X close (top-right) */}
+        <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex items-center gap-1">
+          {typeof navigator !== "undefined" && "share" in navigator && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleShare();
+              }}
+              aria-label="Share image"
+              className="group w-10 h-10 flex items-center justify-center rounded-sm hover:bg-white/5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne"
+            >
+              <Share2
+                className="w-4 h-4 text-cream/70 group-hover:text-champagne transition-colors duration-300"
+                strokeWidth={1.5}
+              />
+            </button>
+          )}
+
+          <button
+            ref={closeBtnRef}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            aria-label="Close lightbox"
+            className="group relative w-10 h-10 flex items-center justify-center rounded-sm hover:bg-white/5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne"
+          >
+            <span
+              className="absolute w-5 h-px bg-cream/70 rotate-45 group-hover:bg-champagne transition-colors duration-300 ease-cinematic"
+              aria-hidden="true"
+            />
+            <span
+              className="absolute w-5 h-px bg-cream/70 -rotate-45 group-hover:bg-champagne transition-colors duration-300 ease-cinematic"
+              aria-hidden="true"
+            />
+          </button>
         </div>
 
-        {/* Main image */}
-        <div className="flex items-center justify-center h-full px-2 sm:px-4 pt-16 sm:pt-20 pb-20 sm:pb-24">
+        {/* Main image area */}
+        <div className="flex items-center justify-center h-full px-4 sm:px-8 pt-16 sm:pt-20 pb-36 sm:pb-40">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={reduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-            className="relative max-w-7xl max-h-full w-full h-full"
+            exit={reduced ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
+            transition={
+              reduced ? { duration: 0 } : { duration: 0.4, ease: EASE_OUT }
+            }
+            className="relative max-w-6xl max-h-full w-full h-full"
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
             <Image
@@ -156,76 +172,93 @@ export function Lightbox({
             />
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-cream/20 border-t-champagne motion-reduce:animate-none" />
               </div>
             )}
           </motion.div>
         </div>
 
-        {/* Navigation arrows - hidden on mobile, use bottom nav instead */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 w-12 h-12"
+        {/* Thin-stroke navigation arrows — desktop only */}
+        <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             prevImage();
           }}
+          aria-label="Previous image"
+          className="hidden sm:flex absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full border border-champagne/40 bg-black/20 backdrop-blur-sm text-cream/80 hover:text-ink hover:bg-champagne hover:border-champagne transition-colors duration-300 ease-cinematic focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne"
         >
-          <ChevronLeft className="w-8 h-8" />
-        </Button>
+          <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
+        </button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 w-12 h-12"
+        <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             nextImage();
           }}
+          aria-label="Next image"
+          className="hidden sm:flex absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full border border-champagne/40 bg-black/20 backdrop-blur-sm text-cream/80 hover:text-ink hover:bg-champagne hover:border-champagne transition-colors duration-300 ease-cinematic focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne"
         >
-          <ChevronRight className="w-8 h-8" />
-        </Button>
+          <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
+        </button>
 
-        {/* Bottom info and navigation */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent">
-          {/* Description */}
-          <div className="text-center text-white px-4 pt-4 pb-2">
-            <p className="text-xs sm:text-sm text-white/80 max-w-2xl mx-auto line-clamp-2">
-              {currentImage.description}
+        {/* Museum placard — bottom */}
+        <div
+          className="absolute bottom-0 inset-x-0 pb-8"
+          style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+        >
+          <div className="max-w-xl mx-auto px-5 text-center">
+            <div className="h-px w-12 bg-champagne/50 mx-auto mb-4" />
+
+            <p className="label-caps !text-[10px] md:!text-[11px] !tracking-[0.3em] mb-3">
+              {currentImage.title}
             </p>
-          </div>
 
-          {/* Navigation bar */}
-          <div
-            className="flex items-center justify-between px-4 pb-4"
-            style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
-          >
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              className="flex items-center gap-1 text-white/70 hover:text-white transition-colors text-sm py-2 px-3 rounded-lg"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Previous</span>
-            </button>
+            {currentImage.description && (
+              <p className="font-display italic text-xs sm:text-sm text-cream/60 leading-relaxed line-clamp-2 mb-4">
+                {currentImage.description}
+              </p>
+            )}
 
-            <span className="text-white/60 text-xs sm:text-sm tabular-nums">
+            {/* Mobile nav — text links */}
+            <div className="flex sm:hidden items-center justify-between gap-4 mt-4">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+                aria-label="Previous image"
+                className="label-caps !text-[10px] !tracking-[0.2em] !text-cream/70 hover:!text-champagne transition-colors inline-flex items-center gap-1"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" strokeWidth={1.5} />
+                Prev
+              </button>
+
+              <span className="font-display italic text-xs text-cream/50 tabular-nums">
+                {currentIndex + 1} / {images.length}
+              </span>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+                aria-label="Next image"
+                className="label-caps !text-[10px] !tracking-[0.2em] !text-cream/70 hover:!text-champagne transition-colors inline-flex items-center gap-1"
+              >
+                Next
+                <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+              </button>
+            </div>
+
+            {/* Desktop counter */}
+            <p className="hidden sm:block font-display italic text-xs text-cream/45 tabular-nums">
               {currentIndex + 1} / {images.length}
-            </span>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              className="flex items-center gap-1 text-white/70 hover:text-white transition-colors text-sm py-2 px-3 rounded-lg"
-            >
-              <span className="hidden sm:inline">Next</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            </p>
           </div>
         </div>
       </motion.div>

@@ -2,148 +2,154 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Music, Award, Users, Calendar } from "lucide-react";
-import { AnimatedElement } from "@/components/animated-element";
-import { Button } from "@/components/ui/button";
-import { AnimatedGradientMesh } from "@/components/ui/animated-gradient-mesh";
-import { TiltCard } from "@/components/ui/tilt-card";
+import { motion, useReducedMotion } from "framer-motion";
+import { EASE_OUT } from "@/lib/motion";
 
 const stats = [
-  { icon: Calendar, label: "Years Experience", value: "20+" },
-  { icon: Users, label: "Events Performed", value: "500+" },
-  { icon: Music, label: "Songs in Repertoire", value: "200+" },
-  { icon: Award, label: "Satisfied Clients", value: "100%" },
+  { value: "18+", label: "Years with violin" },
+  { value: "200+", label: "Engagements" },
+  { value: "148", label: "Selected works" },
 ];
 
 export function AboutHero() {
+  const reduced = useReducedMotion();
+  const fade = (delay = 0) => ({
+    initial: reduced ? { opacity: 1 } : { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: reduced
+      ? { duration: 0 }
+      : { duration: 0.9, ease: EASE_OUT, delay },
+  });
+
   return (
-    <section className="relative py-20 md:py-32 overflow-hidden bg-background dark:bg-black">
-      {/* Animated Gradient Mesh Background */}
-      <AnimatedGradientMesh variant="gold" intensity="vibrant" />
-
-      {/* Additional overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background dark:from-black via-transparent to-transparent z-[1]" />
-
-      <div className="container relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Content */}
-          <div className="space-y-8">
-            <AnimatedElement variant="fade-up">
-              <div className="inline-flex items-center gap-2 bg-gold/20 text-gold rounded-full px-5 py-2.5 text-sm font-medium mb-4 backdrop-blur-sm border border-gold/30">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-gold"></span>
-                </span>
-                About Allan
-              </div>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-foreground dark:text-white">
-                Meet <span className="text-gold">Allan Palmer</span>
-              </h1>
-              <p className="text-xl text-muted-foreground dark:text-gray-300 leading-relaxed">
-                A passionate violinist dedicated to creating unforgettable
-                musical experiences for life's most precious moments.
-              </p>
-            </AnimatedElement>
-
-            <AnimatedElement variant="fade-up" delay={0.2}>
-              <div className="prose prose-lg max-w-none text-muted-foreground dark:text-gray-400">
-                <p>
-                  With over 20 years of professional experience, Allan Palmer
-                  brings exceptional artistry and technical mastery to every
-                  performance. From intimate wedding ceremonies to grand concert
-                  halls, Allan's versatile repertoire and passionate delivery
-                  create magical moments that resonate long after the last note.
-                </p>
-                <p>
-                  Allan's journey began at an early age, studying classical
-                  violin technique while developing a deep appreciation for
-                  diverse musical styles. This foundation has enabled him to
-                  seamlessly blend traditional classical pieces with
-                  contemporary favorites, ensuring each performance is perfectly
-                  tailored to the occasion.
-                </p>
-              </div>
-            </AnimatedElement>
-
-            <AnimatedElement variant="fade-up" delay={0.4}>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-gold hover:bg-gold/90 text-black"
-                >
-                  <Link href="/contact">Book Allan</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="border-foreground/30 dark:border-white/30 text-foreground dark:text-white hover:bg-foreground/10 dark:hover:bg-white/10 bg-transparent"
-                >
-                  <Link href="/services">View Services</Link>
-                </Button>
-              </div>
-            </AnimatedElement>
-          </div>
-
-          {/* Image */}
-          <AnimatedElement variant="fade-left" delay={0.3} className="relative">
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-muted">
-              <Image
-                src="/images/allan-portrait-bw.jpeg"
-                alt="Allan Palmer - Professional Violinist"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-
-              {/* Professional Violinist Badge - hidden on mobile to avoid covering face */}
-              <div className="hidden lg:block absolute top-6 left-1/2 transform -translate-x-1/2">
-                <div className="inline-flex items-center gap-2 bg-gold/20 backdrop-blur-sm text-gold rounded-full px-4 py-2 text-sm font-medium border border-gold/30">
-                  <Music className="h-4 w-4" />
-                  Professional Violinist
-                </div>
-              </div>
-            </div>
-
-            {/* Floating Stats Card - with 3D tilt */}
-            <TiltCard
-              tiltAmount={12}
-              glareEnabled={true}
-              className="absolute -bottom-6 left-4 right-4 lg:right-auto lg:-left-6 lg:w-auto"
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.6 }}
-                className="bg-gray-900/95 backdrop-blur-sm rounded-2xl p-4 sm:p-5 shadow-xl border border-gold/20"
-              >
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                  {stats.map((stat, index) => (
-                    <div key={index} className="text-center">
-                      <div className="flex justify-center mb-1.5">
-                        <stat.icon className="h-4 w-4 text-gold" />
-                      </div>
-                      <div className="font-bold text-base text-white">
-                        {stat.value}
-                      </div>
-                      <div className="text-[10px] text-gray-400 leading-tight">
-                        {stat.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            </TiltCard>
-          </AnimatedElement>
-        </div>
+    <section className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28">
+      {/* Whisper-soft warmth — no gradient mesh */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_30%,hsl(var(--gold)/0.06)_0%,transparent_70%)]" />
       </div>
 
-      {/* Decorative fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background dark:from-black to-transparent" />
+      {/* F-hole brand watermark — bottom-right, barely there */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-8 bottom-0 opacity-[0.035] select-none hidden md:block"
+      >
+        <Image
+          src="/images/f-hole.svg"
+          alt=""
+          width={220}
+          height={640}
+          className="text-champagne"
+        />
+      </div>
+
+      <div className="container relative">
+        {/* Eyebrow — programme-style label */}
+        <motion.div
+          className="flex items-center justify-center gap-4 mb-12 md:mb-16"
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={
+            reduced ? { duration: 0 } : { duration: 0.7, ease: EASE_OUT }
+          }
+        >
+          <div className="h-px w-10 md:w-16 bg-champagne/50" />
+          <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            The Violinist
+          </span>
+          <div className="h-px w-10 md:w-16 bg-champagne/50" />
+        </motion.div>
+
+        <div className="grid lg:grid-cols-[5fr_6fr] gap-10 lg:gap-16 items-center max-w-6xl mx-auto">
+          {/* Portrait — spotlight hits first */}
+          <motion.div
+            className="relative aspect-[3/4] ring-1 ring-champagne/20 overflow-hidden rounded-sm"
+            {...fade(0.1)}
+          >
+            <Image
+              src="/images/allan-portrait-bw.jpeg"
+              alt="Allan Palmer, professional violinist"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 45vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/35 via-transparent to-transparent" />
+          </motion.div>
+
+          {/* Content — programme notes follow */}
+          <motion.div className="space-y-9" {...fade(0.3)}>
+            {/* Two-line editorial h1 */}
+            <div>
+              <h1 className="font-display font-light text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.02]">
+                Allan Palmer
+              </h1>
+              <p className="mt-3 md:mt-4 font-label text-xs md:text-sm tracking-[0.4em] uppercase text-champagne">
+                — Violinist —
+              </p>
+            </div>
+
+            {/* Opening paragraph */}
+            <div className="space-y-5 font-display text-base md:text-lg text-foreground/75 leading-relaxed">
+              <p>
+                From a first violin at age seven to a career shaped by weddings,
+                ceremonies, and concert halls across Winnipeg and beyond, Allan
+                brings both technical mastery and emotional depth to every
+                performance.
+              </p>
+            </div>
+
+            {/* Mid-column pull quote — breaks prose monotony, establishes credibility */}
+            <blockquote className="relative border-l border-champagne/40 pl-5 md:pl-6 py-1">
+              <p className="font-display italic font-light text-lg md:text-xl text-foreground/90 leading-[1.45]">
+                &ldquo;An absolute pleasure — our guests couldn&rsquo;t stop
+                talking about the music.&rdquo;
+              </p>
+              <cite className="mt-3 block label-caps !text-[10px] !tracking-[0.25em] not-italic text-muted-foreground">
+                Rebecca T. · Wedding Client
+              </cite>
+            </blockquote>
+
+            {/* Closing paragraph */}
+            <div className="font-display text-base md:text-lg text-foreground/75 leading-relaxed">
+              <p>
+                Whether the moment calls for Bach or The Beatles, the intent is
+                the same — to honour the occasion with music that lasts long
+                after the final note.
+              </p>
+            </div>
+
+            {/* Typographic stats */}
+            <div className="grid grid-cols-3 gap-4 md:gap-8 pt-8 border-t border-champagne/20">
+              {stats.map((s) => (
+                <div key={s.label}>
+                  <div className="font-display font-light text-3xl md:text-4xl text-champagne leading-none tabular-nums">
+                    {s.value}
+                  </div>
+                  <div className="label-caps !text-[10px] md:!text-[11px] mt-2.5 leading-tight !text-muted-foreground">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Single solid CTA + underline text link (unified pattern) */}
+            <div className="flex items-center gap-8 pt-4">
+              <Link
+                href="/booking"
+                className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-sm text-[11px] md:text-xs tracking-[0.22em] uppercase font-label transition-colors duration-500 ease-cinematic"
+              >
+                Book Allan
+              </Link>
+              <Link
+                href="/services"
+                className="text-link !text-[11px] !tracking-[0.22em] text-muted-foreground hover:text-champagne"
+              >
+                View Services
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

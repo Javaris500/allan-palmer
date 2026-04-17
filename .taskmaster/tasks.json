@@ -1,0 +1,541 @@
+{
+  "meta": {
+    "project": "allan-palmer",
+    "projectPath": "C:/Users/Javaris Tavel/Desktop/allan-palmer",
+    "description": "Allan Palmer violinist portfolio — Leah AI assistant hardening from 2026-04-17 audit",
+    "created": "2026-04-17",
+    "version": "1.0.0"
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Fix Leah conversation continuity — client passes conversationId back",
+      "description": "Every message currently creates a new LeahConversation row because DefaultChatTransport sends messages only, and the server's conversationId fall-through always creates. Response header x-leah-conversation-id is set but never captured client-side. This breaks locked decision #4 (logged-in continuity) and pollutes the DB with 1–2 message fragments.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "LeahChat now builds transport in useMemo with prepareSendMessagesRequest injecting conversationId and custom fetch capturing x-leah-conversation-id header. New chat resets the ref.",
+      "priority": "critical",
+      "phase": 1,
+      "severity": "data-integrity",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "1.1",
+          "title": "Store conversationId in a useRef/useState in LeahChat after first response header",
+          "status": "pending"
+        },
+        {
+          "id": "1.2",
+          "title": "Configure DefaultChatTransport.prepareSendMessagesRequest to inject { conversationId } into body",
+          "status": "pending"
+        },
+        {
+          "id": "1.3",
+          "title": "Read x-leah-conversation-id from first response; persist across subsequent sends",
+          "status": "pending"
+        },
+        {
+          "id": "1.4",
+          "title": "Persist assistant message to correct convoId via onFinish (already present — verify)",
+          "status": "pending"
+        },
+        {
+          "id": "1.5",
+          "title": "Clear conversationId on 'New chat' click + stop() streaming",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Multi-turn session produces exactly ONE LeahConversation row with N messages; reopening the panel in same session continues the same thread; 'New chat' creates a new one.",
+      "files": [
+        "components/leah/LeahChat.tsx",
+        "app/api/leah/chat/route.ts"
+      ],
+      "tags": [
+        "leah",
+        "critical",
+        "bug",
+        "persistence"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Add User ↔ LeahConversation Prisma relation with onDelete: Cascade",
+      "description": "Schema has `userId String` on LeahConversation but no `user User @relation(...)` directive — so no FK in Postgres and no back-ref on User. Spec §7 required the relation. User deletion orphans conversations.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "Added `user User @relation(..., onDelete: Cascade)` on LeahConversation and `leahConversations LeahConversation[]` back-ref on User. `prisma validate` passes, `prisma generate` succeeded. Still TODO on user side: run `prisma migrate dev --name add_leah_user_relation` against the DB + script orphan cleanup.",
+      "priority": "critical",
+      "phase": 1,
+      "severity": "data-integrity",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "2.1",
+          "title": "Add `user User @relation(fields: [userId], references: [id], onDelete: Cascade)` to LeahConversation",
+          "status": "pending"
+        },
+        {
+          "id": "2.2",
+          "title": "Add `leahConversations LeahConversation[]` back-ref to User model",
+          "status": "pending"
+        },
+        {
+          "id": "2.3",
+          "title": "Generate & apply migration (prisma migrate dev --name add_leah_user_relation)",
+          "status": "pending"
+        },
+        {
+          "id": "2.4",
+          "title": "Regenerate Prisma client (prisma generate)",
+          "status": "pending"
+        },
+        {
+          "id": "2.5",
+          "title": "Add cleanup query for any existing orphaned rows (userId doesn't exist in users)",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Prisma introspects FK constraint; deleting a test User cascades their conversations; typecheck + schema validate pass.",
+      "files": [
+        "prisma/schema.prisma",
+        "prisma/migrations/"
+      ],
+      "tags": [
+        "leah",
+        "critical",
+        "schema",
+        "prisma"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Add auth guard to /admin layout (spec P1, blocker)",
+      "description": "app/admin/layout.tsx is a pass-through. Anyone who knows /admin or /admin/emails can read them (including email templates with PII). Spec §3a P1 said this MUST land before Leah ships. Leah admin tools depend on session.user.role, but surrounding admin pages do not enforce it.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "app/admin/layout.tsx is now async, calls auth(), redirects unauthenticated to /sign-in?callbackUrl=/admin and non-ADMIN to same URL with error=admin_only. /admin/emails inherits the guard.",
+      "priority": "critical",
+      "phase": 1,
+      "severity": "security",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "3.1",
+          "title": "Import auth() from @/auth in app/admin/layout.tsx",
+          "status": "pending"
+        },
+        {
+          "id": "3.2",
+          "title": "Check session + role === 'ADMIN'; redirect to /sign-in?callbackUrl=/admin otherwise",
+          "status": "pending"
+        },
+        {
+          "id": "3.3",
+          "title": "Verify /admin/emails inherits the layout guard",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Anonymous GET /admin → 307 to sign-in. Non-admin authed → 307 to sign-in. Admin authed → 200.",
+      "files": [
+        "app/admin/layout.tsx"
+      ],
+      "tags": [
+        "leah",
+        "critical",
+        "security",
+        "auth",
+        "blocker"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Replace in-memory rate limiter with durable store (spec §8 rule 5)",
+      "description": "lib/rate-limit.ts uses a Map in memory. Comment literally says 'Simple in-memory rate limiting for preview mode'. Per-lambda-instance on Vercel → no actual 60/15min enforcement in production. Leah's Anthropic spend is uncapped.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "Added @upstash/ratelimit + @upstash/redis. lib/rate-limit.ts now exposes rateLimitLeah() — durable sliding-window (60 per 15m) when UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set, otherwise falls back to in-memory (dev only). Chat route swapped to the durable version; Retry-After header already in place from task 11.",
+      "priority": "major",
+      "phase": 2,
+      "severity": "cost-control",
+      "dependencies": [
+        3
+      ],
+      "subtasks": [
+        {
+          "id": "4.1",
+          "title": "Pick Upstash Ratelimit or Postgres-backed counter; add dependency",
+          "status": "pending"
+        },
+        {
+          "id": "4.2",
+          "title": "Add UPSTASH_REDIS_URL + token env vars (or table migration)",
+          "status": "pending"
+        },
+        {
+          "id": "4.3",
+          "title": "Replace rateLimit() implementation; keep existing call signature",
+          "status": "pending"
+        },
+        {
+          "id": "4.4",
+          "title": "Add Retry-After header to 429 responses",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "60 messages in 15 min from same user blocked on the 61st across multiple lambda instances. Retry-After set.",
+      "files": [
+        "lib/rate-limit.ts",
+        "app/api/leah/chat/route.ts"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "rate-limit",
+        "infra"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Add per-handler requireAdmin() check in admin tools (spec §8 rule 1)",
+      "description": "adminTools registry gate prevents customer-mode from calling admin tools, but spec §8 rule 1 requires role check INSIDE every handler as defense in depth. Today listBookings, blockTime, morningBriefing, triageLeads all accept `_session` unused.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "All four admin tool factories now take session and call requireAdmin(session) as first line of execute(). adminTools(session) propagates session to each factory. Throws ForbiddenError if not ADMIN. Registry gate still intact as first line of defense.",
+      "priority": "major",
+      "phase": 2,
+      "severity": "defense-in-depth",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "5.1",
+          "title": "Pass session through to each admin tool factory (remove underscore prefix)",
+          "status": "pending"
+        },
+        {
+          "id": "5.2",
+          "title": "Wrap each execute() with `requireAdmin(session)` at top, catch ForbiddenError gracefully",
+          "status": "pending"
+        },
+        {
+          "id": "5.3",
+          "title": "Add unit test: spoofed customer session cannot execute admin tools",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "All 4 admin tools throw ForbiddenError when session is USER; registry gate still works as before.",
+      "files": [
+        "lib/leah/tools/admin.ts"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "security"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "submitBooking: default contactEmail to session, consider userId FK",
+      "description": "Signed-in user can submit booking with any arbitrary contactEmail — email goes to Allan as if from someone else, and user can't see it in /my-bookings (email-keyed). Trust gap + UX gap.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "6.1 — submitBooking now prefers session.user.email; mismatch recorded in adminNotes. 6.2 — added optional userId (String?) to Booking with @relation(..., onDelete: SetNull) + back-ref Booking[] on User + @@index([userId]). Schema validate + generate passed. 6.3 — submitBooking tool stamps session.user.id. Same stamping added to /api/booking form endpoint.",
+      "priority": "major",
+      "phase": 2,
+      "severity": "trust",
+      "dependencies": [
+        2
+      ],
+      "subtasks": [
+        {
+          "id": "6.1",
+          "title": "If session.user.email exists, default contactEmail to it; validate match or warn if LLM supplies different",
+          "status": "pending"
+        },
+        {
+          "id": "6.2",
+          "title": "Decide: add userId FK to Booking model? (enables session-based /my-bookings)",
+          "status": "pending"
+        },
+        {
+          "id": "6.3",
+          "title": "If yes, migrate Booking + stamp session.user.id in submitBooking",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Booking row created via Leah has contactEmail matching session email (or deliberately different with audit note). /my-bookings shows it for the logged-in user.",
+      "files": [
+        "lib/leah/tools/customer.ts",
+        "prisma/schema.prisma"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "trust",
+        "booking"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Consolidate widget entrypoints — one FAB, wired, named 'Leah' consistently",
+      "description": "Two entrypoints exist: (a) LeahDock's own big gold 'L' FAB at bottom-right, (b) LeiaChatToggle inside FloatingNav pill with UNWIRED onOpen prop (dead button). They visually stack (both bottom-right). Naming drifts — backend is 'Leah', my nav toggle is 'Leia'.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "LeahDock listens for a LEAH_OPEN_EVENT window event. Renamed leia-chat-toggle.tsx → leah-chat-toggle.tsx with dispatching that event. Both pill slots in FloatingNav updated. Old Leia file deleted. All user-visible strings now say 'Leah'. LeahDock's own FAB was already removed previously — drawer is the single entrypoint.",
+      "priority": "major",
+      "phase": 2,
+      "severity": "ux",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "7.1",
+          "title": "Decide: keep LeahDock FAB (recommended) or nav-toggle approach",
+          "status": "pending"
+        },
+        {
+          "id": "7.2",
+          "title": "If keeping dock — delete LeiaChatToggle + its reference in floating-nav.tsx",
+          "status": "pending"
+        },
+        {
+          "id": "7.3",
+          "title": "If keeping nav — lift open state to a context/store and wire LeiaChatToggle onOpen",
+          "status": "pending"
+        },
+        {
+          "id": "7.4",
+          "title": "Rename all user-facing strings to 'Leah' (match spec + backend)",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Exactly one visible FAB on every page; clicking it opens Leah; consistent 'Leah' naming site-wide.",
+      "files": [
+        "components/leia-chat-toggle.tsx",
+        "components/floating-nav.tsx",
+        "components/leah/LeahDock.tsx"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "ux",
+        "cleanup"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "checkAvailability tool must consult Availability table",
+      "description": "Customer-facing checkAvailability queries only prisma.booking for conflicts. Admin's blockTime writes to Availability. So Allan blocks every Sunday → customer asks about Sunday → Leah says available.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "availabilityTool now runs Promise.all over booking conflicts AND Availability blocks for the target date's weekday. Returns distinct bookings/blockedWindows counts and a context-aware note. Blocked day = hasConflicts: true.",
+      "priority": "major",
+      "phase": 2,
+      "severity": "correctness",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "8.1",
+          "title": "In availabilityTool.execute, compute dayOfWeek from target date",
+          "status": "pending"
+        },
+        {
+          "id": "8.2",
+          "title": "Query Availability where dayOfWeek matches + isAvailable=false",
+          "status": "pending"
+        },
+        {
+          "id": "8.3",
+          "title": "Include both booking conflicts and time blocks in result note",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Blocked day returns hasConflicts: true with reason from Availability.",
+      "files": [
+        "lib/leah/tools/customer.ts"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "correctness"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "blockTime: add one-off date blocks (currently recurring-only)",
+      "description": "blockTime inputSchema is dayOfWeek (0-6) only. 'Block next Thursday 2pm' creates a recurring Thursday block forever. Needs specific-date support.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "Schema: Availability.dayOfWeek is now Int? and a new `date DateTime? @db.Date` column added, plus optional `reason String?` and indices on both. Tool: blockTime accepts either `date` (one-off YYYY-MM-DD) OR `dayOfWeek` (recurring) — validated with zod .refine(). checkAvailability also extended to query both by weekday AND exact date match.",
+      "priority": "major",
+      "phase": 2,
+      "severity": "correctness",
+      "dependencies": [],
+      "subtasks": [
+        {
+          "id": "9.1",
+          "title": "Audit Availability schema — does it support a specific `date` field? If not, add one or add a new TimeBlock model",
+          "status": "pending"
+        },
+        {
+          "id": "9.2",
+          "title": "Add optional `date` (YYYY-MM-DD) to blockTime inputSchema; make dayOfWeek optional",
+          "status": "pending"
+        },
+        {
+          "id": "9.3",
+          "title": "In execute: if date provided → one-off; else → recurring weekly",
+          "status": "pending"
+        },
+        {
+          "id": "9.4",
+          "title": "Update tool description so the LLM chooses correctly",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Allan can block 'Thursday July 12 from 2–4pm' as a one-off, or 'every Sunday' as recurring, and checkAvailability honors both.",
+      "files": [
+        "lib/leah/tools/admin.ts",
+        "prisma/schema.prisma"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "correctness"
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Finish P2 — migrate scripted booking form to shared API",
+      "description": "Leah's submitBooking writes to DB correctly, but app/booking/page.tsx still uses mailto: (from 2026-04-16 UI audit #2). Two divergent paths. Spec §3a P2 said this should land before Leah.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "Page-level migration was already complete (app/booking/page.tsx uses fetch('/api/booking', POST) — the old mailto claim was stale). What was missing: (a) /api/booking now calls auth() and stamps session.user.id on the booking + canonicalizes contactEmail to session email (with adminNotes audit on mismatch — same pattern as submitBooking tool); (b) booking-success.tsx copy was false ('A confirmation email has been sent…') → changed to truthful 'Allan will be in touch at {email} within 24–48 hours.'",
+      "priority": "major",
+      "phase": 3,
+      "severity": "consistency",
+      "dependencies": [
+        6
+      ],
+      "subtasks": [
+        {
+          "id": "10.1",
+          "title": "Create/verify POST /api/booking endpoint (if it doesn't exist)",
+          "status": "pending"
+        },
+        {
+          "id": "10.2",
+          "title": "Replace mailto: in app/booking/page.tsx with fetch to /api/booking",
+          "status": "pending"
+        },
+        {
+          "id": "10.3",
+          "title": "Trigger sendBookingInquiry from API (same as submitBooking tool path)",
+          "status": "pending"
+        },
+        {
+          "id": "10.4",
+          "title": "Redirect to /booking/success with reference on 2xx; show inline error on 4xx/5xx",
+          "status": "pending"
+        },
+        {
+          "id": "10.5",
+          "title": "Update booking-success.tsx to reflect actual email status (remove false 'confirmation email sent' copy)",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "Both form-submit and Leah-submit land in the same Booking table; both trigger Allan's notification email; success page is truthful.",
+      "files": [
+        "app/booking/page.tsx",
+        "app/api/booking/route.ts",
+        "components/booking/booking-success.tsx"
+      ],
+      "tags": [
+        "leah",
+        "major",
+        "consistency",
+        "booking"
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Leah polish — minor issues batch",
+      "description": "Collection of small quality improvements flagged in audit items #11–#25.",
+      "status": "done",
+      "completedAt": "2026-04-17",
+      "completionNote": "All 10 subtasks landed: maxOutputTokens: 2048 cap on streamText; onFinish errors logged to console.error; atomic deleteMany in deleteConversation; new-chat clears conversationIdRef; stripHtmlEntities removed (raw unicode in intro); dead isFirstAssistant/enableTypewriter props + in-message Typewriter removed from LeahMessage; LeahInput now disables textarea during streaming; triageLeads filters past events + floors score with Math.max(0, ...); Retry-After header added to 429s and explicit Origin check on chat route; autoTitle strips whitespace, truncates at word boundary with ellipsis.",
+      "priority": "minor",
+      "phase": 4,
+      "severity": "polish",
+      "dependencies": [
+        1,
+        2,
+        3
+      ],
+      "subtasks": [
+        {
+          "id": "11.1",
+          "title": "Add maxTokens cap to streamText() call in chat route",
+          "status": "pending"
+        },
+        {
+          "id": "11.2",
+          "title": "Log (don't swallow) persistence errors in onFinish",
+          "status": "pending"
+        },
+        {
+          "id": "11.3",
+          "title": "Replace deleteConversation's findFirst+delete with atomic deleteMany({ where: { id, userId } })",
+          "status": "pending"
+        },
+        {
+          "id": "11.4",
+          "title": "Wire 'New chat' to also invalidate conversationId ref (after task #1)",
+          "status": "pending"
+        },
+        {
+          "id": "11.5",
+          "title": "Replace stripHtmlEntities workaround — use raw unicode in intro strings",
+          "status": "pending"
+        },
+        {
+          "id": "11.6",
+          "title": "Remove dead props isFirstAssistant + enableTypewriter from LeahMessage",
+          "status": "pending"
+        },
+        {
+          "id": "11.7",
+          "title": "Fix LeahInput disabled prop logic — disable during streaming (not enable)",
+          "status": "pending"
+        },
+        {
+          "id": "11.8",
+          "title": "Floor triageLeads score with Math.max(0, daysUntilEvent); filter past events",
+          "status": "pending"
+        },
+        {
+          "id": "11.9",
+          "title": "Add explicit Origin check to /api/leah/chat (belt + suspenders)",
+          "status": "pending"
+        },
+        {
+          "id": "11.10",
+          "title": "Improve autoTitle — strip newlines, tidy; optionally LLM-summarize",
+          "status": "pending"
+        }
+      ],
+      "acceptanceCriteria": "All subtasks complete, no regressions; typecheck passes.",
+      "files": [
+        "app/api/leah/chat/route.ts",
+        "lib/leah/memory.ts",
+        "lib/leah/tools/admin.ts",
+        "components/leah/LeahChat.tsx",
+        "components/leah/LeahMessage.tsx",
+        "components/leah/LeahInput.tsx"
+      ],
+      "tags": [
+        "leah",
+        "minor",
+        "polish"
+      ]
+    }
+  ]
+}

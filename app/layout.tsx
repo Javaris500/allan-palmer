@@ -1,11 +1,12 @@
 import type React from "react";
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Cormorant_Garamond, Tenor_Sans } from "next/font/google";
 import "./globals.css";
 import { FloatingNav } from "@/components/floating-nav";
 import { SimpleFooter } from "@/components/simple-footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { LeahMount } from "@/components/leah/LeahMount";
 import { Suspense } from "react";
 import { BackgroundMusicProvider } from "@/contexts/background-music-context";
 
@@ -17,12 +18,23 @@ const inter = Inter({
   fallback: ["system-ui", "arial"],
 });
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
   display: "swap",
   preload: true,
-  fallback: ["serif"],
+  fallback: ["Georgia", "serif"],
+});
+
+const tenorSans = Tenor_Sans({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-label",
+  display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -128,7 +140,7 @@ export default function RootLayout({
         <link rel="prefetch" href="/contact" as="document" />
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+        className={`${inter.variable} ${cormorant.variable} ${tenorSans.variable} font-sans antialiased`}
       >
         <ErrorBoundary>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -147,6 +159,9 @@ export default function RootLayout({
                 </Suspense>
                 <SimpleFooter />
                 <FloatingNav />
+                <Suspense fallback={null}>
+                  <LeahMount />
+                </Suspense>
               </div>
             </BackgroundMusicProvider>
           </ThemeProvider>

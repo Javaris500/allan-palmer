@@ -35,23 +35,34 @@
     --accent: 30 8% 88%;                /* #E3DFD9 */
     --accent-foreground: 30 15% 8%;
     
-    /* Gold Accent - Strategic highlight color */
-    --gold: 43 74% 49%;                 /* #D4A521 - Warm gold */
+    /* Editorial Gold Trio — classic / champagne highlight / bronze subtle */
+    --gold: 43 55% 54%;                 /* #C9A646 — classic, warm, not screaming */
     --gold-foreground: 30 20% 6%;
-    
-    /* Semantic Colors */
-    --destructive: 0 72% 51%;           /* #DC2626 */
-    --destructive-foreground: 0 0% 100%;
-    --success: 142 76% 36%;             /* #16A34A */
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;              /* #F59E0B */
-    --warning-foreground: 30 20% 6%;
-    
-    /* UI Elements */
-    --border: 30 10% 88%;               /* #E0DBD5 */
+    --champagne: 40 48% 65%;             /* #D4B87A — hover states, text highlights */
+    --bronze: 34 38% 39%;                /* #8B6F3D — subtle tints, active states */
+
+    /* Cream / parchment (light-mode versions — inverse of dark) */
+    --cream: 40 30% 96%;                 /* #F5EFE6 */
+    --parchment: 38 28% 91%;             /* #EBE3D5 */
+    --ink: 22 15% 7%;                    /* #0F0E0D */
+
+    /* Elevated surfaces (light mode fallback — mostly used in dark) */
+    --bg-elevated: 40 18% 97%;
+    --surface: 40 16% 95%;
+
+    /* Semantic Colors — earthier palette */
+    --destructive: 14 52% 44%;           /* #AA4A30 — burnt sienna */
+    --destructive-foreground: 40 30% 96%;
+    --success: 155 32% 34%;              /* #3A7D5E — forest */
+    --success-foreground: 40 30% 96%;
+    --warning: 36 68% 46%;                /* #C98A2A — amber, not neon */
+    --warning-foreground: 22 15% 7%;
+
+    /* UI Elements — tighter corners per editorial direction */
+    --border: 30 10% 88%;
     --input: 30 10% 88%;
     --ring: 30 15% 8%;
-    --radius: 0.5rem;
+    --radius: 0.25rem;                    /* was 0.5rem — tighter, engraved-stationery feel */
     
     /* Extended Grayscale */
     --gray-50: 40 20% 99%;
@@ -69,52 +80,63 @@
 
   .dark {
     /* ═══════════════════════════════════════════════════════════════
-       RICH NOIR - Dark Mode
-       Deep warm blacks with refined contrast
+       EDITORIAL NOIR — Dark Mode (Carnegie Hall programme)
+       Warm near-black · dual-tone gold · cream/parchment
     ═══════════════════════════════════════════════════════════════ */
-    
-    /* Base Colors */
-    --background: 0 0% 0%;              /* Pure black */
-    --foreground: 40 15% 93%;           /* Warm off-white #F0EDE9 */
 
-    /* Card & Surface Colors */
-    --card: 0 0% 4%;                    /* Near-black surface */
-    --card-foreground: 40 15% 93%;
-    --popover: 0 0% 6%;
-    --popover-foreground: 40 15% 93%;
-    
-    /* Primary - Light for dark mode */
-    --primary: 40 15% 93%;              /* #F0EDE9 */
-    --primary-foreground: 30 15% 5%;
-    
-    /* Secondary - Subtle dark surfaces */
-    --secondary: 0 0% 7%;               /* Near-black */
-    --secondary-foreground: 40 12% 85%;
+    /* Background layers — warm near-black, not pure #000 */
+    --background: 20 8% 5%;              /* #0A0908 — ink */
+    --foreground: 40 30% 96%;            /* #F5EFE6 — cream */
+
+    /* Elevated surface layers */
+    --bg-elevated: 22 10% 8%;            /* #14110E */
+    --surface: 24 12% 10%;               /* #1A1613 */
+
+    /* Card & Popover — sit on the elevated layer */
+    --card: 24 12% 10%;
+    --card-foreground: 40 30% 96%;
+    --popover: 22 10% 8%;
+    --popover-foreground: 40 30% 96%;
+
+    /* Primary — cream on warm-black */
+    --primary: 40 30% 96%;               /* #F5EFE6 */
+    --primary-foreground: 20 8% 5%;
+
+    /* Secondary — subtle dark surfaces */
+    --secondary: 22 10% 8%;
+    --secondary-foreground: 38 28% 91%;
 
     /* Muted */
-    --muted: 0 0% 10%;                  /* Very dark gray */
-    --muted-foreground: 30 8% 60%;      /* #9C958D */
+    --muted: 24 10% 12%;
+    --muted-foreground: 38 14% 62%;      /* softer for long-form body */
 
     /* Accent */
-    --accent: 0 0% 12%;                 /* Dark gray */
-    --accent-foreground: 40 12% 90%;
-    
-    /* Gold Accent - Slightly brighter for dark mode */
-    --gold: 43 80% 55%;                 /* #E0B52E */
-    --gold-foreground: 30 15% 5%;
-    
-    /* Semantic Colors */
-    --destructive: 0 62% 40%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 142 70% 40%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 85% 55%;
-    --warning-foreground: 30 15% 5%;
-    
+    --accent: 24 12% 14%;
+    --accent-foreground: 38 28% 91%;
+
+    /* Editorial Gold Trio */
+    --gold: 43 55% 54%;                  /* #C9A646 — classic */
+    --gold-foreground: 20 8% 5%;
+    --champagne: 40 48% 65%;             /* #D4B87A — hovers / highlights */
+    --bronze: 34 38% 39%;                /* #8B6F3D — subtle tints / active */
+
+    /* Cream / parchment */
+    --cream: 40 30% 96%;                 /* #F5EFE6 */
+    --parchment: 38 28% 91%;             /* #EBE3D5 */
+    --ink: 22 15% 7%;                    /* #0F0E0D */
+
+    /* Semantic Colors — earthier palette */
+    --destructive: 14 52% 44%;           /* #AA4A30 — burnt sienna */
+    --destructive-foreground: 40 30% 96%;
+    --success: 155 32% 34%;              /* #3A7D5E — forest */
+    --success-foreground: 40 30% 96%;
+    --warning: 36 68% 46%;                /* #C98A2A — amber */
+    --warning-foreground: 22 15% 7%;
+
     /* UI Elements */
-    --border: 0 0% 15%;                 /* Subtle dark border */
-    --input: 0 0% 15%;
-    --ring: 40 15% 80%;
+    --border: 24 10% 16%;                /* subtle, warmer than neutral gray */
+    --input: 24 10% 16%;
+    --ring: 43 55% 54%;                   /* gold focus ring — editorial */
     
     /* Extended Grayscale (inverted) */
     --gray-50: 30 20% 4%;
@@ -208,6 +230,86 @@
 }
 
 @layer utilities {
+  /* ═══════════════════════════════════════════════════════════════
+     EDITORIAL UTILITIES
+     Concert-programme vocabulary — used site-wide.
+  ═══════════════════════════════════════════════════════════════ */
+
+  /* Small-caps programme label — "— VIOLINIST —" treatment */
+  .label-caps {
+    font-family: var(--font-label), system-ui, sans-serif;
+    font-variant: small-caps;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: hsl(var(--champagne));
+  }
+
+  /* Hairline gold dividers — full width or inline */
+  .divider-gold {
+    height: 0.5px;
+    background: hsl(var(--champagne) / 0.35);
+    width: 100%;
+  }
+
+  .divider-gold-sm {
+    height: 0.5px;
+    background: hsl(var(--champagne) / 0.35);
+    width: 3rem;
+    margin: 0 auto;
+  }
+
+  /* Hide scrollbar on horizontal-scrolling filter rails */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Musical pacing spacing — "silence between phrases" */
+  .section-pad {
+    @apply py-24 md:py-32 lg:py-40;
+  }
+
+  /* Editorial gold luminance — replaces harsh default shadows on dark surfaces */
+  .shadow-glow-gold {
+    box-shadow:
+      0 0 20px 4px hsl(43 55% 54% / 0.25),
+      0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Underline-draw link — Dior/Hermès pattern (L→R hairline on hover) */
+  .text-link {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+    transition: color 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .text-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: hsl(var(--champagne));
+    transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .text-link:hover::after,
+  .text-link:focus-visible::after {
+    width: 100%;
+  }
+
+  /* Reduced-motion guard — disables the underline draw entirely */
+  @media (prefers-reduced-motion: reduce) {
+    .text-link::after {
+      transition: none;
+    }
+  }
+
   /* Text clamp utilities */
   .line-clamp-1 {
     overflow: hidden;

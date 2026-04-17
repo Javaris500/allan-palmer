@@ -1,23 +1,51 @@
-import type { Metadata } from "next"
-import dynamic from "next/dynamic"
-import { HeroSection } from "@/components/hero-section-v2"
-import { Suspense } from "react"
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { HomeHero } from "@/components/home/hero";
+import { HomeAnchor } from "@/components/home/anchor";
 
-// Dynamic imports for below-the-fold content - reduces initial JS bundle
-const SplitScreenTestimonials = dynamic(
-  () => import("@/components/split-screen-testimonials").then(mod => ({ default: mod.SplitScreenTestimonials })),
-  { ssr: true }
-)
+// Above-the-fold: Hero + Anchor render immediately (hero is the first paint).
+// Below-the-fold sections are lazy-loaded to keep the initial bundle lean.
 
-const TestimonialsSection = dynamic(
-  () => import("@/components/testimonials-section").then(mod => ({ default: mod.TestimonialsSection })),
-  { ssr: true }
-)
+const HomeOfferings = dynamic(
+  () =>
+    import("@/components/home/offerings").then((mod) => ({
+      default: mod.HomeOfferings,
+    })),
+  { ssr: true },
+);
 
-const SongsShowcase = dynamic(
-  () => import("@/components/songs-showcase").then(mod => ({ default: mod.SongsShowcase })),
-  { ssr: true }
-)
+const HomeSignature = dynamic(
+  () =>
+    import("@/components/home/signature").then((mod) => ({
+      default: mod.HomeSignature,
+    })),
+  { ssr: true },
+);
+
+const HomePraise = dynamic(
+  () =>
+    import("@/components/home/praise").then((mod) => ({
+      default: mod.HomePraise,
+    })),
+  { ssr: true },
+);
+
+const HomeGalleryTeaser = dynamic(
+  () =>
+    import("@/components/home/gallery-teaser").then((mod) => ({
+      default: mod.HomeGalleryTeaser,
+    })),
+  { ssr: true },
+);
+
+const HomeClosing = dynamic(
+  () =>
+    import("@/components/home/closing").then((mod) => ({
+      default: mod.HomeClosing,
+    })),
+  { ssr: true },
+);
 
 export const metadata: Metadata = {
   title: "Professional Violinist for Weddings & Events in Winnipeg",
@@ -42,46 +70,58 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-}
+};
 
-function SectionLoading() {
+function SectionSkeleton() {
   return (
-    <div className="py-16 md:py-24">
-      <div className="container">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
-          <div className="h-4 bg-muted rounded w-2/3 mx-auto mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-48 bg-muted rounded"></div>
-            ))}
-          </div>
-        </div>
+    <div
+      className="py-24 animate-pulse"
+      role="status"
+      aria-label="Loading section"
+    >
+      <div className="container max-w-2xl">
+        <div className="mx-auto mb-8 h-px w-16 bg-muted/40" />
+        <div className="h-10 bg-muted/30 rounded-sm w-1/2 mx-auto mb-6" />
+        <div className="h-3 bg-muted/20 rounded-sm w-2/3 mx-auto mb-2" />
+        <div className="h-3 bg-muted/20 rounded-sm w-1/2 mx-auto" />
       </div>
     </div>
-  )
+  );
 }
 
 export default function Home() {
   return (
     <>
-      {/* Hero Section with Portrait Video */}
-      <HeroSection />
+      {/* 1 — Cinematic hero with full-bleed video + stat strip */}
+      <HomeHero />
 
-      {/* Split-Screen Testimonials */}
-      <Suspense fallback={<SectionLoading />}>
-        <SplitScreenTestimonials />
+      {/* 2 — The quiet anchor: a single line of intent */}
+      <HomeAnchor />
+
+      {/* 3 — Three Ways to Listen: the offerings */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomeOfferings />
       </Suspense>
 
-      {/* Client Reviews Carousel */}
-      <Suspense fallback={<SectionLoading />}>
-        <TestimonialsSection />
+      {/* 4 — Signature piece: Over the Rainbow, playable */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomeSignature />
       </Suspense>
 
-      {/* Songs Showcase */}
-      <Suspense fallback={<SectionLoading />}>
-        <SongsShowcase />
+      {/* 5 — Single-quote praise moment */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomePraise />
+      </Suspense>
+
+      {/* 6 — Gallery teaser: 8 curated tiles */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomeGalleryTeaser />
+      </Suspense>
+
+      {/* 7 — Closing invocation */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomeClosing />
       </Suspense>
     </>
-  )
+  );
 }

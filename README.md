@@ -55,10 +55,10 @@ cp .env.example .env.local
 
 4. Update environment variables in \`.env.local\`:
 \`\`\`env
-NEXT_PUBLIC_SITE_URL=https://allanpalmer.com
+NEXT_PUBLIC_SITE_URL=https://allanpalmerviolinist.com
 RESEND_API_KEY=re_your_resend_api_key_here
-FROM_EMAIL=contact@allanpalmer.com
-TO_EMAIL=allan@allanpalmer.com
+FROM_EMAIL=contact@allanpalmerviolinist.com
+TO_EMAIL=allan@allanpalmerviolinist.com
 NEXT_PUBLIC_MUX_ENV_KEY=your-mux-environment-key
 \`\`\`
 
@@ -95,12 +95,12 @@ Create a \`.env.local\` file with the following variables:
 
 \`\`\`env
 # Site Configuration
-NEXT_PUBLIC_SITE_URL=https://allanpalmer.com
+NEXT_PUBLIC_SITE_URL=https://allanpalmerviolinist.com
 
 # Resend Email Configuration
 RESEND_API_KEY=re_your_resend_api_key_here
-FROM_EMAIL=contact@allanpalmer.com
-TO_EMAIL=allan@allanpalmer.com
+FROM_EMAIL=contact@allanpalmerviolinist.com
+TO_EMAIL=allan@allanpalmerviolinist.com
 
 # Mux Video Configuration
 NEXT_PUBLIC_MUX_ENV_KEY=your-mux-environment-key

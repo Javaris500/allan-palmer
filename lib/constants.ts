@@ -4,7 +4,7 @@ export const SITE_CONFIG = {
   title: "Allan Palmer | Professional Violinist in Winnipeg, Manitoba",
   description:
     "Professional violinist Allan Palmer provides elegant music for weddings, private events, and functions in Winnipeg, Manitoba. Also offering violin lessons for all skill levels.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://allanpalmer.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://allanpalmerviolinist.com",
   ogImage: "/images/allan-palmer-og-image.jpg",
   creator: "Allan Palmer",
   keywords: [
@@ -19,7 +19,7 @@ export const SITE_CONFIG = {
     "violin teacher",
     "live music events",
   ],
-} as const
+} as const;
 
 export const CONTACT_INFO = {
   email: "palmerar@myumanitoba.ca",
@@ -31,7 +31,7 @@ export const CONTACT_INFO = {
     tiktok: "https://www.tiktok.com/@allan_palms/video/7537255525445045510",
     spotify: "https://open.spotify.com/artist/6dmJtjDHZaYhBB3o51mysR",
   },
-} as const
+} as const;
 
 export const NAVIGATION_ITEMS = [
   { href: "/", label: "Home" },
@@ -39,13 +39,13 @@ export const NAVIGATION_ITEMS = [
   { href: "/repertoire", label: "Repertoire" },
   { href: "/gallery", label: "Gallery" },
   { href: "/booking", label: "Book" },
-] as const
+] as const;
 
 export const SERVICE_CATEGORIES = {
   weddings: "Wedding Services",
   private: "Private Functions",
   lessons: "Violin Lessons",
-} as const
+} as const;
 
 // Mux Video Configuration
 export const MUX_CONFIG = {
@@ -58,4 +58,4 @@ export const MUX_CONFIG = {
     `https://image.mux.com/ys502eHmaLlbsTQbT01czXBZUhDOOlt174ml93C02G2Ft00/thumbnail.png?width=${width}&height=${height}&time=${time}`,
   getAnimatedGif: (width = 640, fps = 10, start = 0, end = 5) =>
     `https://image.mux.com/ys502eHmaLlbsTQbT01czXBZUhDOOlt174ml93C02G2Ft00/animated.gif?width=${width}&fps=${fps}&start=${start}&end=${end}`,
-} as const
+} as const;

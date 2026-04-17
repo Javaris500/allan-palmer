@@ -15,7 +15,7 @@ Disallow: /_next/
 Disallow: /private/
 
 # Sitemap location
-Sitemap: https://allanpalmer.com/sitemap.xml
+Sitemap: https://allanpalmerviolinist.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

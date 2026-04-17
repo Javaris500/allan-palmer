@@ -1,30 +1,27 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { Check } from "lucide-react"
-import Link from "next/link"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
+import Link from "next/link";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Booking Success — Confirmation screen with animated checkmark
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface BookingSuccessProps {
-  bookingId?: string
-  email: string
-  className?: string
+  bookingId?: string;
+  email: string;
+  className?: string;
 }
 
-export function BookingSuccess({
-  email,
-  className = "",
-}: BookingSuccessProps) {
-  const [showConfetti, setShowConfetti] = useState(false)
+export function BookingSuccess({ email, className = "" }: BookingSuccessProps) {
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowConfetti(true), 600)
-    return () => clearTimeout(timer)
-  }, [])
+    const timer = setTimeout(() => setShowConfetti(true), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <motion.div
@@ -117,8 +114,8 @@ export function BookingSuccess({
         animate={{ opacity: 1 }}
         transition={{ delay: 1.0 }}
       >
-        A confirmation email has been sent to{" "}
-        <span className="text-foreground">{email}</span>
+        Allan will be in touch at{" "}
+        <span className="text-foreground">{email}</span> within 24–48 hours.
       </motion.p>
 
       {/* CTA buttons */}
@@ -142,5 +139,5 @@ export function BookingSuccess({
         </Link>
       </motion.div>
     </motion.div>
-  )
+  );
 }

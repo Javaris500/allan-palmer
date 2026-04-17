@@ -1,21 +1,24 @@
-import { PageTransition } from "@/components/page-transition"
-import dynamic from "next/dynamic"
-import { Music } from "lucide-react"
-import type { Metadata } from "next"
+import { PageTransition } from "@/components/page-transition";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import type { Metadata } from "next";
 
 const SongCatalog = dynamic(
-  () => import("@/components/song-catalog").then(mod => ({ default: mod.SongCatalog })),
+  () =>
+    import("@/components/song-catalog").then((mod) => ({
+      default: mod.SongCatalog,
+    })),
   {
     ssr: true,
     loading: () => (
-      <div className="animate-pulse space-y-3">
+      <div className="animate-pulse space-y-3 pt-10">
         {[...Array(10)].map((_, i) => (
-          <div key={i} className="h-12 bg-muted rounded" />
+          <div key={i} className="h-8 bg-muted/40 rounded-sm" />
         ))}
       </div>
     ),
-  }
-)
+  },
+);
 
 export const metadata: Metadata = {
   title: "Violin Repertoire | Allan Palmer's Complete Song Catalog",
@@ -40,39 +43,68 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/repertoire",
   },
-}
+};
 
 export default function RepertoirePage() {
   return (
     <PageTransition>
-      <div className="min-h-screen pt-12">
-        {/* Header Section */}
-        <section className="py-12 md:py-20">
-          <div className="container">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 text-gold mb-4">
-                <Music className="h-5 w-5" />
-                <span className="text-sm font-medium uppercase tracking-wider">169 Songs</span>
+      <div className="min-h-screen">
+        {/* Cinematic header */}
+        <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
+          {/* Background image — desaturated, low opacity */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            aria-hidden="true"
+          >
+            <Image
+              src="/allan-performance-professional.jpg"
+              alt=""
+              fill
+              priority
+              className="object-cover object-center grayscale opacity-[0.18]"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/85 to-background" />
+          </div>
+
+          <div className="container relative">
+            <div className="max-w-3xl mx-auto text-center">
+              {/* Eyebrow — thin rules flanking small-caps label */}
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <div className="h-px w-10 md:w-16 bg-gold/50" />
+                <span className="text-[10px] md:text-xs tracking-[0.35em] uppercase text-gold/80 font-medium">
+                  The Programme
+                </span>
+                <div className="h-px w-10 md:w-16 bg-gold/50" />
               </div>
-              <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-                Complete <span className="text-gold">Repertoire</span>
+
+              {/* Display heading */}
+              <h1 className="font-serif font-light text-4xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05]">
+                Selected Works
               </h1>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Browse Allan's extensive collection spanning classical masterpieces, contemporary hits, jazz standards, and beloved musical theater pieces.
+
+              {/* Italic pull-quote subtitle */}
+              <p className="mt-8 font-serif italic text-base md:text-lg text-muted-foreground/80 leading-relaxed max-w-xl mx-auto">
+                Music for weddings, ceremonies, and occasions of note — drawn
+                from four centuries of classical, contemporary, and world
+                repertoire.
               </p>
+
+              {/* Hairline rule */}
+              <div className="mx-auto mt-10 h-px w-16 bg-gold/40" />
             </div>
           </div>
         </section>
 
-        {/* Song Catalog */}
-        <section className="py-8 md:py-12">
+        {/* Programme catalog — narrower single column */}
+        <section className="pb-24 md:pb-32">
           <div className="container">
-            <div className="mx-auto max-w-4xl lg:max-w-5xl">
+            <div className="mx-auto max-w-2xl">
               <SongCatalog />
             </div>
           </div>
         </section>
       </div>
     </PageTransition>
-  )
+  );
 }

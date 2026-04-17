@@ -1,10 +1,17 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Mail, Phone, MessageSquare, Clock, Star, Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { CONTACT_INFO } from "@/lib/constants"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import {
+  Mail,
+  Phone,
+  MessageSquare,
+  Clock,
+  Star,
+  Calendar,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CONTACT_INFO } from "@/lib/constants";
+import Image from "next/image";
 
 export function ContactHero() {
   return (
@@ -32,41 +39,63 @@ export function ContactHero() {
             </h1>
 
             <p className="text-lg text-muted-foreground mb-8">
-              Ready to discuss your event or explore violin lessons? Reach out today and let's create something magical together.
+              Ready to discuss your event or explore violin lessons? Reach out
+              today and let's create something magical together.
             </p>
 
             {/* Trust badges */}
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="text-center p-4 bg-white dark:bg-black border-2 border-gold/20 rounded-lg hover:border-gold/40 transition-all">
-                <div className="text-2xl font-bold text-gold mb-1">500+</div>
-                <div className="text-xs text-muted-foreground">Events Performed</div>
+                <div className="text-2xl font-bold text-gold mb-1">200+</div>
+                <div className="text-xs text-muted-foreground">
+                  Events Performed
+                </div>
               </div>
               <div className="text-center p-4 bg-white dark:bg-black border-2 border-gold/20 rounded-lg hover:border-gold/40 transition-all">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Star className="w-5 h-5 text-gold fill-gold" />
                   <span className="text-2xl font-bold text-gold">5.0</span>
                 </div>
-                <div className="text-xs text-muted-foreground">Google Rating</div>
+                <div className="text-xs text-muted-foreground">
+                  Google Rating
+                </div>
               </div>
               <div className="text-center p-4 bg-white dark:bg-black border-2 border-gold/20 rounded-lg hover:border-gold/40 transition-all">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Clock className="w-4 h-4 text-gold" />
                   <span className="text-2xl font-bold text-gold">&lt;24h</span>
                 </div>
-                <div className="text-xs text-muted-foreground">Response Time</div>
+                <div className="text-xs text-muted-foreground">
+                  Response Time
+                </div>
               </div>
             </div>
 
             {/* Quick actions */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild size="lg" className="bg-gold hover:bg-gold/90 text-black">
-                <a href={`tel:+1${CONTACT_INFO.phone.replace(/\D/g, "")}`} className="flex items-center gap-2">
+              <Button
+                asChild
+                size="lg"
+                className="bg-gold hover:bg-gold/90 text-black"
+              >
+                <a
+                  href={`tel:+1${CONTACT_INFO.phone.replace(/\D/g, "")}`}
+                  className="flex items-center gap-2"
+                >
                   <Phone className="h-5 w-5" />
                   Call Now
                 </a>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-2 border-gold/30 hover:border-gold bg-transparent">
-                <a href={`mailto:${CONTACT_INFO.email}`} className="flex items-center gap-2">
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-2 border-gold/30 hover:border-gold bg-transparent"
+              >
+                <a
+                  href={`mailto:${CONTACT_INFO.email}`}
+                  className="flex items-center gap-2"
+                >
                   <Mail className="h-5 w-5" />
                   Send Email
                 </a>
@@ -100,7 +129,9 @@ export function ContactHero() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75" />
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-gold" />
                     </div>
-                    <span className="font-semibold text-sm">Available for bookings</span>
+                    <span className="font-semibold text-sm">
+                      Available for bookings
+                    </span>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     Currently accepting inquiries for 2025-2026 events
@@ -112,5 +143,5 @@ export function ContactHero() {
         </div>
       </div>
     </section>
-  )
+  );
 }

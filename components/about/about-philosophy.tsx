@@ -1,109 +1,179 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { AnimatedElement } from "@/components/animated-element"
-import Image from "next/image"
-import { Heart, Music, Lightbulb, Users } from "lucide-react"
-import { VideoPlayer } from "@/components/video-player"
+import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
+import { VideoPlayer } from "@/components/video-player";
+import { EASE_OUT } from "@/lib/motion";
+
+const philosophyPoints = [
+  {
+    title: "Passion First",
+    description:
+      "Passion is the foundation of musical excellence. When you love what you play, it reaches the listener before any note does.",
+  },
+  {
+    title: "Technical Excellence",
+    description:
+      "Mastery of technique is what makes true expression possible — the quiet discipline that lets a performance breathe.",
+  },
+  {
+    title: "Creative Expression",
+    description:
+      "Music is a language of emotion. The work is helping each player — student or performer — find their voice within it.",
+  },
+  {
+    title: "Community Connection",
+    description:
+      "Music brings people together. Whether performing or teaching, the craft is always in service of the shared moment.",
+  },
+];
 
 export function AboutPhilosophy() {
-  const philosophyPoints = [
-    {
-      icon: Heart,
-      title: "Passion First",
-      description:
-        "I believe that passion is the foundation of musical excellence. When you love what you play, it resonates with your audience.",
-    },
-    {
-      icon: Music,
-      title: "Technical Excellence",
-      description:
-        "Mastering technique allows for true artistic expression. I emphasize proper form and technique as the building blocks of beautiful music.",
-    },
-    {
-      icon: Lightbulb,
-      title: "Creative Expression",
-      description:
-        "Music is a language of emotion. I encourage students to find their unique voice and express themselves through their playing.",
-    },
-    {
-      icon: Users,
-      title: "Community Connection",
-      description:
-        "Music brings people together. Whether performing or teaching, I value the connections and community that music creates.",
-    },
-  ]
+  const reduced = useReducedMotion();
+  const viewOnce = { once: true, margin: "-80px" } as const;
 
   return (
-    <section className="py-16 md:py-24 bg-background dark:bg-black">
+    <section className="relative py-24 md:py-32 border-t border-champagne/10">
       <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-          <AnimatedElement variant="fade-right">
-            <div className="grid grid-cols-1 gap-4">
-              <motion.div
-                className="relative h-[300px] md:h-[350px] rounded-lg overflow-hidden shadow-xl"
-                whileHover={{ scale: 1.02 }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <Image
-                  src="/teaching-certificates.jpg"
-                  alt="Allan Palmer with two students celebrating their violin achievements with certificates"
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </motion.div>
+        {/* Section header */}
+        <header className="text-center mb-16 md:mb-20 max-w-2xl mx-auto">
+          <motion.div
+            className="flex items-center justify-center gap-4 mb-8"
+            initial={reduced ? { opacity: 1 } : { opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={viewOnce}
+            transition={
+              reduced ? { duration: 0 } : { duration: 0.8, ease: EASE_OUT }
+            }
+          >
+            <div className="h-px w-10 md:w-16 bg-champagne/50" />
+            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+              The Craft
+            </span>
+            <div className="h-px w-10 md:w-16 bg-champagne/50" />
+          </motion.div>
 
-              <motion.div
-                className="relative h-[300px] md:h-[350px] rounded-lg overflow-hidden shadow-xl"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <VideoPlayer
-                  playbackId="I025pVKflyFHaw00PTUJEhQQggnkunham1LrNwJOrnj8Q"
-                  title="Allan Palmer - Teaching Session"
-                  description="Allan Palmer working with students in a personalized violin lesson"
-                  className="h-full"
-                />
-              </motion.div>
+          <motion.h2
+            className="font-display font-light text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.05]"
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewOnce}
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { duration: 0.9, ease: EASE_OUT, delay: 0.1 }
+            }
+          >
+            On Teaching
+          </motion.h2>
+        </header>
+
+        {/* Pull quote */}
+        <motion.blockquote
+          className="max-w-3xl mx-auto text-center mb-20 md:mb-24 px-4"
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewOnce}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : { duration: 1, ease: EASE_OUT, delay: 0.15 }
+          }
+        >
+          <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground/85 leading-[1.35] tracking-tight">
+            &ldquo;Music is a language of emotion. My work is finding the right
+            words for each moment.&rdquo;
+          </p>
+          <cite className="block mt-8 label-caps !text-[10px] !tracking-[0.3em] not-italic">
+            — Allan Palmer
+          </cite>
+        </motion.blockquote>
+
+        {/* Philosophy points — numbered programme list */}
+        <ol className="max-w-xl mx-auto space-y-10 md:space-y-12 mb-24 md:mb-28">
+          {philosophyPoints.map((point, idx) => (
+            <motion.li
+              key={point.title}
+              className="flex gap-5 md:gap-6"
+              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={
+                reduced
+                  ? { duration: 0 }
+                  : {
+                      duration: 0.8,
+                      ease: EASE_OUT,
+                      delay: Math.min(idx * 0.08, 0.3),
+                    }
+              }
+            >
+              <span className="shrink-0 w-8 pt-1 font-display text-[11px] tabular-nums tracking-widest text-champagne/70">
+                0{idx + 1}
+              </span>
+              <div className="flex-1 border-l border-champagne/25 pl-5 md:pl-6">
+                <h3 className="font-display text-lg md:text-xl text-foreground/90 mb-2 tracking-tight">
+                  {point.title}
+                </h3>
+                <p className="font-display italic text-sm md:text-base text-muted-foreground/70 leading-relaxed">
+                  {point.description}
+                </p>
+              </div>
+            </motion.li>
+          ))}
+        </ol>
+
+        {/* Duotone diptych — teaching photo + video */}
+        <div className="grid md:grid-cols-2 gap-5 md:gap-6 max-w-5xl mx-auto">
+          <motion.div
+            className="relative aspect-[4/3] ring-1 ring-champagne/15 rounded-sm overflow-hidden group"
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewOnce}
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { duration: 0.9, ease: EASE_OUT, delay: 0.1 }
+            }
+          >
+            <Image
+              src="/teaching-certificates.jpg"
+              alt="Allan Palmer celebrating student achievements at Palms Music Studio"
+              fill
+              className="object-cover object-center grayscale brightness-95 contrast-105 transition-all duration-700 ease-cinematic group-hover:grayscale-0 motion-reduce:transition-none"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/45 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between">
+              <span className="label-caps !text-[9px] md:!text-[10px] !tracking-[0.3em] !text-cream/90 drop-shadow">
+                Palms Music Studio
+              </span>
+              <span className="label-caps !text-[9px] md:!text-[10px] !tracking-[0.2em] drop-shadow">
+                Teaching
+              </span>
             </div>
-          </AnimatedElement>
+          </motion.div>
 
-          <AnimatedElement variant="fade-left">
-            <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl mb-6">My Teaching Philosophy</h2>
-            <p className="text-muted-foreground mb-8">
-              I believe that learning music should be both enjoyable and rewarding. My approach combines technical
-              precision with creative expression, tailored to each student's unique learning style and goals.
-            </p>
-
-            <div className="space-y-6">
-              {philosophyPoints.map((point, index) => (
-                <motion.div
-                  key={index}
-                  className="flex gap-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary/10 dark:bg-gold/10">
-                    <point.icon className="h-5 w-5 text-primary dark:text-gold" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-1">{point.title}</h3>
-                    <p className="text-sm text-muted-foreground">{point.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </AnimatedElement>
+          <motion.div
+            className="relative aspect-[4/3] ring-1 ring-champagne/15 rounded-sm overflow-hidden"
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewOnce}
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { duration: 0.9, ease: EASE_OUT, delay: 0.2 }
+            }
+          >
+            <VideoPlayer
+              playbackId="I025pVKflyFHaw00PTUJEhQQggnkunham1LrNwJOrnj8Q"
+              title="Allan Palmer - Teaching Session"
+              description="A lesson at Palms Music Studio"
+              className="h-full"
+            />
+          </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }
