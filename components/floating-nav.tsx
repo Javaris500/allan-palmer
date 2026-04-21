@@ -12,7 +12,6 @@ import {
   Music,
   Film,
   Calendar,
-  HandHeart,
   ArrowUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,6 @@ const navIcons: Record<string, React.ElementType> = {
   "/gallery": Film,
   "/booking": Calendar,
   "/services": Calendar,
-  "/support": HandHeart,
 };
 
 const navItems: {
@@ -44,7 +42,6 @@ const navItems: {
     icon: navIcons[item.href] || Home,
   })),
   { href: "/services", label: "Services", icon: Calendar, highlight: true },
-  { href: "/support", label: "Donate", icon: HandHeart },
 ];
 
 export function FloatingNav() {

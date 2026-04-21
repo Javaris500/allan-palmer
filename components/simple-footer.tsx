@@ -35,7 +35,6 @@ export function SimpleFooter() {
     { href: "/gallery", label: "Gallery" },
     { href: "/booking", label: "Book" },
     { href: "/my-bookings", label: "My Bookings" },
-    { href: "/support", label: "Donate" },
     { href: "/contact", label: "Contact" },
   ];
 
