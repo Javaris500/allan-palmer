@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Mail } from "lucide-react";
 import Link from "next/link";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -10,12 +10,24 @@ import Link from "next/link";
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface BookingSuccessProps {
-  bookingId?: string;
+  reference?: string;
   email: string;
+  /**
+   * Pre-built mailto URL with all booking details. When present we render
+   * a fallback "Email Allan" button — the booking form already tries to
+   * open the mail client on submit, but the button gives the user a
+   * visible recovery path if no handler is registered.
+   */
+  mailto?: string;
   className?: string;
 }
 
-export function BookingSuccess({ email, className = "" }: BookingSuccessProps) {
+export function BookingSuccess({
+  reference,
+  email,
+  mailto,
+  className = "",
+}: BookingSuccessProps) {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -108,6 +120,17 @@ export function BookingSuccess({ email, className = "" }: BookingSuccessProps) {
         details and confirm availability.
       </motion.p>
 
+      {reference && (
+        <motion.p
+          className="text-xs text-muted-foreground/70 mb-2 font-mono tracking-wider"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.95 }}
+        >
+          Reference: <span className="text-gold">{reference}</span>
+        </motion.p>
+      )}
+
       <motion.p
         className="text-xs text-muted-foreground/70 mb-8"
         initial={{ opacity: 0 }}
@@ -115,8 +138,30 @@ export function BookingSuccess({ email, className = "" }: BookingSuccessProps) {
         transition={{ delay: 1.0 }}
       >
         Allan will be in touch at{" "}
-        <span className="text-foreground">{email}</span> within 24–48 hours.
+        <span className="text-foreground">{email}</span> within 24&ndash;48
+        hours.
       </motion.p>
+
+      {mailto && (
+        <motion.div
+          className="w-full max-w-sm mb-6 p-4 rounded-lg border border-gold/30 bg-gold/5 text-left"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.05 }}
+        >
+          <p className="text-xs text-muted-foreground mb-3">
+            Didn&rsquo;t see your mail client open? Click below to send the
+            details to Allan.
+          </p>
+          <a
+            href={mailto}
+            className="inline-flex items-center gap-2 bg-gold text-gray-950 font-semibold px-5 py-2 rounded-full text-sm hover:bg-gold/90 transition-colors active:scale-[0.98]"
+          >
+            <Mail className="h-4 w-4" />
+            Email Allan
+          </a>
+        </motion.div>
+      )}
 
       {/* CTA buttons */}
       <motion.div

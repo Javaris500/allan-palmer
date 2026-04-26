@@ -15,11 +15,15 @@ const getReelThumbnail = (playbackId: string, time: number = 10) =>
 const getLandscapeThumbnail = (playbackId: string, time: number = 10) =>
   `https://image.mux.com/${playbackId}/thumbnail.png?width=400&height=225&time=${time}&fit_mode=crop`;
 
-export function VideoGalleryImmersive() {
+export function VideoGalleryImmersive({
+  videos,
+}: {
+  videos?: VideoConfig[];
+} = {}) {
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(
     null,
   );
-  const allVideos = getAllVideoConfigs();
+  const allVideos = videos && videos.length > 0 ? videos : getAllVideoConfigs();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);

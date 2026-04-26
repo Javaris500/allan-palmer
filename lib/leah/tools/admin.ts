@@ -68,7 +68,7 @@ export const listBookingsTool = (session: Session | null) =>
 export const blockTimeTool = (session: Session | null) =>
   tool({
     description:
-      "Block a time slot on Allan's calendar (mark unavailable). Pass `date` for a one-off block on a specific day (YYYY-MM-DD). Pass `dayOfWeek` for a recurring weekly block. Provide exactly one of the two.",
+      "Block a time slot on Allan's calendar (mark unavailable). Pass `date` for a one-off block on a specific day (YYYY-MM-DD). Pass `dayOfWeek` for a recurring weekly block. Provide exactly one of the two. Two-step: call WITHOUT `confirm` first to preview, then re-call with `confirm: true` after Allan says yes.",
     inputSchema: z
       .object({
         date: z
@@ -88,6 +88,12 @@ export const blockTimeTool = (session: Session | null) =>
         startTime: z.string().describe("HH:MM 24h, e.g. 14:00"),
         endTime: z.string().describe("HH:MM 24h, e.g. 17:00"),
         reason: z.string().optional(),
+        confirm: z
+          .boolean()
+          .optional()
+          .describe(
+            "Set true ONLY after Allan has explicitly confirmed the block in chat. First call should omit this to return a preview.",
+          ),
       })
       .refine(
         (d) =>
@@ -97,8 +103,38 @@ export const blockTimeTool = (session: Session | null) =>
           message: "Provide exactly one of `date` or `dayOfWeek`.",
         },
       ),
-    execute: async ({ date, dayOfWeek, startTime, endTime, reason }) => {
+    execute: async ({
+      date,
+      dayOfWeek,
+      startTime,
+      endTime,
+      reason,
+      confirm,
+    }) => {
       requireAdmin(session);
+
+      // Two-step gate. The admin prompt also tells Leah to confirm, but we
+      // enforce server-side too so a single over-eager turn cannot write to
+      // the calendar. Preview returns a description; the model then asks
+      // Allan, and re-calls with `confirm: true` when he says yes.
+      if (!confirm) {
+        const target = date
+          ? `${date}`
+          : dayOfWeek !== undefined
+            ? `every ${dayName(dayOfWeek)}`
+            : "(unspecified)";
+        return {
+          confirmed: false,
+          preview: {
+            target,
+            startTime,
+            endTime,
+            reason: reason ?? null,
+          },
+          message: `Preview: block ${target} ${startTime}–${endTime}${reason ? ` (${reason})` : ""}. Ask Allan to confirm, then call again with confirm: true to apply.`,
+        };
+      }
+
       try {
         if (date) {
           const parsed = new Date(`${date}T00:00:00.000Z`);

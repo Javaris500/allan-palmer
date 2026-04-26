@@ -13,6 +13,7 @@ import {
   Film,
   Calendar,
   ArrowUp,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -43,6 +44,15 @@ const navItems: {
   })),
   { href: "/services", label: "Services", icon: Calendar, highlight: true },
 ];
+
+// Goes to /admin — the auth middleware redirects to /admin-sign-in if the
+// visitor isn't signed in. If Allan is already signed in, this drops him
+// straight at the dashboard.
+const adminNavItem: (typeof navItems)[number] = {
+  href: "/admin",
+  label: "Admin",
+  icon: Lock,
+};
 
 export function FloatingNav() {
   const pathname = usePathname();
@@ -141,7 +151,7 @@ export function FloatingNav() {
                     transition={{ delay: 0.05 }}
                   >
                     <nav className="flex flex-col gap-1">
-                      {navItems.map((item, index) => {
+                      {[...navItems, adminNavItem].map((item, index) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;
                         return (

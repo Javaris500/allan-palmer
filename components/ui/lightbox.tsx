@@ -7,7 +7,7 @@ import Image from "next/image";
 import { EASE_OUT } from "@/lib/motion";
 
 interface LightboxImage {
-  id: number;
+  id: number | string;
   src: string;
   alt: string;
   title: string;

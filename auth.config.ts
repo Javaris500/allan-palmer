@@ -12,7 +12,7 @@ export const authConfig = {
       const isOnAdmin = nextUrl.pathname.startsWith("/admin");
       if (isOnAdmin) {
         if (isLoggedIn && auth.user.role === "ADMIN") return true;
-        const signInUrl = new URL("/sign-in", nextUrl);
+        const signInUrl = new URL("/admin-sign-in", nextUrl);
         signInUrl.searchParams.set("callbackUrl", nextUrl.pathname);
         return Response.redirect(signInUrl);
       }

@@ -19,6 +19,7 @@ const hasUpstash = Boolean(
 );
 
 let durableLimiter: Ratelimit | null = null;
+let mediaLimiter: Ratelimit | null = null;
 
 function getDurableLimiter(): Ratelimit | null {
   if (!hasUpstash) return null;
@@ -31,6 +32,20 @@ function getDurableLimiter(): Ratelimit | null {
     prefix: "leah:rl",
   });
   return durableLimiter;
+}
+
+function getMediaLimiter(): Ratelimit | null {
+  if (!hasUpstash) return null;
+  if (mediaLimiter) return mediaLimiter;
+  mediaLimiter = new Ratelimit({
+    redis: Redis.fromEnv(),
+    // 30 admin media uploads per 15-minute window. Single-admin so the
+    // realistic value is far below this — limit is defense in depth.
+    limiter: Ratelimit.slidingWindow(30, "15 m"),
+    analytics: true,
+    prefix: "media:rl",
+  });
+  return mediaLimiter;
 }
 
 export interface RateLimitResult {
@@ -51,6 +66,20 @@ export async function rateLimitLeah(userId: string): Promise<RateLimitResult> {
   }
   // Fallback — dev/preview only.
   return rateLimit(`leah:${userId}`, 60, 15 * 60_000);
+}
+
+/**
+ * Admin media upload rate limit. Keyed by admin user id.
+ */
+export async function rateLimitMediaUpload(
+  userId: string,
+): Promise<RateLimitResult> {
+  const limiter = getMediaLimiter();
+  if (limiter) {
+    const { success, remaining, reset } = await limiter.limit(userId);
+    return { success, remaining, resetTime: reset };
+  }
+  return rateLimit(`media:${userId}`, 30, 15 * 60_000);
 }
 
 // ---------------------------------------------------------------

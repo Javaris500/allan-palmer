@@ -38,6 +38,42 @@ enum Role {
   ADMIN
 }
 
+enum PhotoCategory {
+  WEDDING
+  CONCERT
+  CORPORATE
+  PRIVATE
+  PORTRAIT
+  OTHER
+}
+
+// Where on the public site a photo is rendered. Drives the "Where is this
+// used?" docs in the admin UI and lets singletons (hero, portrait) be
+// modeled distinctly from the gallery list.
+enum PhotoPlacement {
+  GALLERY_CAROUSEL   // /gallery — many photos
+  ABOUT_PORTRAIT     // /about hero — singleton
+  HOMEPAGE_HERO      // / hero background — singleton (fallback when no video)
+  FEATURED_TEASER    // / homepage gallery teaser — small set
+  UNUSED             // uploaded but not placed anywhere yet
+}
+
+enum VideoPlacement {
+  GALLERY_GRID       // /gallery video grid
+  HOMEPAGE_HERO      // / hero video — singleton
+  FEATURED_TEASER    // / homepage video teaser
+  UNUSED
+}
+
+enum VideoCategory {
+  WEDDING
+  CONCERT
+  CORPORATE
+  PRIVATE
+  LESSONS
+  OTHER
+}
+
 // ═══════════════════════════════════════════════════════
 // Auth (NextAuth v5 — Credentials + Resend magic link)
 // ═══════════════════════════════════════════════════════
@@ -57,6 +93,9 @@ model User {
   sessions          Session[]
   leahConversations LeahConversation[]
   bookings          Booking[]
+  uploadedPhotos    Photo[]
+  uploadedVideos    Video[]
+  adminActions      AdminAction[]
 
   @@map("users")
 }
@@ -229,4 +268,91 @@ model BookingMessage {
 
   @@index([bookingId])
   @@map("booking_messages")
+}
+
+// ═══════════════════════════════════════════════════════
+// Media — admin-managed photos (Vercel Blob) + videos (Mux)
+// ═══════════════════════════════════════════════════════
+
+model Photo {
+  id           String         @id @default(cuid())
+  title        String
+  altText      String
+  description  String?        @db.Text
+
+  // Vercel Blob
+  blobUrl      String         // public, CDN-served
+  blobPathname String         // used to call del() from @vercel/blob
+  contentType  String
+  width        Int?
+  height       Int?
+  sizeBytes    Int
+
+  // Display
+  placement    PhotoPlacement @default(GALLERY_CAROUSEL)
+  category     PhotoCategory  @default(OTHER)
+  featured     Boolean        @default(false)
+  displayOrder Int            @default(0)
+
+  // Audit
+  uploadedById String?
+  uploadedBy   User?          @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?      // soft delete; cron hard-deletes from Blob
+
+  @@index([placement, displayOrder])
+  @@index([featured, displayOrder])
+  @@index([category])
+  @@index([deletedAt])
+  @@map("photos")
+}
+
+model Video {
+  id            String         @id @default(cuid())
+  title         String
+  description   String?        @db.Text
+
+  // Mux
+  muxAssetId    String?
+  muxUploadId   String?        @unique // direct-upload session id (pre-asset)
+  muxPlaybackId String?        @unique // null until Mux finishes processing
+  muxStatus     String         @default("preparing") // preparing | ready | errored
+  durationSec   Int?
+  thumbnailTime Int            @default(8)
+
+  // Display
+  placement     VideoPlacement @default(GALLERY_GRID)
+  category      VideoCategory  @default(WEDDING)
+  featured      Boolean        @default(false)
+  displayOrder  Int            @default(0)
+
+  // Audit
+  uploadedById  String?
+  uploadedBy    User?          @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  @@index([placement, displayOrder])
+  @@index([featured, displayOrder])
+  @@index([category])
+  @@index([deletedAt])
+  @@index([muxStatus])
+  @@map("videos")
+}
+
+model AdminAction {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // e.g. 'photo.upload', 'photo.delete', 'video.upload'
+  targetId  String?  // id of the resource acted on
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+  @@map("admin_actions")
 }

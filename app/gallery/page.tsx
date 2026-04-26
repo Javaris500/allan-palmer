@@ -3,6 +3,13 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { GalleryPreloadImages } from "@/components/gallery-preload-images";
 import { PageTransition } from "@/components/page-transition";
+import { getPhotosByPlacement } from "@/lib/media/photos";
+import { getVideosByPlacement } from "@/lib/media/videos";
+import {
+  defaultGalleryPhotos,
+  type CarouselPhoto,
+} from "@/components/photo-gallery-carousel";
+import type { VideoConfig } from "@/lib/video-thumbnails";
 
 // Dynamic imports for heavy components
 const PhotoGalleryCarousel = dynamic(
@@ -77,7 +84,37 @@ function SectionEyebrow({ label }: { label: string }) {
   );
 }
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const [dbPhotos, dbVideos] = await Promise.all([
+    getPhotosByPlacement("GALLERY_CAROUSEL"),
+    getVideosByPlacement("GALLERY_GRID"),
+  ]);
+
+  const photos: CarouselPhoto[] =
+    dbPhotos.length > 0
+      ? dbPhotos.map((p) => ({
+          id: p.id,
+          src: p.blobUrl,
+          alt: p.altText,
+          title: p.title,
+          description: p.description ?? "",
+        }))
+      : defaultGalleryPhotos;
+
+  // When DB has no videos, pass undefined so the component falls back to
+  // its hardcoded list. This keeps the live site working until Allan
+  // uploads at least one video through the admin.
+  const videos: VideoConfig[] | undefined =
+    dbVideos.length > 0
+      ? dbVideos.map((v) => ({
+          playbackId: v.muxPlaybackId,
+          title: v.title,
+          description: v.description ?? "",
+          category: v.category,
+          thumbnailTime: v.thumbnailTime,
+        }))
+      : undefined;
+
   return (
     <PageTransition>
       <GalleryPreloadImages />
@@ -120,7 +157,7 @@ export default function GalleryPage() {
               </p>
             </header>
 
-            <PhotoGalleryCarousel />
+            <PhotoGalleryCarousel photos={photos} />
           </div>
         </section>
 
@@ -139,7 +176,7 @@ export default function GalleryPage() {
               </p>
             </header>
 
-            <VideoGalleryImmersive />
+            <VideoGalleryImmersive videos={videos} />
           </div>
         </section>
 

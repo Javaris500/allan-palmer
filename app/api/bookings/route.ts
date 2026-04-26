@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { rateLimit } from "@/lib/rate-limit"
 import { prisma } from "@/lib/prisma"
+import { auth } from "@/auth"
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
@@ -25,9 +26,17 @@ export async function GET(request: NextRequest) {
     )
   }
 
+  // When signed in, also return bookings linked by userId — so a user who
+  // booked under a different contact email than their account email still
+  // sees their own bookings.
+  const session = await auth()
+  const sessionUserId = session?.user?.id ?? null
+
   try {
     const bookings = await prisma.booking.findMany({
-      where: { contactEmail: email },
+      where: sessionUserId
+        ? { OR: [{ contactEmail: email }, { userId: sessionUserId }] }
+        : { contactEmail: email },
       orderBy: { createdAt: "desc" },
       include: { messages: { orderBy: { createdAt: "asc" } } },
     })

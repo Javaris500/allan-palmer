@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { CONTACT_INFO } from "@/lib/constants";
 import {
   Calendar,
   Send,
@@ -12,7 +14,6 @@ import {
   MapPin,
   Clock,
   MessageSquare,
-  CheckCircle2,
   AlertCircle,
 } from "lucide-react";
 
@@ -33,12 +34,10 @@ const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
 type SubmitState =
   | { status: "idle" }
   | { status: "submitting" }
-  | { status: "success" }
   | { status: "error"; message: string };
 
-const ALLAN_EMAIL = "palmerar@myumanitoba.ca";
-
 export default function BookingPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -59,128 +58,84 @@ export default function BookingPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setState({ status: "submitting" });
 
-    // Build a clean, readable plain-text email body. Allan receives this
-    // directly from the client's own email address, so he can reply inline.
-    const lines: string[] = [
-      `Hi Allan,`,
-      ``,
-      `I'd like to book you for an event. Here are the details:`,
-      ``,
-      `— Contact —`,
-      `Name:  ${form.name}`,
-      `Email: ${form.email}`,
-      `Phone: ${form.phone}`,
-      ``,
-      `— Event —`,
-      `Type:  ${form.eventType}`,
-      `Date:  ${form.eventDate}`,
-    ];
-    if (form.preferredTime) lines.push(`Time:  ${form.preferredTime}`);
-    if (form.venue) lines.push(`Venue: ${form.venue}`);
-    if (form.message) {
-      lines.push(``, `— Additional Details —`, form.message);
+    try {
+      // Persist the booking so it shows up in /admin/bookings. Delivery to
+      // Allan happens via mailto below — the customer's own mail client
+      // sends the email so it lands in Allan's inbox from their address.
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = (await res.json().catch(() => null)) as
+        | { success: true; reference: string }
+        | { error: string }
+        | null;
+
+      if (!res.ok || !data || !("success" in data)) {
+        const message =
+          (data && "error" in data && data.error) ||
+          "Something went wrong. Please try again.";
+        setState({ status: "error", message });
+        return;
+      }
+
+      // Open the user's mail client with the booking details pre-filled.
+      const lines: string[] = [
+        `Hi Allan,`,
+        ``,
+        `I'd like to book you for an event. Here are the details:`,
+        ``,
+        `— Reference —`,
+        data.reference,
+        ``,
+        `— Contact —`,
+        `Name:  ${form.name}`,
+        `Email: ${form.email}`,
+        `Phone: ${form.phone}`,
+        ``,
+        `— Event —`,
+        `Type:  ${form.eventType}`,
+        `Date:  ${form.eventDate}`,
+      ];
+      if (form.preferredTime) lines.push(`Time:  ${form.preferredTime}`);
+      if (form.venue) lines.push(`Venue: ${form.venue}`);
+      if (form.message) {
+        lines.push(``, `— Additional Details —`, form.message);
+      }
+      lines.push(``, `Thanks,`, form.name);
+
+      const subject = `Booking Request — ${form.eventType || "Event"} — ${form.eventDate} (${data.reference})`;
+      const body = lines.join("\n");
+      const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      // Fire the mail handler, then navigate. Giving the mailto a tick
+      // before router.push prevents browsers from cancelling the handler
+      // as the app navigates. The success page also carries the mailto
+      // URL so the user has a visible fallback button if no mail client
+      // was registered.
+      window.location.href = mailtoUrl;
+
+      const params = new URLSearchParams({
+        ref: data.reference,
+        email: form.email,
+        mailto: mailtoUrl,
+      });
+      setTimeout(() => {
+        router.push(`/booking/success?${params.toString()}`);
+      }, 150);
+    } catch {
+      setState({
+        status: "error",
+        message:
+          "Couldn't reach the server. Please check your connection and try again.",
+      });
     }
-    lines.push(``, `Thanks,`, form.name);
-
-    const subject = `Booking Request — ${form.eventType || "Event"} — ${form.eventDate}`;
-    const body = lines.join("\n");
-
-    // mailto URL — keep total length under ~1800 chars for broad client support
-    const mailtoUrl = `mailto:${ALLAN_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-    // Open the user's default email client
-    window.location.href = mailtoUrl;
-
-    // Move to the success state so the user knows what to do next
-    setState({ status: "success" });
-  }
-
-  function reset() {
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      eventType: "",
-      eventDate: "",
-      preferredTime: "",
-      venue: "",
-      message: "",
-    });
-    setState({ status: "idle" });
-  }
-
-  // ──────────────────────────────────────────────
-  // Success state — cinematic confirmation
-  // ──────────────────────────────────────────────
-  if (state.status === "success") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-16 relative overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 35% at 50% 0%, rgba(212,168,67,0.08) 0%, transparent 70%)",
-          }}
-        />
-        <motion.div
-          className="w-full max-w-lg text-center relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.div
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{
-              delay: 0.15,
-              duration: 0.6,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold/10 border border-gold/30 mb-8"
-          >
-            <CheckCircle2 className="h-10 w-10 text-gold" strokeWidth={1.5} />
-          </motion.div>
-
-          <h1 className="text-3xl sm:text-4xl font-serif font-light text-foreground tracking-wide">
-            Almost there.
-          </h1>
-          <div className="mx-auto w-12 h-px bg-gold/40 mt-5 mb-6" />
-          <p className="text-base text-muted-foreground leading-relaxed max-w-md mx-auto">
-            Your email app just opened with your request pre-filled. Hit{" "}
-            <span className="text-foreground font-medium">Send</span> and Allan
-            will receive your booking directly. He&rsquo;ll reach out within
-            24&ndash;48 hours.
-          </p>
-
-          <div className="mt-10 max-w-sm mx-auto text-xs text-muted-foreground/70 leading-relaxed">
-            <p>
-              If nothing opened, email Allan directly at{" "}
-              <a
-                href={`mailto:${ALLAN_EMAIL}`}
-                className="text-gold hover:underline"
-              >
-                {ALLAN_EMAIL}
-              </a>
-              .
-            </p>
-          </div>
-
-          <div className="mt-12">
-            <button
-              onClick={reset}
-              className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-gold transition-colors border-b border-current pb-1"
-            >
-              Submit another request
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    );
   }
 
   // ──────────────────────────────────────────────

@@ -216,6 +216,7 @@ export async function sendBookingReceived({
   return resend.emails.send({
     from: FROM_EMAIL,
     to,
+    replyTo: ADMIN_EMAIL,
     subject: `Booking Request Received — ${reference} | Allan Palmer`,
     html: emailLayout({
       preheader: `Thank you, ${name}! Allan will review your ${eventType.toLowerCase()} booking and respond within 24-48 hours.`,
@@ -437,6 +438,7 @@ export async function sendBookingStatusUpdate({
   return resend.emails.send({
     from: FROM_EMAIL,
     to,
+    replyTo: ADMIN_EMAIL,
     subject: `${copy.heading} — ${reference} | Allan Palmer`,
     html: emailLayout({
       preheader: `${copy.heading} — Your ${eventType.toLowerCase()} booking (${reference}) has been updated.`,
@@ -492,6 +494,7 @@ export async function sendNewMessageNotification({
   return resend.emails.send({
     from: FROM_EMAIL,
     to,
+    replyTo: ADMIN_EMAIL,
     subject: `Allan sent you a message — ${reference} | Allan Palmer`,
     html: emailLayout({
       preheader: `Allan says: "${messagePreview.slice(0, 80)}${messagePreview.length > 80 ? "..." : ""}"`,
@@ -535,6 +538,7 @@ export async function sendWelcomeEmail({
   return resend.emails.send({
     from: FROM_EMAIL,
     to,
+    replyTo: ADMIN_EMAIL,
     subject: "Welcome to Allan Palmer | Your Account Is Ready",
     html: emailLayout({
       preheader: `Welcome ${name}! Your Allan Palmer account is ready. Start booking live violin for your next event.`,
@@ -575,6 +579,7 @@ export async function sendPasswordResetEmail({
   return resend.emails.send({
     from: FROM_EMAIL,
     to,
+    replyTo: ADMIN_EMAIL,
     subject: "Reset Your Password | Allan Palmer",
     html: emailLayout({
       preheader: "You requested a password reset. This link expires in 1 hour.",
@@ -722,5 +727,66 @@ export async function sendAdminNotification({
     to: ADMIN_EMAIL,
     subject: `[Admin] ${subject}`,
     html,
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 10. CONTACT INQUIRY — sent to Allan from the /contact form
+// ═══════════════════════════════════════════════════════════════════════════
+
+export async function sendContactNotification({
+  name,
+  email,
+  phone,
+  eventType,
+  eventDate,
+  message,
+}: {
+  name: string;
+  email: string;
+  phone?: string;
+  eventType?: string;
+  eventDate?: string;
+  message: string;
+}) {
+  const rows =
+    detailRow("Name", name) +
+    detailRow("Email", email) +
+    (phone ? detailRow("Phone", phone) : "") +
+    (eventType ? detailRow("Event Type", eventType, true) : "") +
+    (eventDate ? detailRow("Event Date", eventDate) : "");
+
+  const body = `
+    <h2 style="margin:0 0 4px;font-size:22px;color:#fff;font-weight:600;">
+      New Contact Inquiry
+    </h2>
+    <p style="margin:0 0 24px;font-size:14px;color:#d4a843;">
+      ${name}${eventType ? ` &mdash; ${eventType}` : ""}
+    </p>
+
+    ${detailsCard(rows)}
+
+    <p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:1px;font-weight:600;">
+      Message
+    </p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111;border:1px solid #1a1a1a;border-radius:12px;overflow:hidden;margin:8px 0 24px;">
+      <tr><td style="padding:16px 20px;font-size:14px;color:#ccc;line-height:1.65;">${message}</td></tr>
+    </table>
+
+    <p style="margin:0;font-size:13px;color:#666;text-align:center;">
+      Reply directly to <a href="mailto:${email}" style="color:#d4a843;text-decoration:none;">${email}</a>${
+        phone ? ` or call <strong style="color:#888;">${phone}</strong>` : ""
+      }
+    </p>`;
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: ADMIN_EMAIL,
+    replyTo: email,
+    subject: `New Contact Inquiry${eventType ? `: ${eventType}` : ""} — ${name}`,
+    html: emailLayout({
+      preheader: `${name} sent a message through the contact form.`,
+      body,
+    }),
   });
 }

@@ -177,19 +177,9 @@ export function SimpleFooter() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground">
-              © {currentYear} {SITE_CONFIG.name}. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link
-                href="/admin"
-                className="hover:text-primary transition-colors"
-              >
-                Admin
-              </Link>
-            </div>
-          </div>
+          <p className="text-sm text-muted-foreground text-center sm:text-left">
+            © {currentYear} {SITE_CONFIG.name}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

@@ -3,7 +3,6 @@ import { z } from "zod";
 import crypto from "node:crypto";
 import type { Session } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { sendAdminNotification, sendBookingInquiry } from "@/lib/resend";
 import { CONTACT_INFO } from "@/lib/constants";
 
 // ──────────────────────────────────────────────
@@ -171,24 +170,37 @@ export const escalateTool = (session: Session | null) =>
         .describe("User's email if known, so Allan can follow up"),
     }),
     execute: async ({ reason, summary, contactEmail }) => {
-      const userEmail = session?.user?.email ?? contactEmail ?? "unknown";
-      try {
-        await sendAdminNotification({
-          subject: `Leah escalation: ${reason}`,
-          body: `<p><strong>From user:</strong> ${userEmail}</p><p><strong>Summary:</strong></p><p>${summary}</p>`,
-        });
-        return {
-          escalated: true,
-          message: `I've flagged this for Allan. He'll reach out personally${contactEmail ? ` at ${contactEmail}` : ""}.`,
-        };
-      } catch {
-        return {
-          escalated: false,
-          message:
-            "I couldn't send that to Allan right now — please email him directly at " +
-            CONTACT_INFO.email,
-        };
+      // Delivery is handled by the user's own mail client via mailto — the
+      // email lands in Allan's inbox from the user's address so he can
+      // reply directly. We just hand back a pre-built mailto URL; the UI
+      // renders it as a clickable button.
+      const userEmail = session?.user?.email ?? contactEmail ?? null;
+      const subject = `Escalation from Leah — ${reason}`;
+      const lines: string[] = [
+        `Hi Allan,`,
+        ``,
+        `Leah asked me to reach out directly about this:`,
+        ``,
+        `— Reason —`,
+        reason,
+        ``,
+        `— Summary —`,
+        summary,
+      ];
+      if (userEmail) {
+        lines.push(``, `— Reply to —`, userEmail);
       }
+      lines.push(``, `Thanks.`);
+      const body = lines.join("\n");
+      const mailto = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      return {
+        escalated: true,
+        mailto,
+        adminEmail: CONTACT_INFO.email,
+        message:
+          "Click the email button to send this to Allan from your own inbox — he'll reply directly.",
+      };
     },
   });
 
@@ -198,32 +210,46 @@ export const escalateTool = (session: Session | null) =>
 export const leadTool = (session: Session | null) =>
   tool({
     description:
-      "Capture the user's contact details when they're interested but not ready to book yet. Stores them as a User in the system for follow-up.",
+      "Capture the signed-in user's contact details when they're interested but not ready to book yet. Updates their own profile name (if blank). Always operates on the authenticated user — never another account. Allan sees leads in the admin dashboard.",
     inputSchema: z.object({
       name: z.string().min(1),
-      email: z.string().email(),
       note: z
         .string()
         .optional()
         .describe("Anything they said about what they're looking for"),
     }),
-    execute: async ({ name, email, note }) => {
+    execute: async ({ name, note }) => {
+      const userId = session?.user?.id;
+      const sessionEmail = session?.user?.email?.toLowerCase() ?? null;
+      if (!userId || !sessionEmail) {
+        return {
+          captured: false,
+          message: "I can't save that without a signed-in account.",
+        };
+      }
       try {
-        const cleanEmail = email.toLowerCase().trim();
-        await prisma.user.upsert({
-          where: { email: cleanEmail },
-          update: { name },
-          create: { email: cleanEmail, name, role: "USER" },
+        // Only fill in `name` if the user has none on file — never overwrite
+        // an existing display name from a chat-supplied value, since the
+        // model collected it from free-form input and we don't re-verify
+        // identity here. Always operate on the session's own row by id.
+        const current = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { name: true },
         });
-        if (note) {
-          await sendAdminNotification({
-            subject: `New lead: ${name}`,
-            body: `<p><strong>${name}</strong> (${cleanEmail})</p><p>${note}</p>`,
+        if (current && !current.name) {
+          await prisma.user.update({
+            where: { id: userId },
+            data: { name },
           });
         }
+        // Delivery to Allan happens when the user follows up via a booking
+        // or escalation — both produce a mailto the user actively sends.
+        // The lead itself is persisted on the User row; Allan surfaces it
+        // in the admin dashboard.
+        const suffix = note ? ` Here's what you mentioned: "${note}".` : "";
         return {
           captured: true,
-          message: `Got it — I've saved ${name}'s details. Allan will be in touch.`,
+          message: `Got it, ${name}.${suffix} Whenever you're ready to lock in a date, just say the word and I'll walk you through it.`,
         };
       } catch {
         return {
@@ -324,28 +350,31 @@ export const submitBookingTool = (session: Session | null) =>
           },
         });
 
-        // Notify Allan (best effort — don't fail booking if email fails)
-        try {
-          await sendBookingInquiry({
-            name: draft.contactName,
-            email: contactEmail,
-            phone: draft.contactPhone,
-            eventType: draft.eventType,
-            eventDate: draft.eventDate,
-            venue: draft.venue,
-            message:
-              [draft.songRequests, draft.specialRequirements]
-                .filter(Boolean)
-                .join("\n\n") || undefined,
-          });
-        } catch {
-          // swallow — booking is saved
-        }
+        // Email delivery is handled by the user's own mail client via a
+        // mailto link, so Allan receives the message from the customer's
+        // own address and can reply inline. The booking is already saved
+        // to the DB and will appear in /admin/bookings either way.
+        const mailto = buildBookingMailto({
+          reference: booking.reference,
+          contactName: draft.contactName,
+          contactEmail,
+          contactPhone: draft.contactPhone,
+          eventType: draft.eventType,
+          eventDate: draft.eventDate,
+          timePreference: draft.timePreference,
+          venue: draft.venue,
+          guestCount: draft.guestCount,
+          duration: draft.duration,
+          songRequests: draft.songRequests,
+          specialRequirements: draft.specialRequirements,
+        });
 
         return {
           success: true,
           reference: booking.reference,
-          message: `Booking submitted. Reference: ${booking.reference}. Allan will reach out within 24-48 hours.`,
+          mailto,
+          adminEmail: CONTACT_INFO.email,
+          message: `Booking saved (reference ${booking.reference}). Click the email button to send the details to Allan from your own inbox — he'll reply directly.`,
         };
       } catch {
         return {
@@ -362,6 +391,57 @@ function formatDateRef(d: Date): string {
     String(d.getMonth() + 1).padStart(2, "0") +
     String(d.getDate()).padStart(2, "0")
   );
+}
+
+// Build a mailto: URL the customer can click to send the booking details to
+// Allan from their own mail client. Mirrors the plain-text layout used by
+// the /booking and /contact form mailto flows.
+function buildBookingMailto(input: {
+  reference: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  eventType: string;
+  eventDate: string;
+  timePreference?: string;
+  venue?: string;
+  guestCount?: string;
+  duration?: string;
+  songRequests?: string;
+  specialRequirements?: string;
+}): string {
+  const lines: string[] = [
+    `Hi Allan,`,
+    ``,
+    `I'd like to book you for an event. Here are the details:`,
+    ``,
+    `— Reference —`,
+    input.reference,
+    ``,
+    `— Contact —`,
+    `Name:  ${input.contactName}`,
+    `Email: ${input.contactEmail}`,
+    `Phone: ${input.contactPhone}`,
+    ``,
+    `— Event —`,
+    `Type:  ${input.eventType}`,
+    `Date:  ${input.eventDate}`,
+  ];
+  if (input.timePreference) lines.push(`Time:  ${input.timePreference}`);
+  if (input.duration) lines.push(`Length: ${input.duration}`);
+  if (input.venue) lines.push(`Venue: ${input.venue}`);
+  if (input.guestCount) lines.push(`Guests: ${input.guestCount}`);
+  if (input.songRequests) {
+    lines.push(``, `— Song Requests —`, input.songRequests);
+  }
+  if (input.specialRequirements) {
+    lines.push(``, `— Additional Notes —`, input.specialRequirements);
+  }
+  lines.push(``, `Thanks,`, input.contactName);
+
+  const subject = `Booking Request — ${input.eventType} — ${input.eventDate} (${input.reference})`;
+  const body = lines.join("\n");
+  return `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 // ──────────────────────────────────────────────

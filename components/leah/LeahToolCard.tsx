@@ -20,8 +20,11 @@ export function LeahToolCard({ toolName, result }: ToolCardProps) {
   switch (toolName) {
     case "submitBooking":
       if (r?.success) {
+        const mailto = typeof r.mailto === "string" ? r.mailto : null;
+        const adminEmail =
+          typeof r.adminEmail === "string" ? r.adminEmail : null;
         return (
-          <div className="my-3 rounded-md border border-gold/30 bg-gold/5 p-4">
+          <div className="my-3 rounded-md border border-gold/30 bg-gold/5 p-4 space-y-3">
             <div className="flex items-start gap-3">
               <CheckCircle2
                 className="h-5 w-5 text-gold shrink-0 mt-0.5"
@@ -35,10 +38,20 @@ export function LeahToolCard({ toolName, result }: ToolCardProps) {
                   {String(r.reference)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Allan will reach out within 24–48 hours.
+                  Your request is saved. Send the details to Allan from your
+                  own inbox — he&rsquo;ll reply directly.
                 </p>
               </div>
             </div>
+            {mailto && (
+              <a
+                href={mailto}
+                className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-4 py-2 rounded-sm font-label text-xs tracking-[0.22em] uppercase transition-colors duration-300"
+              >
+                <Mail className="h-4 w-4" />
+                Email Allan{adminEmail ? ` (${adminEmail})` : ""}
+              </a>
+            )}
           </div>
         );
       }
@@ -229,7 +242,31 @@ export function LeahToolCard({ toolName, result }: ToolCardProps) {
       );
     }
 
-    case "escalateToAllan":
+    case "escalateToAllan": {
+      const mailto = typeof r?.mailto === "string" ? r.mailto : null;
+      const adminEmail =
+        typeof r?.adminEmail === "string" ? r.adminEmail : null;
+      return (
+        <div className="my-3 rounded-md border border-gold/20 bg-gold/5 p-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-gold" />
+            <p className="text-sm text-foreground/80">
+              {String(r?.message ?? "")}
+            </p>
+          </div>
+          {mailto && (
+            <a
+              href={mailto}
+              className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-4 py-2 rounded-sm font-label text-xs tracking-[0.22em] uppercase transition-colors duration-300"
+            >
+              <Mail className="h-4 w-4" />
+              Email Allan{adminEmail ? ` (${adminEmail})` : ""}
+            </a>
+          )}
+        </div>
+      );
+    }
+
     case "captureLead":
       return (
         <div className="my-3 rounded-md border border-gold/20 bg-gold/5 p-3 flex items-center gap-2">

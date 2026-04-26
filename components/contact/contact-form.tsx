@@ -80,12 +80,28 @@ export function ContactForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+
+    // Fire the server-side Resend send first so Allan reliably gets the
+    // inquiry in his inbox regardless of whether the customer follows
+    // through on the mailto draft. Mailto still opens after, as a UX nicety
+    // and fallback.
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[/contact] API send failed, falling back to mailto:", err);
+      }
+    }
 
     // Build a readable plain-text email body. Allan receives this directly
     // from the sender's own email address so he can reply inline.

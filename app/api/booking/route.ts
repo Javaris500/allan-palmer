@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { auth } from "@/auth";
 import { rateLimit } from "@/lib/rate-limit";
-import { sendBookingInquiry } from "@/lib/resend";
 import { prisma } from "@/lib/prisma";
+import { sendBookingInquiry } from "@/lib/resend";
 
 function sanitize(input: string | undefined | null): string {
   if (!input) return "";
@@ -87,18 +87,18 @@ export async function POST(request: NextRequest) {
     const reference = generateReference();
     const submittedEmail = email.toLowerCase().trim();
 
-    // If the submitter is signed in, canonicalize to the session email and
-    // stamp userId so /my-bookings can surface the record by session rather
-    // than email-challenge. Mismatched emails are recorded in adminNotes so
-    // Allan sees the discrepancy.
+    // Save the email the customer typed — that's the address they expect
+    // Allan to reply to, and the one they'll use to look up the booking later
+    // on /my-bookings. If they're signed in, stamp userId so the booking is
+    // also reachable by session. Mismatches are recorded in adminNotes.
     const session = await auth();
     const sessionEmail = session?.user?.email?.toLowerCase() ?? null;
     const sessionUserId = session?.user?.id ?? null;
-    const cleanEmail = sessionEmail ?? submittedEmail;
+    const cleanEmail = submittedEmail;
     const emailMismatch =
       sessionEmail !== null && sessionEmail !== submittedEmail;
     const adminNotes = emailMismatch
-      ? `[/api/booking] Session email (${sessionEmail}) differs from submitted email (${submittedEmail}). Using session email.`
+      ? `[/api/booking] Session email (${sessionEmail}) differs from submitted email (${submittedEmail}). Saved submitted email as contact; userId links to the session account.`
       : null;
 
     const timePreference = preferredTime
@@ -124,20 +124,26 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Server-side delivery via Resend so Allan reliably receives the inquiry
+    // in his inbox even if the customer's mailto draft is never sent. Failure
+    // here does not fail the request — the booking is already persisted and
+    // visible in /admin/bookings.
     try {
-      await sendBookingInquiry({
+      const result = await sendBookingInquiry({
         name: sanitize(name),
         email: cleanEmail,
         phone: sanitize(phone),
         eventType: sanitize(eventType),
-        eventDate: sanitize(eventDate),
+        eventDate: parsedDate.toISOString().slice(0, 10),
         venue: venue ? sanitize(venue) : undefined,
         message: message ? sanitize(message) : undefined,
       });
-    } catch (mailError) {
-      // Booking is saved; admin can still see it. Log the email failure.
+      if (result.error && process.env.NODE_ENV === "development") {
+        console.error("[/api/booking] Resend send failed:", result.error);
+      }
+    } catch (err) {
       if (process.env.NODE_ENV === "development") {
-        console.error("Booking email send failed:", mailError);
+        console.error("[/api/booking] Resend send threw:", err);
       }
     }
 

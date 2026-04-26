@@ -75,7 +75,7 @@ export function LeahDock(props: LeahDockProps) {
         )}
       </AnimatePresence>
 
-      {/* Panel */}
+      {/* Panel — full-screen on mobile, floating rounded shell on sm+ */}
       <AnimatePresence>
         {open && (
           <motion.aside
@@ -86,21 +86,40 @@ export function LeahDock(props: LeahDockProps) {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] flex flex-col bg-background border-l border-champagne/15 shadow-2xl shadow-black/50"
+            className="
+              fixed z-50 flex flex-col overflow-hidden
+              inset-0 sm:inset-y-4 sm:right-4 sm:left-auto sm:w-[440px]
+              bg-gradient-to-b from-background/98 via-background/95 to-background/98
+              backdrop-blur-xl
+              border-l border-champagne/15
+              sm:border sm:border-champagne/15
+              sm:rounded-2xl
+              shadow-[0_0_0_1px_rgba(0,0,0,0.4),0_25px_60px_-15px_rgba(0,0,0,0.7),0_8px_30px_-8px_rgba(212,175,109,0.08)]
+            "
           >
+            {/* Subtle gold gradient hairline along the top edge */}
+            <div
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-champagne/30 to-transparent"
+            />
+
             {/* Header */}
-            <header className="flex items-center justify-between px-5 py-4 border-b border-champagne/15">
+            <header className="relative flex items-center justify-between px-5 py-4 border-b border-champagne/10">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold/30 to-gold/5 border border-champagne/30 flex items-center justify-center">
-                  <span className="font-display text-champagne text-sm leading-none select-none">
+                <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-gold/30 via-gold/15 to-transparent border border-champagne/40 flex items-center justify-center shadow-inner shadow-gold/10">
+                  <span className="font-display text-champagne text-base leading-none select-none">
                     L
                   </span>
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400/90 border-2 border-background"
+                  />
                 </div>
                 <div>
                   <p className="font-display text-base text-foreground leading-none">
                     Leah
                   </p>
-                  <p className="label-caps !text-[10px] !tracking-[0.25em] mt-1">
+                  <p className="label-caps !text-[10px] !tracking-[0.25em] mt-1.5">
                     {props.isAdmin ? "Admin · Allan" : "Allan's Assistant"}
                   </p>
                 </div>
@@ -108,7 +127,7 @@ export function LeahDock(props: LeahDockProps) {
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close Leah"
-                className="text-muted-foreground hover:text-champagne transition-colors duration-300 p-1"
+                className="text-muted-foreground hover:text-champagne hover:bg-champagne/5 transition-colors duration-300 p-1.5 rounded-md"
               >
                 <X className="h-5 w-5" />
               </button>

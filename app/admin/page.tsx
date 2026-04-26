@@ -20,6 +20,7 @@ import {
   FileText,
   Globe,
   BookOpen,
+  Inbox,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -323,10 +324,10 @@ function ContentSectionCard({ section }: { section: ContentSection }) {
 // ═══════════════════════════════════════════════════════
 
 const quickLinks = [
+  { label: "Bookings", href: "/admin/bookings", icon: Inbox, description: "Review & reply" },
+  { label: "Media", href: "/admin/media", icon: ImageIcon, description: "Photos & videos" },
   { label: "View Website", href: "/", icon: Globe, description: "See live site" },
   { label: "Booking Page", href: "/booking", icon: Calendar, description: "Test booking flow" },
-  { label: "Services", href: "/services", icon: Briefcase, description: "View services" },
-  { label: "Contact", href: "/contact", icon: Layout, description: "View contact page" },
 ]
 
 // ═══════════════════════════════════════════════════════
