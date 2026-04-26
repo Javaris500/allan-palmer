@@ -21,6 +21,9 @@ import type {
   VideoPlacement,
 } from "@/generated/prisma";
 
+// Admin-only, always live — never prerender.
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Media | Admin",
   robots: { index: false, follow: false },

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import Link from "next/link";
 import { GalleryPreloadImages } from "@/components/gallery-preload-images";
 import { PageTransition } from "@/components/page-transition";
@@ -12,7 +12,7 @@ import {
 import type { VideoConfig } from "@/lib/video-thumbnails";
 
 // Dynamic imports for heavy components
-const PhotoGalleryCarousel = dynamic(
+const PhotoGalleryCarousel = nextDynamic(
   () =>
     import("@/components/photo-gallery-carousel").then((mod) => ({
       default: mod.PhotoGalleryCarousel,
@@ -29,7 +29,7 @@ const PhotoGalleryCarousel = dynamic(
   },
 );
 
-const VideoGalleryImmersive = dynamic(
+const VideoGalleryImmersive = nextDynamic(
   () =>
     import("@/components/video-gallery-immersive").then((mod) => ({
       default: mod.VideoGalleryImmersive,
@@ -48,6 +48,11 @@ const VideoGalleryImmersive = dynamic(
     ssr: false,
   },
 );
+
+// Reads media from the DB on every request (with tag-based cache
+// invalidation from /admin/media). Skips build-time prerender so we
+// don't try to query the DB during `next build`.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Performance Gallery - Allan Palmer Violinist",
@@ -85,9 +90,18 @@ function SectionEyebrow({ label }: { label: string }) {
 }
 
 export default async function GalleryPage() {
+  // Defensive: if the DB is unreachable or the media tables don't exist
+  // yet (e.g. before the migration has run on prod), fall back to the
+  // hardcoded defaults instead of 500ing the public gallery.
   const [dbPhotos, dbVideos] = await Promise.all([
-    getPhotosByPlacement("GALLERY_CAROUSEL"),
-    getVideosByPlacement("GALLERY_GRID"),
+    getPhotosByPlacement("GALLERY_CAROUSEL").catch((err) => {
+      console.error("[gallery] photo query failed, using defaults:", err);
+      return [];
+    }),
+    getVideosByPlacement("GALLERY_GRID").catch((err) => {
+      console.error("[gallery] video query failed, using defaults:", err);
+      return [];
+    }),
   ]);
 
   const photos: CarouselPhoto[] =
