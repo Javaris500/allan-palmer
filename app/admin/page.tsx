@@ -146,14 +146,11 @@ const contentSections: ContentSection[] = [
     description: "Your complete song catalog shown on the Repertoire page.",
     appearsOn: ["Repertoire Page — Full Song Catalog", "Homepage — Featured Songs (if marked featured)"],
     fields: [
-      { field: "Title", description: "Song name", type: "Text", required: true },
-      { field: "Artist", description: "Original artist", type: "Text", required: true },
-      { field: "Genre", description: "Classical, Pop, Rock, Jazz, R&B, Country, Musical Theatre, Film/TV, Religious, Traditional, Contemporary, Alternative", type: "Dropdown" },
-      { field: "Category", description: "Grouping for display: Classical, Popular, Jazz, etc.", type: "Dropdown" },
-      { field: "Duration", description: "Approximate performance length", type: "Text" },
-      { field: "Description", description: "Notes about this arrangement", type: "Long Text" },
-      { field: "Featured", description: "Show in the Featured Songs section on homepage", type: "Boolean" },
-      { field: "Wedding Recommended", description: "Flag as recommended for weddings — appears in wedding song filter", type: "Boolean" },
+      { field: "Title", description: "Song name (e.g. 'Canon in D')", type: "Text", required: true },
+      { field: "Artist / composer", description: "Original artist or composer (optional)", type: "Text" },
+      { field: "Genres", description: "Pick any of: Classical, Wedding, Jazz, Latin, Italian, Film & Show, Sacred, Pop & Rock. Drives the filter pills on /repertoire.", type: "Multi-select", required: true },
+      { field: "Display Order", description: "Lower numbers appear first in the catalog", type: "Number" },
+      { field: "Recently Added", description: "Auto-derived — songs added in the last 60 days show a 'New' badge automatically", type: "Auto" },
     ],
   },
   {
@@ -326,8 +323,8 @@ function ContentSectionCard({ section }: { section: ContentSection }) {
 const quickLinks = [
   { label: "Bookings", href: "/admin/bookings", icon: Inbox, description: "Review & reply" },
   { label: "Media", href: "/admin/media", icon: ImageIcon, description: "Photos & videos" },
+  { label: "Repertoire", href: "/admin/repertoire", icon: Music, description: "Manage song list" },
   { label: "View Website", href: "/", icon: Globe, description: "See live site" },
-  { label: "Booking Page", href: "/booking", icon: Calendar, description: "Test booking flow" },
 ]
 
 // ═══════════════════════════════════════════════════════

@@ -1,9 +1,14 @@
 import { PageTransition } from "@/components/page-transition";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { loadPublicSongs } from "@/lib/songs/load";
 
-const SongCatalog = dynamic(
+// DB-backed catalog falls back to hardcoded defaults on error — see
+// lib/songs/load.ts. Marked dynamic so admin edits show up immediately.
+export const dynamic = "force-dynamic";
+
+const SongCatalog = nextDynamic(
   () =>
     import("@/components/song-catalog").then((mod) => ({
       default: mod.SongCatalog,
@@ -45,7 +50,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RepertoirePage() {
+export default async function RepertoirePage() {
+  const songs = await loadPublicSongs();
+
   return (
     <PageTransition>
       <div className="min-h-screen">
@@ -100,7 +107,7 @@ export default function RepertoirePage() {
         <section className="pb-24 md:pb-32">
           <div className="container">
             <div className="mx-auto max-w-2xl">
-              <SongCatalog />
+              <SongCatalog songs={songs} />
             </div>
           </div>
         </section>

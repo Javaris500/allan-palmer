@@ -45,3 +45,6 @@ next-env.d.ts
 nul
 
 .vercel
+scripts/seed-prod-admin.sh
+.env.production.tmp
+.env*.tmp

@@ -6,6 +6,10 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "../generated/prisma";
+import {
+  defaultSongs,
+  RECENTLY_ADDED_WINDOW_DAYS,
+} from "../lib/songs/defaults";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -61,9 +65,40 @@ async function seedAdmin() {
   console.log(`✓ Admin user seeded: ${allan.email}`);
 }
 
+async function seedSongs() {
+  // Only seed when the table is empty; re-running won't duplicate rows.
+  const existing = await prisma.song.count({ where: { deletedAt: null } });
+  if (existing > 0) {
+    console.log(`✓ Songs already seeded (${existing} active rows)`);
+    return;
+  }
+
+  // Backdate non-recent songs so the public page's "Recently Added" filter
+  // (driven by createdAt within the last RECENTLY_ADDED_WINDOW_DAYS) doesn't
+  // light up the New badge on every legacy entry.
+  const now = new Date();
+  const backdated = new Date(now);
+  backdated.setDate(backdated.getDate() - (RECENTLY_ADDED_WINDOW_DAYS + 30));
+
+  await prisma.song.createMany({
+    data: defaultSongs.map((song, idx) => ({
+      title: song.title,
+      artist: song.artist ?? null,
+      genres: song.genres,
+      audioId: song.audioId ?? null,
+      audioUrl: song.audioUrl ?? null,
+      displayOrder: idx,
+      createdAt: song.recentlyAdded ? now : backdated,
+    })),
+  });
+
+  console.log(`✓ Seeded ${defaultSongs.length} songs`);
+}
+
 async function main() {
   await seedAvailability();
   await seedAdmin();
+  await seedSongs();
 }
 
 main()

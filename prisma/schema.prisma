@@ -342,6 +342,29 @@ model Video {
   @@map("videos")
 }
 
+// ═══════════════════════════════════════════════════════
+// Repertoire — admin-managed song catalog
+// ═══════════════════════════════════════════════════════
+
+model Song {
+  id           String    @id @default(cuid())
+  title        String
+  artist       String?
+  // Lowercase keys: classical, wedding, jazz, latin, italian, film, sacred, pop
+  genres       String[]
+  // Optional pointers to a hardcoded audio sample (legacy — not editable from admin yet).
+  audioId      String?
+  audioUrl     String?
+  displayOrder Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@index([deletedAt, displayOrder])
+  @@index([createdAt])
+  @@map("songs")
+}
+
 model AdminAction {
   id        String   @id @default(cuid())
   userId    String?
