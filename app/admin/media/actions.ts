@@ -285,6 +285,155 @@ export async function deletePhoto(formData: FormData) {
   revalidatePhotoSurfaces();
 }
 
+const replaceBlobSchema = z.object({
+  id: z.string().min(1),
+  blobUrl: z.string().url(),
+  blobPathname: z.string().min(1),
+  contentType: z.string().min(1),
+  sizeBytes: z.number().int().positive(),
+});
+
+export type ReplacePhotoBlobInput = z.infer<typeof replaceBlobSchema>;
+
+/**
+ * Swap the underlying blob on an existing photo without losing metadata
+ * (title, altText, description, placement, displayOrder, featured all
+ * stay). Validates the new blob with sharp, deletes the old blob from
+ * Vercel Blob storage on success, and patches the DB row in place.
+ *
+ * Use case: Allan wants to re-take a gallery photo without disturbing
+ * order or having to re-type alt text.
+ */
+export async function replacePhotoBlob(input: ReplacePhotoBlobInput) {
+  const session = await requireAdmin();
+
+  async function logFailure(stage: string, err: unknown, extra?: Record<string, unknown>) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[photo.replace] ${stage} failed`, err);
+    try {
+      await prisma.adminAction.create({
+        data: {
+          userId: session.user.id,
+          action: `photo.replace_failed.${stage}`,
+          targetId: input.id,
+          metadata: {
+            message,
+            blobUrl: input.blobUrl,
+            blobPathname: input.blobPathname,
+            ...extra,
+          },
+        },
+      });
+    } catch (logErr) {
+      console.error("[photo.replace] failure log itself failed", logErr);
+    }
+  }
+
+  let parsed: ReturnType<typeof replaceBlobSchema.parse>;
+  try {
+    parsed = replaceBlobSchema.parse(input);
+  } catch (err) {
+    await logFailure("validation", err, {
+      zodIssues: err instanceof z.ZodError ? err.issues : undefined,
+    });
+    throw err;
+  }
+
+  if (!isVercelBlobUrl(parsed.blobUrl)) {
+    const err = new Error("Only Vercel Blob URLs are accepted.");
+    await logFailure("blob_url_check", err);
+    throw err;
+  }
+
+  const existing = await prisma.photo.findUnique({
+    where: { id: parsed.id },
+    select: { blobUrl: true, blobPathname: true, deletedAt: true },
+  });
+  if (!existing || existing.deletedAt) {
+    const err = new Error("Photo not found or has been deleted.");
+    await logFailure("not_found", err);
+    throw err;
+  }
+
+  // Pull authoritative size + content type from Blob.
+  let trustedSize = parsed.sizeBytes;
+  let trustedContentType = parsed.contentType;
+  try {
+    const meta = await head(parsed.blobUrl);
+    trustedSize = meta.size;
+    trustedContentType = meta.contentType ?? parsed.contentType;
+  } catch (err) {
+    console.error("[photo.replace] head() failed", err);
+  }
+
+  // Sharp-validate the new file. If unreadable, delete the just-uploaded
+  // orphan blob and fail loudly — leave the existing photo's blob alone.
+  let width: number | null = null;
+  let height: number | null = null;
+  try {
+    const res = await fetch(parsed.blobUrl);
+    if (!res.ok) throw new Error(`Failed to fetch new blob (${res.status})`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    const meta = await sharp(buf).metadata();
+    width = meta.width ?? null;
+    height = meta.height ?? null;
+  } catch (err) {
+    await logFailure("sharp_validation", err);
+    await del(parsed.blobUrl).catch((e) =>
+      console.error("[photo.replace] orphan cleanup failed", e),
+    );
+    throw new Error(
+      "Replacement file could not be read as an image. Please try a different file.",
+    );
+  }
+
+  // Patch the row, then delete the OLD blob. Order matters — if blob
+  // delete fails, the DB row is already pointing at the new blob, and
+  // the orphan old blob is just a small storage cost (caught by the
+  // daily cleanup cron).
+  try {
+    await prisma.photo.update({
+      where: { id: parsed.id },
+      data: {
+        blobUrl: parsed.blobUrl,
+        blobPathname: parsed.blobPathname,
+        contentType: trustedContentType,
+        sizeBytes: trustedSize,
+        width,
+        height,
+      },
+    });
+  } catch (err) {
+    await logFailure("db_update", err);
+    // New blob is now orphaned — clean it up so we don't pay for it.
+    await del(parsed.blobUrl).catch((e) =>
+      console.error("[photo.replace] new blob cleanup failed", e),
+    );
+    throw err;
+  }
+
+  await del(existing.blobUrl).catch((e) =>
+    console.error("[photo.replace] old blob delete failed", parsed.id, e),
+  );
+
+  await prisma.adminAction.create({
+    data: {
+      userId: session.user.id,
+      action: "photo.replace",
+      targetId: parsed.id,
+      metadata: {
+        oldBlobPathname: existing.blobPathname,
+        newBlobPathname: parsed.blobPathname,
+        sizeBytes: trustedSize,
+        contentType: trustedContentType,
+      },
+    },
+  });
+
+  revalidatePhotoSurfaces();
+  return { id: parsed.id };
+}
+
 const reorderSchema = z.object({
   ids: z.array(z.string().min(1)).min(1).max(200),
 });
