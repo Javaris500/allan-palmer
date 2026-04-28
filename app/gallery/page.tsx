@@ -90,44 +90,49 @@ function SectionEyebrow({ label }: { label: string }) {
 }
 
 export default async function GalleryPage() {
-  // Defensive: if the DB is unreachable or the media tables don't exist
-  // yet (e.g. before the migration has run on prod), fall back to the
-  // hardcoded defaults instead of 500ing the public gallery.
-  const [dbPhotos, dbVideos] = await Promise.all([
-    getPhotosByPlacement("GALLERY_CAROUSEL").catch((err) => {
-      console.error("[gallery] photo query failed, using defaults:", err);
-      return [];
-    }),
-    getVideosByPlacement("GALLERY_GRID").catch((err) => {
-      console.error("[gallery] video query failed, using defaults:", err);
-      return [];
-    }),
+  // The DB is the source of truth — run `npm run db:seed-gallery` /
+  // `db:seed-videos` to populate it from /public/images/gallery + the
+  // legacy Mux IDs. Hardcoded defaults are kept ONLY as a DB-outage
+  // safety net (query throws → render defaults instead of 500ing).
+  // An empty DB renders an empty gallery, not the defaults — otherwise
+  // Allan's first upload silently hides the 30 stock photos.
+  const [photoResult, videoResult] = await Promise.allSettled([
+    getPhotosByPlacement("GALLERY_CAROUSEL"),
+    getVideosByPlacement("GALLERY_GRID"),
   ]);
 
-  const photos: CarouselPhoto[] =
-    dbPhotos.length > 0
-      ? dbPhotos.map((p) => ({
-          id: p.id,
-          src: p.blobUrl,
-          alt: p.altText,
-          title: p.title,
-          description: p.description ?? "",
-        }))
-      : defaultGalleryPhotos;
+  let photos: CarouselPhoto[];
+  if (photoResult.status === "fulfilled") {
+    photos = photoResult.value.map((p) => ({
+      id: p.id,
+      src: p.blobUrl,
+      alt: p.altText,
+      title: p.title,
+      description: p.description ?? "",
+    }));
+  } else {
+    console.error("[gallery] photo query failed, using defaults:", photoResult.reason);
+    photos = defaultGalleryPhotos;
+  }
 
-  // When DB has no videos, pass undefined so the component falls back to
-  // its hardcoded list. This keeps the live site working until Allan
-  // uploads at least one video through the admin.
-  const videos: VideoConfig[] | undefined =
-    dbVideos.length > 0
-      ? dbVideos.map((v) => ({
-          playbackId: v.muxPlaybackId,
-          title: v.title,
-          description: v.description ?? "",
-          category: v.category,
-          thumbnailTime: v.thumbnailTime,
-        }))
-      : undefined;
+  // Videos: until `db:seed-videos` populates the Video table, an empty
+  // DB still falls back to the component's hardcoded Mux list so the
+  // live site keeps showing reels. Once seeded, this branch is dead.
+  let videos: VideoConfig[] | undefined;
+  if (videoResult.status === "fulfilled" && videoResult.value.length > 0) {
+    videos = videoResult.value.map((v) => ({
+      playbackId: v.muxPlaybackId,
+      title: v.title,
+      description: v.description ?? "",
+      category: v.category,
+      thumbnailTime: v.thumbnailTime,
+    }));
+  } else {
+    if (videoResult.status === "rejected") {
+      console.error("[gallery] video query failed, using defaults:", videoResult.reason);
+    }
+    videos = undefined;
+  }
 
   return (
     <PageTransition>

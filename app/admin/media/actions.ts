@@ -74,10 +74,50 @@ export type RegisterPhotoInput = z.infer<typeof registerSchema>;
  */
 export async function registerPhoto(input: RegisterPhotoInput) {
   const session = await requireAdmin();
-  const parsed = registerSchema.parse(input);
+
+  // Anything that throws past this point gets recorded in admin_actions
+  // before re-throwing, so the next failed attempt leaves a DB trail.
+  // Without this, errors vanish into the browser console — and prod
+  // strips console output, so we never see them at all.
+  async function logFailure(stage: string, err: unknown, extra?: Record<string, unknown>) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[photo.register] ${stage} failed`, err);
+    try {
+      await prisma.adminAction.create({
+        data: {
+          userId: session.user.id,
+          action: `photo.upload_failed.${stage}`,
+          metadata: {
+            message,
+            blobUrl: input.blobUrl,
+            blobPathname: input.blobPathname,
+            contentType: input.contentType,
+            sizeBytes: input.sizeBytes,
+            placement: input.placement,
+            ...extra,
+          },
+        },
+      });
+    } catch (logErr) {
+      console.error("[photo.register] failure log itself failed", logErr);
+    }
+  }
+
+  let parsed: ReturnType<typeof registerSchema.parse>;
+  try {
+    parsed = registerSchema.parse(input);
+  } catch (err) {
+    await logFailure("validation", err, {
+      zodIssues:
+        err instanceof z.ZodError ? err.issues : undefined,
+    });
+    throw err;
+  }
 
   if (!isVercelBlobUrl(parsed.blobUrl)) {
-    throw new Error("Only Vercel Blob URLs are accepted.");
+    const err = new Error("Only Vercel Blob URLs are accepted.");
+    await logFailure("blob_url_check", err);
+    throw err;
   }
 
   // Pull authoritative size + content type from Blob — the client-supplied
@@ -89,6 +129,9 @@ export async function registerPhoto(input: RegisterPhotoInput) {
     trustedSize = meta.size;
     trustedContentType = meta.contentType ?? parsed.contentType;
   } catch (err) {
+    // Non-fatal — fall back to the client-supplied values. We log it but
+    // don't throw, since head() can occasionally lag behind put() and a
+    // retry isn't worth blocking the upload.
     console.error("[photo.register] head() failed", err);
   }
 
@@ -96,13 +139,13 @@ export async function registerPhoto(input: RegisterPhotoInput) {
   let height: number | null = null;
   try {
     const res = await fetch(parsed.blobUrl);
-    if (!res.ok) throw new Error("Failed to fetch uploaded blob");
+    if (!res.ok) throw new Error(`Failed to fetch uploaded blob (${res.status})`);
     const buf = Buffer.from(await res.arrayBuffer());
     const meta = await sharp(buf).metadata();
     width = meta.width ?? null;
     height = meta.height ?? null;
   } catch (err) {
-    console.error("[photo.register] sharp validation failed", err);
+    await logFailure("sharp_validation", err);
     await del(parsed.blobUrl).catch((e) =>
       console.error("[photo.register] orphan cleanup failed", e),
     );
@@ -111,24 +154,30 @@ export async function registerPhoto(input: RegisterPhotoInput) {
     );
   }
 
-  const photo = await prisma.photo.create({
-    data: {
-      title: parsed.title,
-      altText: parsed.altText,
-      description: parsed.description?.trim() || null,
-      blobUrl: parsed.blobUrl,
-      blobPathname: parsed.blobPathname,
-      contentType: trustedContentType,
-      sizeBytes: trustedSize,
-      width,
-      height,
-      category: parsed.category ?? "OTHER",
-      placement: parsed.placement ?? "GALLERY_CAROUSEL",
-      featured: parsed.featured ?? false,
-      uploadedById: session.user.id,
-    },
-    select: { id: true },
-  });
+  let photo;
+  try {
+    photo = await prisma.photo.create({
+      data: {
+        title: parsed.title,
+        altText: parsed.altText,
+        description: parsed.description?.trim() || null,
+        blobUrl: parsed.blobUrl,
+        blobPathname: parsed.blobPathname,
+        contentType: trustedContentType,
+        sizeBytes: trustedSize,
+        width,
+        height,
+        category: parsed.category ?? "OTHER",
+        placement: parsed.placement ?? "GALLERY_CAROUSEL",
+        featured: parsed.featured ?? false,
+        uploadedById: session.user.id,
+      },
+      select: { id: true },
+    });
+  } catch (err) {
+    await logFailure("db_create", err);
+    throw err;
+  }
 
   await prisma.adminAction.create({
     data: {

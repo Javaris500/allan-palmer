@@ -35,9 +35,10 @@ const nextConfig = {
     optimizeCss: false,
     webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB'],
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
+  // NOTE: previously stripped console in prod for bundle size. Removed
+  // because errors thrown inside server actions / Blob upload callbacks
+  // were vanishing from Vercel logs, making bugs like the silent
+  // photo-upload failure impossible to diagnose. Console output stays.
   async headers() {
     return [
       {
