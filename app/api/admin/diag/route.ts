@@ -55,6 +55,21 @@ export async function GET() {
       }),
     ]);
 
+  // Song table may not exist on this DB (migration applied separately)
+  // — surface the table-missing case explicitly instead of throwing.
+  let songsState:
+    | { tableExists: true; count: number }
+    | { tableExists: false; reason: string };
+  try {
+    const songCount = await prisma.song.count({ where: { deletedAt: null } });
+    songsState = { tableExists: true, count: songCount };
+  } catch (err) {
+    songsState = {
+      tableExists: false,
+      reason: (err as Error).message,
+    };
+  }
+
   return NextResponse.json({
     runtime: {
       env: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "unknown",
@@ -77,6 +92,7 @@ export async function GET() {
       activeVideos: videoCount,
       users: userCount,
     },
+    songs: songsState,
     mostRecentPhoto,
   });
 }
