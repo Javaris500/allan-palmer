@@ -315,6 +315,34 @@ const MuxVideoPlayer = memo<MuxVideoPlayerProps>(function MuxVideoPlayer({
     };
   }, []);
 
+  // When the parent swaps to a new video (e.g. theater-mode next/prev arrows),
+  // tear down the old HLS instance and auto-play the new source. Skipped on
+  // the very first mount so unopened videos still show their thumbnail/play
+  // overlay instead of starting unsolicited.
+  const previousPlaybackIdRef = useRef(playbackId);
+  useEffect(() => {
+    if (previousPlaybackIdRef.current === playbackId) return;
+    previousPlaybackIdRef.current = playbackId;
+
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
+    if (videoRef.current) {
+      try {
+        videoRef.current.pause();
+      } catch {}
+      videoRef.current.removeAttribute("src");
+      videoRef.current.load();
+    }
+    setHasError(false);
+    setErrorMessage("");
+    setIsPlaying(false);
+    retryCountRef.current = 0;
+
+    handlePlay();
+  }, [playbackId, handlePlay]);
+
   const handleVideoError = useCallback(
     (e: any) => {
       console.error(
