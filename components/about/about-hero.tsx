@@ -11,7 +11,18 @@ const stats = [
   { value: "148", label: "Selected works" },
 ];
 
-export function AboutHero() {
+const FALLBACK_PORTRAIT = {
+  src: "/images/allan-portrait-bw.jpeg",
+  alt: "Allan Palmer, professional violinist",
+};
+
+export type AboutHeroPortrait = {
+  src: string;
+  alt: string;
+};
+
+export function AboutHero({ portrait }: { portrait?: AboutHeroPortrait } = {}) {
+  const heroPortrait = portrait ?? FALLBACK_PORTRAIT;
   const reduced = useReducedMotion();
   const fade = (delay = 0) => ({
     initial: reduced ? { opacity: 1 } : { opacity: 0, y: 20 },
@@ -66,8 +77,8 @@ export function AboutHero() {
             {...fade(0.1)}
           >
             <Image
-              src="/images/allan-portrait-bw.jpeg"
-              alt="Allan Palmer, professional violinist"
+              src={heroPortrait.src}
+              alt={heroPortrait.alt}
               fill
               priority
               className="object-cover"

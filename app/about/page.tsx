@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { PageTransition } from "@/components/page-transition";
-import { AboutHero } from "@/components/about/about-hero";
+import { AboutHero, type AboutHeroPortrait } from "@/components/about/about-hero";
+import { getSingletonPhoto } from "@/lib/media/photos";
 
 // Lazy load below-fold sections
 const AboutTimeline = dynamic(
@@ -133,10 +134,23 @@ function AboutClosingCta() {
   );
 }
 
-export default function AboutPage() {
+async function loadPortrait(): Promise<AboutHeroPortrait | undefined> {
+  try {
+    const row = await getSingletonPhoto("ABOUT_PORTRAIT");
+    if (!row) return undefined;
+    return { src: row.blobUrl, alt: row.altText };
+  } catch (err) {
+    console.error("[about] portrait query failed, using fallback:", err);
+    return undefined;
+  }
+}
+
+export default async function AboutPage() {
+  const portrait = await loadPortrait();
+
   return (
     <PageTransition>
-      <AboutHero />
+      <AboutHero portrait={portrait} />
       <SectionOrnament label="Allan Palmer" />
       <Suspense fallback={<SectionSkeleton />}>
         <AboutTimeline />

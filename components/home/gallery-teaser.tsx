@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { defaultFeaturedTeaserTiles } from "@/lib/media/default-placements";
 
 // ═══════════════════════════════════════════════════════
 // Gallery teaser — 8 curated tiles from /gallery.
@@ -12,58 +13,46 @@ import { cn } from "@/lib/utils";
 // Mirrors the /gallery treatment so the jump feels seamless.
 // ═══════════════════════════════════════════════════════
 
-const tiles = [
-  {
-    src: "/images/gallery/outdoor-ceremony-golden-hour.jpeg",
-    alt: "Allan Palmer performing at an outdoor wedding ceremony at golden hour",
-    title: "Golden Hour Ceremony",
-    size: "hero", // col-span-2 row-span-2
-  },
-  {
-    src: "/images/gallery/floral-arch-ceremony.jpeg",
-    alt: "Allan Palmer under a floral arch",
-    title: "Floral Arch",
-    size: "tall",
-  },
-  {
-    src: "/images/gallery/indian-wedding-ceremony.png",
-    alt: "Allan Palmer at an Indian wedding ceremony",
-    title: "Indian Ceremony",
-    size: "default",
-  },
-  {
-    src: "/images/gallery/formal-restaurant-performance.jpg",
-    alt: "Allan Palmer in formal attire at an upscale restaurant",
-    title: "Elegant Dining",
-    size: "default",
-  },
-  {
-    src: "/images/gallery/ceremony-aisle-performance.jpeg",
-    alt: "Allan Palmer walking the aisle during a wedding processional",
-    title: "Aisle Processional",
-    size: "wide",
-  },
-  {
-    src: "/images/gallery/stage-performance-lighting.png",
-    alt: "Allan Palmer on stage with dramatic lighting",
-    title: "Concert Stage",
-    size: "default",
-  },
-  {
-    src: "/images/gallery/autumn-couple-portrait.jpeg",
-    alt: "Allan Palmer with newlyweds in autumn foliage",
-    title: "Autumn Portrait",
-    size: "default",
-  },
-  {
-    src: "/images/gallery/performance-3.jpeg",
-    alt: "Allan Palmer in a Gothic cathedral",
-    title: "Cathedral Concert",
-    size: "tall",
-  },
-] as const;
+export type TeaserTileSize = "hero" | "wide" | "tall" | "default";
 
-function getTileClass(size: (typeof tiles)[number]["size"]): string {
+export type TeaserTile = {
+  src: string;
+  alt: string;
+  title: string;
+  size: TeaserTileSize;
+};
+
+// Allan's uploads come in flat, without a `size` hint. We project them onto
+// the same masonry rhythm as the curated default — the first image becomes
+// the hero block, then alternating tall/default/wide so the grid keeps its
+// visual cadence regardless of how many photos he uploads.
+const MASONRY_RHYTHM: TeaserTileSize[] = [
+  "hero",
+  "tall",
+  "default",
+  "default",
+  "wide",
+  "default",
+  "default",
+  "tall",
+];
+
+export function rhythmSize(index: number): TeaserTileSize {
+  return MASONRY_RHYTHM[index % MASONRY_RHYTHM.length] ?? "default";
+}
+
+const fallbackTiles: readonly TeaserTile[] = defaultFeaturedTeaserTiles.map(
+  (tile, index) => ({
+    src: tile.src,
+    alt: tile.alt,
+    title: tile.title,
+    size: rhythmSize(index),
+  }),
+);
+
+export const defaultTeaserTiles = fallbackTiles;
+
+function getTileClass(size: TeaserTileSize): string {
   switch (size) {
     case "hero":
       return "col-span-2 row-span-2";
@@ -76,7 +65,9 @@ function getTileClass(size: (typeof tiles)[number]["size"]): string {
   }
 }
 
-export function HomeGalleryTeaser() {
+export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
+  const renderedTiles: readonly TeaserTile[] =
+    tiles && tiles.length > 0 ? tiles : fallbackTiles;
   const reduced = useReducedMotion();
   const viewOnce = { once: true, margin: "-80px" } as const;
 
@@ -136,9 +127,9 @@ export function HomeGalleryTeaser() {
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[180px] md:auto-rows-[200px] lg:auto-rows-[220px] max-w-6xl mx-auto"
           role="list"
         >
-          {tiles.map((tile, index) => (
+          {renderedTiles.map((tile, index) => (
             <motion.div
-              key={tile.src}
+              key={`${tile.src}-${index}`}
               role="listitem"
               initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}

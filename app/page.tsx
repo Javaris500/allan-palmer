@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { HomeHero } from "@/components/home/hero";
+import { HomeHero, type HomeHeroPoster } from "@/components/home/hero";
 import { HomeAnchor } from "@/components/home/anchor";
+import {
+  rhythmSize,
+  type TeaserTile,
+} from "@/components/home/gallery-teaser";
+import { getPhotosByPlacement, getSingletonPhoto } from "@/lib/media/photos";
 
 // Above-the-fold: Hero + Anchor render immediately (hero is the first paint).
 // Below-the-fold sections are lazy-loaded to keep the initial bundle lean.
@@ -89,11 +94,43 @@ function SectionSkeleton() {
   );
 }
 
-export default function Home() {
+async function loadHeroPoster(): Promise<HomeHeroPoster | undefined> {
+  try {
+    const row = await getSingletonPhoto("HOMEPAGE_HERO");
+    if (!row) return undefined;
+    return { src: row.blobUrl, alt: row.altText };
+  } catch (err) {
+    console.error("[home] hero poster query failed, using fallback:", err);
+    return undefined;
+  }
+}
+
+async function loadTeaserTiles(): Promise<TeaserTile[] | undefined> {
+  try {
+    const rows = await getPhotosByPlacement("FEATURED_TEASER");
+    if (rows.length === 0) return undefined;
+    return rows.map((row, index) => ({
+      src: row.blobUrl,
+      alt: row.altText,
+      title: row.title,
+      size: rhythmSize(index),
+    }));
+  } catch (err) {
+    console.error("[home] teaser tiles query failed, using fallback:", err);
+    return undefined;
+  }
+}
+
+export default async function Home() {
+  const [posterOverride, teaserTiles] = await Promise.all([
+    loadHeroPoster(),
+    loadTeaserTiles(),
+  ]);
+
   return (
     <>
       {/* 1 — Cinematic hero with full-bleed video + stat strip */}
-      <HomeHero />
+      <HomeHero posterOverride={posterOverride} />
 
       {/* 2 — The quiet anchor: a single line of intent */}
       <HomeAnchor />
@@ -115,7 +152,7 @@ export default function Home() {
 
       {/* 6 — Gallery teaser: 8 curated tiles */}
       <Suspense fallback={<SectionSkeleton />}>
-        <HomeGalleryTeaser />
+        <HomeGalleryTeaser tiles={teaserTiles} />
       </Suspense>
 
       {/* 7 — Closing invocation */}

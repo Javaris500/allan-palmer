@@ -19,7 +19,12 @@ const stats = [
   { value: "148", label: "Selected works" },
 ];
 
-export function HomeHero() {
+export type HomeHeroPoster = {
+  src: string;
+  alt: string;
+};
+
+export function HomeHero({ posterOverride }: { posterOverride?: HomeHeroPoster } = {}) {
   const reduced = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<unknown>(null);
@@ -29,7 +34,11 @@ export function HomeHero() {
   const hlsUrl = MUX_CONFIG.getHlsUrl();
   // Landscape 16:9 poster — used as the cinematic still before video loads
   // and as the permanent fallback on devices where autoplay is blocked.
-  const posterUrl = `https://image.mux.com/${MUX_CONFIG.playbackId}/thumbnail.png?width=1920&height=1080&fit_mode=smartcrop&time=8`;
+  // Allan can override this from /admin/media (HOMEPAGE_HERO placement).
+  const posterUrl =
+    posterOverride?.src ??
+    `https://image.mux.com/${MUX_CONFIG.playbackId}/thumbnail.png?width=1920&height=1080&fit_mode=smartcrop&time=8`;
+  const posterAlt = posterOverride?.alt ?? "Allan Palmer performing";
 
   const initVideo = useCallback(async () => {
     const video = videoRef.current;
@@ -93,7 +102,7 @@ export function HomeHero() {
       <div className="absolute inset-0">
         <Image
           src={posterUrl}
-          alt="Allan Palmer performing"
+          alt={posterAlt}
           fill
           priority
           sizes="100vw"
