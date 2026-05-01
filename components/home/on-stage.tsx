@@ -4,20 +4,17 @@ import { motion, useReducedMotion } from "framer-motion";
 import { MuxVideoPlayer } from "@/components/mux-video-player";
 import { EASE_OUT } from "@/lib/motion";
 
-const VIDEOS = [
-  "IbkO01rMhCQeGAlIuUsravD6jyqBa012lpyu46mtZg1As",
-  "nQ1pnPAn01veA18yCqq67wJkEXuyo8phQhuOF6RqVgMM",
-];
-
-export function HomeOnStage() {
+export function HomeOnStage({ playbackIds }: { playbackIds: string[] }) {
   const reduced = useReducedMotion();
   const viewOnce = { once: true, margin: "-80px" } as const;
+
+  if (playbackIds.length === 0) return null;
 
   return (
     <section className="relative py-24 md:py-32 border-t border-champagne/10">
       <div className="container px-6">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-10">
-          {VIDEOS.map((id, idx) => (
+          {playbackIds.map((id, idx) => (
             <motion.div
               key={id}
               className="relative aspect-video ring-1 ring-champagne/15 rounded-sm overflow-hidden"

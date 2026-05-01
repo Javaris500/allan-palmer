@@ -77,6 +77,24 @@ export const VIDEO_PLACEMENTS: Record<VideoPlacement, PlacementMeta> = {
     viewUrl: "/",
     isSingleton: false,
   },
+  HOMEPAGE_ON_STAGE: {
+    label: "Homepage — On Stage",
+    description:
+      "Performance videos shown stacked in the 'On Stage' section between Signature and Praise on the homepage. Add up to a few — display order controls top-to-bottom order.",
+    appearsOn: "Homepage — On Stage section",
+    viewUrl: "/",
+    isSingleton: false,
+    recommendedAspect: "16:9 landscape",
+  },
+  ABOUT_FEATURE: {
+    label: "About — Featured Performance",
+    description:
+      "A single featured performance video shown below the podcast interview on the About page. Replacing it updates About immediately; the previous video moves to \"Not Placed Yet\".",
+    appearsOn: "About page — In Conversation section",
+    viewUrl: "/about",
+    isSingleton: true,
+    recommendedAspect: "16:9 landscape",
+  },
   UNUSED: {
     label: "Not Placed Yet",
     description: "Uploaded but not assigned to any section. Visitors won't see this.",
@@ -96,6 +114,8 @@ export const PHOTO_PLACEMENT_ORDER: PhotoPlacement[] = [
 
 export const VIDEO_PLACEMENT_ORDER: VideoPlacement[] = [
   "HOMEPAGE_HERO",
+  "HOMEPAGE_ON_STAGE",
+  "ABOUT_FEATURE",
   "GALLERY_GRID",
   "FEATURED_TEASER",
   "UNUSED",

@@ -4,9 +4,17 @@ import { motion, useReducedMotion } from "framer-motion";
 import { MuxVideoPlayer } from "@/components/mux-video-player";
 import { EASE_OUT } from "@/lib/motion";
 
-export function AboutMedia() {
+const FEATURE_FALLBACK_PLAYBACK_ID =
+  "8pkl01QhmUoyNEl01Kt4UUnCYYpA7DTyrITTQIDl4RGf4";
+
+export function AboutMedia({
+  featurePlaybackId,
+}: {
+  featurePlaybackId?: string;
+} = {}) {
   const reduced = useReducedMotion();
   const viewOnce = { once: true, margin: "-80px" } as const;
+  const playbackId = featurePlaybackId ?? FEATURE_FALLBACK_PLAYBACK_ID;
 
   return (
     <section className="relative py-24 md:py-32 border-t border-champagne/10">
@@ -125,11 +133,7 @@ export function AboutMedia() {
               : { duration: 0.9, ease: EASE_OUT, delay: 0.2 }
           }
         >
-          <MuxVideoPlayer
-            playbackId="8pkl01QhmUoyNEl01Kt4UUnCYYpA7DTyrITTQIDl4RGf4"
-            fluid
-            className="h-full"
-          />
+          <MuxVideoPlayer playbackId={playbackId} fluid className="h-full" />
         </motion.div>
       </div>
     </section>

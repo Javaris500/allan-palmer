@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { PageTransition } from "@/components/page-transition";
 import { AboutHero, type AboutHeroPortrait } from "@/components/about/about-hero";
 import { getSingletonPhoto } from "@/lib/media/photos";
+import { getVideosByPlacement } from "@/lib/media/videos";
 
 // Lazy load below-fold sections
 const AboutTimeline = dynamic(
@@ -145,8 +146,21 @@ async function loadPortrait(): Promise<AboutHeroPortrait | undefined> {
   }
 }
 
+async function loadFeatureVideoId(): Promise<string | undefined> {
+  try {
+    const rows = await getVideosByPlacement("ABOUT_FEATURE");
+    return rows[0]?.muxPlaybackId;
+  } catch (err) {
+    console.error("[about] feature video query failed, using fallback:", err);
+    return undefined;
+  }
+}
+
 export default async function AboutPage() {
-  const portrait = await loadPortrait();
+  const [portrait, featurePlaybackId] = await Promise.all([
+    loadPortrait(),
+    loadFeatureVideoId(),
+  ]);
 
   return (
     <PageTransition>
@@ -161,7 +175,7 @@ export default async function AboutPage() {
       </Suspense>
       <SectionOrnament label="In His Own Words" />
       <Suspense fallback={<SectionSkeleton />}>
-        <AboutMedia />
+        <AboutMedia featurePlaybackId={featurePlaybackId} />
       </Suspense>
       <AboutClosingCta />
     </PageTransition>

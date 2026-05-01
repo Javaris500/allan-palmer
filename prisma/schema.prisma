@@ -62,6 +62,8 @@ enum VideoPlacement {
   GALLERY_GRID       // /gallery video grid
   HOMEPAGE_HERO      // / hero video — singleton
   FEATURED_TEASER    // / homepage video teaser
+  HOMEPAGE_ON_STAGE  // / homepage performance section — small set
+  ABOUT_FEATURE      // /about featured performance — singleton
   UNUSED
 }
 

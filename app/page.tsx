@@ -8,6 +8,12 @@ import {
   type TeaserTile,
 } from "@/components/home/gallery-teaser";
 import { getPhotosByPlacement, getSingletonPhoto } from "@/lib/media/photos";
+import { getVideosByPlacement } from "@/lib/media/videos";
+
+const ON_STAGE_FALLBACK_IDS = [
+  "IbkO01rMhCQeGAlIuUsravD6jyqBa012lpyu46mtZg1As",
+  "nQ1pnPAn01veA18yCqq67wJkEXuyo8phQhuOF6RqVgMM",
+];
 
 // Above-the-fold: Hero + Anchor render immediately (hero is the first paint).
 // Below-the-fold sections are lazy-loaded to keep the initial bundle lean.
@@ -113,6 +119,17 @@ async function loadHeroPoster(): Promise<HomeHeroPoster | undefined> {
   }
 }
 
+async function loadOnStageIds(): Promise<string[]> {
+  try {
+    const rows = await getVideosByPlacement("HOMEPAGE_ON_STAGE");
+    if (rows.length === 0) return ON_STAGE_FALLBACK_IDS;
+    return rows.map((r) => r.muxPlaybackId);
+  } catch (err) {
+    console.error("[home] on-stage videos query failed, using fallback:", err);
+    return ON_STAGE_FALLBACK_IDS;
+  }
+}
+
 async function loadTeaserTiles(): Promise<TeaserTile[] | undefined> {
   try {
     const rows = await getPhotosByPlacement("FEATURED_TEASER");
@@ -130,9 +147,10 @@ async function loadTeaserTiles(): Promise<TeaserTile[] | undefined> {
 }
 
 export default async function Home() {
-  const [posterOverride, teaserTiles] = await Promise.all([
+  const [posterOverride, teaserTiles, onStageIds] = await Promise.all([
     loadHeroPoster(),
     loadTeaserTiles(),
+    loadOnStageIds(),
   ]);
 
   return (
@@ -155,7 +173,7 @@ export default async function Home() {
 
       {/* 5 — On Stage: featured performance videos */}
       <Suspense fallback={<SectionSkeleton />}>
-        <HomeOnStage />
+        <HomeOnStage playbackIds={onStageIds} />
       </Suspense>
 
       {/* 6 — Single-quote praise moment */}
