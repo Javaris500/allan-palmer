@@ -36,6 +36,14 @@ const HomePraise = dynamic(
   { ssr: true },
 );
 
+const HomeOnStage = dynamic(
+  () =>
+    import("@/components/home/on-stage").then((mod) => ({
+      default: mod.HomeOnStage,
+    })),
+  { ssr: true },
+);
+
 const HomeGalleryTeaser = dynamic(
   () =>
     import("@/components/home/gallery-teaser").then((mod) => ({
@@ -145,7 +153,12 @@ export default async function Home() {
         <HomeSignature />
       </Suspense>
 
-      {/* 5 — Single-quote praise moment */}
+      {/* 5 — On Stage: featured performance videos */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomeOnStage />
+      </Suspense>
+
+      {/* 6 — Single-quote praise moment */}
       <Suspense fallback={<SectionSkeleton />}>
         <HomePraise />
       </Suspense>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { MuxVideoPlayer } from "@/components/mux-video-player";
 import { EASE_OUT } from "@/lib/motion";
 
 export function AboutMedia() {
@@ -111,6 +112,24 @@ export function AboutMedia() {
               →
             </span>
           </a>
+        </motion.div>
+
+        <motion.div
+          className="max-w-3xl mx-auto mt-16 md:mt-20 relative aspect-video ring-1 ring-champagne/15 rounded-sm overflow-hidden"
+          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewOnce}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : { duration: 0.9, ease: EASE_OUT, delay: 0.2 }
+          }
+        >
+          <MuxVideoPlayer
+            playbackId="8pkl01QhmUoyNEl01Kt4UUnCYYpA7DTyrITTQIDl4RGf4"
+            fluid
+            className="h-full"
+          />
         </motion.div>
       </div>
     </section>
