@@ -10,6 +10,12 @@ import {
 import { getPhotosByPlacement, getSingletonPhoto } from "@/lib/media/photos";
 import { getVideosByPlacement } from "@/lib/media/videos";
 
+// Render on every request so admin uploads (hero, on-stage videos,
+// featured teaser tiles) surface within seconds. revalidateTag wasn't
+// reliably busting the prerendered HTML in production — Allan would
+// upload a photo, see it in /admin/media, and not on the homepage.
+export const revalidate = 0;
+
 const ON_STAGE_FALLBACK_IDS = [
   "IbkO01rMhCQeGAlIuUsravD6jyqBa012lpyu46mtZg1As",
   "nQ1pnPAn01veA18yCqq67wJkEXuyo8phQhuOF6RqVgMM",

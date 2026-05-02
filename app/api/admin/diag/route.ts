@@ -37,23 +37,46 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const [photoCount, photoSeededCount, videoCount, userCount, mostRecentPhoto] =
-    await Promise.all([
-      prisma.photo.count({ where: { deletedAt: null } }),
-      prisma.photo.count({
-        where: {
-          placement: "GALLERY_CAROUSEL",
-          deletedAt: null,
-          blobPathname: { startsWith: "seeded-gallery/" },
-        },
-      }),
-      prisma.video.count({ where: { deletedAt: null } }),
-      prisma.user.count(),
-      prisma.photo.findFirst({
-        orderBy: { createdAt: "desc" },
-        select: { id: true, title: true, createdAt: true, blobPathname: true },
-      }),
-    ]);
+  const [
+    photoCount,
+    photoSeededCount,
+    videoCount,
+    userCount,
+    mostRecentPhoto,
+    photoPlacementGroups,
+    videoPlacementGroups,
+    videoStatusGroups,
+  ] = await Promise.all([
+    prisma.photo.count({ where: { deletedAt: null } }),
+    prisma.photo.count({
+      where: {
+        placement: "GALLERY_CAROUSEL",
+        deletedAt: null,
+        blobPathname: { startsWith: "seeded-gallery/" },
+      },
+    }),
+    prisma.video.count({ where: { deletedAt: null } }),
+    prisma.user.count(),
+    prisma.photo.findFirst({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, createdAt: true, blobPathname: true },
+    }),
+    prisma.photo.groupBy({
+      by: ["placement"],
+      where: { deletedAt: null },
+      _count: { _all: true },
+    }),
+    prisma.video.groupBy({
+      by: ["placement"],
+      where: { deletedAt: null },
+      _count: { _all: true },
+    }),
+    prisma.video.groupBy({
+      by: ["muxStatus"],
+      where: { deletedAt: null },
+      _count: { _all: true },
+    }),
+  ]);
 
   // Song table may not exist on this DB (migration applied separately)
   // — surface the table-missing case explicitly instead of throwing.
@@ -92,6 +115,15 @@ export async function GET() {
       activeVideos: videoCount,
       users: userCount,
     },
+    photosByPlacement: Object.fromEntries(
+      photoPlacementGroups.map((g) => [g.placement, g._count._all]),
+    ),
+    videosByPlacement: Object.fromEntries(
+      videoPlacementGroups.map((g) => [g.placement, g._count._all]),
+    ),
+    videosByMuxStatus: Object.fromEntries(
+      videoStatusGroups.map((g) => [g.muxStatus, g._count._all]),
+    ),
     songs: songsState,
     mostRecentPhoto,
   });
