@@ -10,6 +10,10 @@ const ContactInfo = dynamic(
   () => import("@/components/contact/contact-info").then(mod => ({ default: mod.ContactInfo })),
   { ssr: true }
 )
+const ContactTestimonials = dynamic(
+  () => import("@/components/contact/contact-testimonials").then(mod => ({ default: mod.ContactTestimonials })),
+  { ssr: true }
+)
 
 export const metadata: Metadata = {
   title: "Contact Allan Palmer | Professional Violinist",
@@ -53,6 +57,8 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      <ContactTestimonials />
     </PageTransition>
   )
 }

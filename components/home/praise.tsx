@@ -42,6 +42,20 @@ const praise = [
     event: "Wedding Ceremony",
     image: "/images/allan2.jpeg",
   },
+  {
+    quote:
+      "Allan brought a level of elegance, emotion, and professionalism that elevated the entire atmosphere of our event at the Winnipeg Art Gallery. Guests were captivated from start to finish.",
+    author: "Ebube Okeke",
+    event: "Private Event · Winnipeg Art Gallery",
+    image: "/images/allan-bw-performance.jpeg",
+  },
+  {
+    quote:
+      "I hired Allan to play for the most important moment of my life — my proposal to my now fiancée. He learned her favourite song on short notice and helped make it truly special.",
+    author: "Brendan Armitt",
+    event: "Proposal",
+    image: "/images/allan-social-event.jpeg",
+  },
 ];
 
 export function HomePraise() {

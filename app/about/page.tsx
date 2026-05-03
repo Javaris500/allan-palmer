@@ -8,6 +8,10 @@ import { AboutHero, type AboutHeroPortrait } from "@/components/about/about-hero
 import { getSingletonPhoto } from "@/lib/media/photos";
 import { getVideosByPlacement } from "@/lib/media/videos";
 
+// Same reasoning as app/page.tsx — admin uploads to ABOUT_PORTRAIT and
+// ABOUT_FEATURE need to surface immediately, not after a redeploy.
+export const revalidate = 0;
+
 // Lazy load below-fold sections
 const AboutTimeline = dynamic(
   () =>
@@ -27,6 +31,13 @@ const AboutMedia = dynamic(
   () =>
     import("@/components/about/about-media").then((mod) => ({
       default: mod.AboutMedia,
+    })),
+  { ssr: true },
+);
+const AboutPress = dynamic(
+  () =>
+    import("@/components/about/about-press").then((mod) => ({
+      default: mod.AboutPress,
     })),
   { ssr: true },
 );
@@ -176,6 +187,10 @@ export default async function AboutPage() {
       <SectionOrnament label="In His Own Words" />
       <Suspense fallback={<SectionSkeleton />}>
         <AboutMedia featurePlaybackId={featurePlaybackId} />
+      </Suspense>
+      <SectionOrnament label="Press" />
+      <Suspense fallback={<SectionSkeleton />}>
+        <AboutPress />
       </Suspense>
       <AboutClosingCta />
     </PageTransition>
