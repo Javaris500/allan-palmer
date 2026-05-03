@@ -28,8 +28,8 @@ export const CONTACT_INFO = {
   socialMedia: {
     instagram: "https://www.instagram.com/allan_palms/",
     youtube: "https://www.youtube.com/@AllanPalmerViolinist",
-    tiktok: "https://www.tiktok.com/@allan_palms/video/7537255525445045510",
-    spotify: "https://open.spotify.com/artist/6dmJtjDHZaYhBB3o51mysR",
+    tiktok: "https://www.tiktok.com/@allan_palms",
+    spotify: "https://open.spotify.com/artist/62JthHbYaDsgf71KcdPfsO",
   },
 } as const;
 

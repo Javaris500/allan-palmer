@@ -125,6 +125,16 @@ async function loadHeroPoster(): Promise<HomeHeroPoster | undefined> {
   }
 }
 
+async function loadHeroVideoId(): Promise<string | undefined> {
+  try {
+    const rows = await getVideosByPlacement("HOMEPAGE_HERO");
+    return rows[0]?.muxPlaybackId;
+  } catch (err) {
+    console.error("[home] hero video query failed, using fallback:", err);
+    return undefined;
+  }
+}
+
 async function loadOnStageIds(): Promise<string[]> {
   try {
     const rows = await getVideosByPlacement("HOMEPAGE_ON_STAGE");
@@ -153,8 +163,9 @@ async function loadTeaserTiles(): Promise<TeaserTile[] | undefined> {
 }
 
 export default async function Home() {
-  const [posterOverride, teaserTiles, onStageIds] = await Promise.all([
+  const [posterOverride, heroVideoId, teaserTiles, onStageIds] = await Promise.all([
     loadHeroPoster(),
+    loadHeroVideoId(),
     loadTeaserTiles(),
     loadOnStageIds(),
   ]);
@@ -162,7 +173,7 @@ export default async function Home() {
   return (
     <>
       {/* 1 — Cinematic hero with full-bleed video + stat strip */}
-      <HomeHero posterOverride={posterOverride} />
+      <HomeHero posterOverride={posterOverride} videoPlaybackId={heroVideoId} />
 
       {/* 2 — The quiet anchor: a single line of intent */}
       <HomeAnchor />

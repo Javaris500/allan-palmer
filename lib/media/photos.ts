@@ -1,7 +1,5 @@
-import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { PhotoPlacement } from "@/generated/prisma";
-import { MEDIA_TAGS } from "./cache-tags";
 
 export type PublicPhoto = {
   id: string;
@@ -16,49 +14,48 @@ export type PublicPhoto = {
   displayOrder: number;
 };
 
-export const getPhotosByPlacement = unstable_cache(
-  async (placement: PhotoPlacement): Promise<PublicPhoto[]> => {
-    const rows = await prisma.photo.findMany({
-      where: { placement, deletedAt: null },
-      orderBy: [{ displayOrder: "asc" }, { createdAt: "desc" }],
-      select: {
-        id: true,
-        title: true,
-        altText: true,
-        description: true,
-        blobUrl: true,
-        width: true,
-        height: true,
-        category: true,
-        featured: true,
-        displayOrder: true,
-      },
-    });
-    return rows;
-  },
-  ["photos-by-placement"],
-  { tags: [MEDIA_TAGS.photos], revalidate: 3600 },
-);
+// Hit Prisma directly on every call. The pages that consume these helpers
+// (/, /about, /gallery) are all dynamic, so a per-request DB read is
+// cheap and — unlike unstable_cache — guarantees admin uploads surface
+// the moment the next request lands.
+export async function getPhotosByPlacement(
+  placement: PhotoPlacement,
+): Promise<PublicPhoto[]> {
+  return prisma.photo.findMany({
+    where: { placement, deletedAt: null },
+    orderBy: [{ displayOrder: "asc" }, { createdAt: "desc" }],
+    select: {
+      id: true,
+      title: true,
+      altText: true,
+      description: true,
+      blobUrl: true,
+      width: true,
+      height: true,
+      category: true,
+      featured: true,
+      displayOrder: true,
+    },
+  });
+}
 
-export const getSingletonPhoto = unstable_cache(
-  async (placement: PhotoPlacement): Promise<PublicPhoto | null> => {
-    return prisma.photo.findFirst({
-      where: { placement, deletedAt: null },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        altText: true,
-        description: true,
-        blobUrl: true,
-        width: true,
-        height: true,
-        category: true,
-        featured: true,
-        displayOrder: true,
-      },
-    });
-  },
-  ["photo-singleton"],
-  { tags: [MEDIA_TAGS.photos], revalidate: 3600 },
-);
+export async function getSingletonPhoto(
+  placement: PhotoPlacement,
+): Promise<PublicPhoto | null> {
+  return prisma.photo.findFirst({
+    where: { placement, deletedAt: null },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      altText: true,
+      description: true,
+      blobUrl: true,
+      width: true,
+      height: true,
+      category: true,
+      featured: true,
+      displayOrder: true,
+    },
+  });
+}

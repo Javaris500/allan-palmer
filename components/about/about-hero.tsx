@@ -6,9 +6,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 
 const stats = [
-  { value: "18+", label: "Years with violin" },
-  { value: "200+", label: "Engagements" },
-  { value: "148", label: "Selected works" },
+  { value: "20+", label: "Years with violin" },
+  { value: "700+", label: "Engagements" },
+  { value: "450", label: "Selected works" },
 ];
 
 const FALLBACK_PORTRAIT = {

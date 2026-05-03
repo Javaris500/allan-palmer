@@ -14,9 +14,9 @@ import { EASE_OUT } from "@/lib/motion";
 // ═══════════════════════════════════════════════════════
 
 const stats = [
-  { value: "18+", label: "Years with violin" },
-  { value: "200+", label: "Engagements" },
-  { value: "148", label: "Selected works" },
+  { value: "20+", label: "Years with violin" },
+  { value: "700+", label: "Engagements" },
+  { value: "450", label: "Selected works" },
 ];
 
 export type HomeHeroPoster = {
@@ -24,20 +24,29 @@ export type HomeHeroPoster = {
   alt: string;
 };
 
-export function HomeHero({ posterOverride }: { posterOverride?: HomeHeroPoster } = {}) {
+export function HomeHero({
+  posterOverride,
+  videoPlaybackId,
+}: {
+  posterOverride?: HomeHeroPoster;
+  videoPlaybackId?: string;
+} = {}) {
   const reduced = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<unknown>(null);
   const [videoReady, setVideoReady] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
 
-  const hlsUrl = MUX_CONFIG.getHlsUrl();
-  // Landscape 16:9 poster — used as the cinematic still before video loads
-  // and as the permanent fallback on devices where autoplay is blocked.
-  // Allan can override this from /admin/media (HOMEPAGE_HERO placement).
+  // Allan can swap the hero video from /admin/media (HOMEPAGE_HERO video
+  // placement). Falls back to the curated baked-in performance.
+  const activePlaybackId = videoPlaybackId ?? MUX_CONFIG.playbackId;
+  const hlsUrl = `https://stream.mux.com/${activePlaybackId}.m3u8?min_resolution=1080p`;
+  // Landscape 16:9 poster — cinematic still before video loads and the
+  // permanent fallback on devices where autoplay is blocked. Poster
+  // resolution: admin override → thumbnail of the active video.
   const posterUrl =
     posterOverride?.src ??
-    `https://image.mux.com/${MUX_CONFIG.playbackId}/thumbnail.png?width=1920&height=1080&fit_mode=smartcrop&time=8`;
+    `https://image.mux.com/${activePlaybackId}/thumbnail.png?width=1920&height=1080&fit_mode=smartcrop&time=8`;
   const posterAlt = posterOverride?.alt ?? "Allan Palmer performing";
 
   const initVideo = useCallback(async () => {

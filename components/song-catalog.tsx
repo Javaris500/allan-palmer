@@ -251,14 +251,6 @@ export function SongCatalog({ songs }: SongCatalogProps) {
                         )}
                       >
                         <span className="min-w-0">{song.title}</span>
-                        {song.recentlyAdded && (
-                          <span
-                            className="shrink-0 text-[9px] tracking-[0.18em] uppercase font-medium text-gold/90 border border-gold/40 bg-gold/5 px-1.5 py-[1px] rounded-sm"
-                            aria-label="Recently added"
-                          >
-                            New
-                          </span>
-                        )}
                       </span>
 
                       {/* Composer/artist */}
