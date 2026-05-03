@@ -122,9 +122,13 @@ export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
           </motion.p>
         </header>
 
-        {/* Masonry grid — 3 cols lg, 2 cols sm */}
+        {/* Masonry grid — 3 cols lg, 2 cols sm.
+            grid-flow-dense backfills the holes that variable-sized tiles
+            (hero/wide/tall) leave on narrow viewports — without it the
+            mobile layout shows a black gap where small tiles would have
+            slotted in. */}
         <div
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[180px] md:auto-rows-[200px] lg:auto-rows-[220px] max-w-6xl mx-auto"
+          className="grid grid-flow-dense grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[180px] md:auto-rows-[200px] lg:auto-rows-[220px] max-w-6xl mx-auto"
           role="list"
         >
           {renderedTiles.map((tile, index) => (
