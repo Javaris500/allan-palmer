@@ -47,7 +47,7 @@ export function AboutPhilosophy() {
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               The Craft
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -80,11 +80,11 @@ export function AboutPhilosophy() {
               : { duration: 1, ease: EASE_OUT, delay: 0.15 }
           }
         >
-          <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground/85 leading-[1.35] tracking-tight">
+          <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground leading-[1.35] tracking-tight">
             &ldquo;Music is a language of emotion. My work is finding the right
             words for each moment.&rdquo;
           </p>
-          <cite className="block mt-8 label-caps !text-[10px] !tracking-[0.3em] not-italic">
+          <cite className="block mt-8 label-caps !text-xs !tracking-[0.18em] not-italic">
             — Allan Palmer
           </cite>
         </motion.blockquote>
@@ -108,14 +108,14 @@ export function AboutPhilosophy() {
                     }
               }
             >
-              <span className="shrink-0 w-8 pt-1 font-display text-[11px] tabular-nums tracking-widest text-champagne/70">
+              <span className="shrink-0 w-8 pt-1 font-display text-sm tabular-nums tracking-widest text-champagne">
                 0{idx + 1}
               </span>
               <div className="flex-1 border-l border-champagne/25 pl-5 md:pl-6">
-                <h3 className="font-display text-lg md:text-xl text-foreground/90 mb-2 tracking-tight">
+                <h3 className="font-display text-xl md:text-2xl text-foreground mb-2 tracking-tight">
                   {point.title}
                 </h3>
-                <p className="font-display italic text-sm md:text-base text-muted-foreground/70 leading-relaxed">
+                <p className="font-display italic text-base md:text-lg text-muted-foreground leading-relaxed">
                   {point.description}
                 </p>
               </div>
@@ -145,10 +145,10 @@ export function AboutPhilosophy() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/45 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between">
-              <span className="label-caps !text-[9px] md:!text-[10px] !tracking-[0.3em] !text-cream/90 drop-shadow">
+              <span className="label-caps !text-xs md:!text-sm !tracking-[0.18em] !text-cream drop-shadow">
                 Palms Music Studio
               </span>
-              <span className="label-caps !text-[9px] md:!text-[10px] !tracking-[0.2em] drop-shadow">
+              <span className="label-caps !text-xs md:!text-sm !tracking-[0.18em] drop-shadow">
                 Teaching
               </span>
             </div>

@@ -186,7 +186,7 @@ export function HomeHero({
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/70" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.4em] !text-champagne">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em] !text-champagne">
               The Violinist
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/70" />
@@ -208,7 +208,7 @@ export function HomeHero({
 
           {/* Italic manifesto subtitle */}
           <motion.p
-            className="mt-6 md:mt-8 font-display italic font-light text-base md:text-xl lg:text-2xl text-cream/85 leading-relaxed max-w-2xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+            className="mt-6 md:mt-8 font-display italic font-light text-lg md:text-xl lg:text-2xl text-cream leading-relaxed max-w-2xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
             initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={
@@ -245,13 +245,13 @@ export function HomeHero({
           >
             <Link
               href="/booking"
-              className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-sm text-[11px] md:text-xs tracking-[0.24em] uppercase font-label transition-colors duration-500 ease-cinematic"
+              className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-sm text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
             >
               Book Allan
             </Link>
             <Link
               href="/services"
-              className="text-link !text-[11px] md:!text-xs !tracking-[0.24em] text-cream/75 hover:text-champagne"
+              className="text-link !text-sm !tracking-[0.18em] text-cream hover:text-champagne"
             >
               View Services
             </Link>
@@ -276,7 +276,7 @@ export function HomeHero({
                 <div className="font-display font-light text-2xl md:text-4xl text-champagne leading-none tabular-nums drop-shadow">
                   {s.value}
                 </div>
-                <div className="label-caps !text-[9px] md:!text-[10px] !tracking-[0.3em] !text-cream/60 mt-2 md:mt-3 leading-tight">
+                <div className="label-caps !text-xs md:!text-sm !tracking-[0.18em] !text-cream/90 mt-2 md:mt-3 leading-tight">
                   {s.label}
                 </div>
               </div>
@@ -292,10 +292,10 @@ export function HomeHero({
                 behavior: "smooth",
               })
             }
-            className="flex flex-col items-center gap-2 mx-auto text-cream/50 hover:text-champagne transition-colors duration-500 ease-cinematic group"
+            className="flex flex-col items-center gap-2 mx-auto text-cream/70 hover:text-champagne transition-colors duration-500 ease-cinematic group"
             aria-label="Scroll to next section"
           >
-            <span className="label-caps !text-[9px] !tracking-[0.45em] !text-cream/55 group-hover:!text-champagne transition-colors">
+            <span className="label-caps !text-xs !tracking-[0.22em] !text-cream/80 group-hover:!text-champagne transition-colors">
               Scroll
             </span>
             <motion.div

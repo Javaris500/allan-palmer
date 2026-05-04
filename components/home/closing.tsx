@@ -51,7 +51,7 @@ export function HomeClosing() {
 
         {/* Pull quote */}
         <motion.blockquote
-          className="font-display italic font-light text-2xl md:text-4xl lg:text-[2.75rem] text-foreground/90 leading-[1.3] tracking-tight mb-12 md:mb-14"
+          className="font-display italic font-light text-2xl md:text-4xl lg:text-[2.75rem] text-foreground leading-[1.3] tracking-tight mb-12 md:mb-14"
           initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewOnce}
@@ -78,13 +78,13 @@ export function HomeClosing() {
         >
           <Link
             href="/booking"
-            className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-sm text-[11px] md:text-xs tracking-[0.24em] uppercase font-label transition-colors duration-500 ease-cinematic"
+            className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-sm text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
           >
             Book Allan
           </Link>
           <Link
             href="/about"
-            className="text-link !text-[11px] md:!text-xs !tracking-[0.24em] text-muted-foreground hover:text-champagne"
+            className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
           >
             About the Artist
           </Link>

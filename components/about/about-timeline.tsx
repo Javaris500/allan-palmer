@@ -67,7 +67,7 @@ export function AboutTimeline() {
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               The Journey
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -88,7 +88,7 @@ export function AboutTimeline() {
           </motion.h2>
 
           <motion.p
-            className="mt-8 font-display italic text-base md:text-lg text-muted-foreground/75 leading-relaxed"
+            className="mt-8 font-display italic text-lg md:text-xl text-muted-foreground leading-relaxed"
             initial={reduced ? { opacity: 1 } : { opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={viewOnce}
@@ -134,13 +134,13 @@ export function AboutTimeline() {
 
               {/* Entry content — overlaps the ghost numeral */}
               <div className="relative -mt-10 md:-mt-14 pl-1">
-                <div className="label-caps !text-[10px] md:!text-[11px] !tracking-[0.3em] mb-3">
+                <div className="label-caps !text-xs md:!text-sm !tracking-[0.18em] mb-3">
                   {event.year} · {event.age}
                 </div>
-                <h3 className="font-display font-light text-2xl md:text-3xl text-foreground/95 mb-3 tracking-tight leading-snug">
+                <h3 className="font-display font-light text-2xl md:text-3xl text-foreground mb-3 tracking-tight leading-snug">
                   {event.title}
                 </h3>
-                <p className="font-display italic text-sm md:text-base text-muted-foreground/75 leading-relaxed max-w-lg">
+                <p className="font-display italic text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
                   {event.description}
                 </p>
               </div>
@@ -151,7 +151,7 @@ export function AboutTimeline() {
         {/* Quiet closing cue */}
         <div className="mt-24 md:mt-32 text-center">
           <div className="divider-gold-sm mb-6" />
-          <p className="font-display italic text-sm md:text-base text-muted-foreground/50">
+          <p className="font-display italic text-base md:text-lg text-muted-foreground/80">
             The journey continues.
           </p>
         </div>

@@ -105,7 +105,7 @@ export function HomePraise() {
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               In Praise
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -133,7 +133,7 @@ export function HomePraise() {
                 &ldquo;
               </span>
 
-              <p className="font-display italic font-light text-xl md:text-3xl lg:text-[2.25rem] text-foreground/90 leading-[1.35] tracking-tight mt-4 md:mt-6">
+              <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground leading-[1.35] tracking-tight mt-4 md:mt-6">
                 {current.quote}
               </p>
 
@@ -149,10 +149,10 @@ export function HomePraise() {
                   />
                 </div>
                 <div className="text-left">
-                  <p className="font-display text-sm md:text-base text-foreground tracking-tight leading-tight">
+                  <p className="font-display text-base md:text-lg text-foreground tracking-tight leading-tight">
                     {current.author}
                   </p>
-                  <p className="label-caps !text-[10px] !tracking-[0.25em] !text-muted-foreground/70 mt-1">
+                  <p className="label-caps !text-xs !tracking-[0.18em] !text-muted-foreground mt-1">
                     {current.event}
                   </p>
                 </div>
@@ -203,7 +203,7 @@ export function HomePraise() {
               href="https://g.page/r/allan-palmer-violinist"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-link !text-[11px] !tracking-[0.22em] text-muted-foreground hover:text-champagne"
+              className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
               aria-label="Read all reviews on Google (opens in new tab)"
             >
               Read all reviews on Google →

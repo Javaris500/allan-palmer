@@ -105,7 +105,7 @@ function SectionOrnament({ label }: { label: string }) {
             height={40}
             className="text-champagne/40 opacity-60"
           />
-          <span className="label-caps !text-[9px] md:!text-[10px] !tracking-[0.4em] !text-champagne/55">
+          <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em] !text-champagne/85">
             {label}
           </span>
         </div>
@@ -122,20 +122,20 @@ function AboutClosingCta() {
         <div className="max-w-xl mx-auto text-center">
           <div className="divider-gold-sm mb-10" />
 
-          <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground/85 leading-[1.35] tracking-tight mb-10">
+          <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground leading-[1.35] tracking-tight mb-10">
             Music for occasions that deserve to be remembered.
           </blockquote>
 
           <div className="flex items-center justify-center gap-8">
             <Link
               href="/booking"
-              className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-sm text-[11px] md:text-xs tracking-[0.22em] uppercase font-label transition-colors duration-500 ease-cinematic"
+              className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-sm text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
             >
               Book Allan
             </Link>
             <Link
               href="/services"
-              className="text-link !text-[11px] !tracking-[0.22em] text-muted-foreground hover:text-champagne"
+              className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
             >
               View Services
             </Link>

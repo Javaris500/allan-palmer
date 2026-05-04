@@ -25,7 +25,7 @@ export function HomeAnchor() {
           }
         >
           <div className="h-px w-10 md:w-16 bg-champagne/50" />
-          <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.4em]">
+          <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
             The Programme
           </span>
           <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -59,7 +59,7 @@ export function HomeAnchor() {
         />
 
         <motion.p
-          className="label-caps !text-[10px] md:!text-[11px] !tracking-[0.35em] !text-muted-foreground/70"
+          className="label-caps !text-xs md:!text-sm !tracking-[0.18em] !text-muted-foreground"
           initial={reduced ? { opacity: 1 } : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={viewOnce}

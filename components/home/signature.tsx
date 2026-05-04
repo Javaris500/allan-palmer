@@ -68,7 +68,7 @@ export function HomeSignature() {
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               The Signature Piece
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -89,7 +89,7 @@ export function HomeSignature() {
           </motion.h2>
 
           <motion.p
-            className="mt-6 font-display italic text-sm md:text-base text-muted-foreground/70 leading-relaxed"
+            className="mt-6 font-display italic text-base md:text-lg text-muted-foreground leading-relaxed"
             initial={reduced ? { opacity: 1 } : { opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={viewOnce}
@@ -141,7 +141,7 @@ export function HomeSignature() {
               <div className="flex items-center gap-6 md:gap-12 w-full">
                 {/* Left: text */}
                 <div className="flex-1 min-w-0">
-                  <p className="label-caps !text-[10px] !tracking-[0.3em] !text-champagne/90 mb-3 md:mb-4">
+                  <p className="label-caps !text-xs !tracking-[0.18em] !text-champagne mb-3 md:mb-4">
                     {SIGNATURE.genre}
                   </p>
 
@@ -149,7 +149,7 @@ export function HomeSignature() {
                     {SIGNATURE.title}
                   </h3>
 
-                  <p className="mt-3 md:mt-4 font-display italic text-sm md:text-lg text-cream/75 drop-shadow">
+                  <p className="mt-3 md:mt-4 font-display italic text-base md:text-lg text-cream/90 drop-shadow">
                     {SIGNATURE.composer}
                   </p>
 
@@ -157,7 +157,7 @@ export function HomeSignature() {
                   <div className="h-px w-10 bg-champagne/60 mt-6 md:mt-8 mb-5" />
 
                   {/* Quote */}
-                  <p className="font-display italic text-xs md:text-base text-cream/70 max-w-md leading-relaxed drop-shadow hidden sm:block">
+                  <p className="font-display italic text-sm md:text-base text-cream/85 max-w-md leading-relaxed drop-shadow hidden sm:block">
                     &ldquo;A song everyone knows, played the way no one
                     expects.&rdquo;
                   </p>
@@ -212,7 +212,7 @@ export function HomeSignature() {
           <div className="mt-8 md:mt-10 text-center">
             <Link
               href="/repertoire"
-              className="text-link !text-[11px] !tracking-[0.22em] text-muted-foreground hover:text-champagne"
+              className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
             >
               Browse the full repertoire
             </Link>

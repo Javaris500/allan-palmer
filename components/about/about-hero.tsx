@@ -64,7 +64,7 @@ export function AboutHero({ portrait }: { portrait?: AboutHeroPortrait } = {}) {
           }
         >
           <div className="h-px w-10 md:w-16 bg-champagne/50" />
-          <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+          <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
             The Violinist
           </span>
           <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -94,13 +94,13 @@ export function AboutHero({ portrait }: { portrait?: AboutHeroPortrait } = {}) {
               <h1 className="font-display font-light text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.02]">
                 Allan Palmer
               </h1>
-              <p className="mt-3 md:mt-4 font-label text-xs md:text-sm tracking-[0.4em] uppercase text-champagne">
+              <p className="mt-3 md:mt-4 font-label text-sm md:text-base tracking-[0.22em] uppercase text-champagne">
                 — Violinist —
               </p>
             </div>
 
             {/* Opening paragraph */}
-            <div className="space-y-5 font-display text-base md:text-lg text-foreground/75 leading-relaxed">
+            <div className="space-y-5 font-display text-lg md:text-xl text-foreground leading-relaxed">
               <p>
                 From a first violin at age seven to a career shaped by weddings,
                 ceremonies, and concert halls across Winnipeg and beyond, Allan
@@ -111,17 +111,17 @@ export function AboutHero({ portrait }: { portrait?: AboutHeroPortrait } = {}) {
 
             {/* Mid-column pull quote — breaks prose monotony, establishes credibility */}
             <blockquote className="relative border-l border-champagne/40 pl-5 md:pl-6 py-1">
-              <p className="font-display italic font-light text-lg md:text-xl text-foreground/90 leading-[1.45]">
+              <p className="font-display italic font-light text-xl md:text-2xl text-foreground leading-[1.45]">
                 &ldquo;An absolute pleasure — our guests couldn&rsquo;t stop
                 talking about the music.&rdquo;
               </p>
-              <cite className="mt-3 block label-caps !text-[10px] !tracking-[0.25em] not-italic text-muted-foreground">
+              <cite className="mt-3 block label-caps !text-xs !tracking-[0.18em] not-italic text-muted-foreground">
                 Rebecca T. · Wedding Client
               </cite>
             </blockquote>
 
             {/* Closing paragraph */}
-            <div className="font-display text-base md:text-lg text-foreground/75 leading-relaxed">
+            <div className="font-display text-lg md:text-xl text-foreground leading-relaxed">
               <p>
                 Whether the moment calls for Bach or The Beatles, the intent is
                 the same — to honour the occasion with music that lasts long
@@ -136,7 +136,7 @@ export function AboutHero({ portrait }: { portrait?: AboutHeroPortrait } = {}) {
                   <div className="font-display font-light text-3xl md:text-4xl text-champagne leading-none tabular-nums">
                     {s.value}
                   </div>
-                  <div className="label-caps !text-[10px] md:!text-[11px] mt-2.5 leading-tight !text-muted-foreground">
+                  <div className="label-caps !text-xs md:!text-sm !tracking-[0.18em] mt-2.5 leading-tight !text-muted-foreground">
                     {s.label}
                   </div>
                 </div>
@@ -147,13 +147,13 @@ export function AboutHero({ portrait }: { portrait?: AboutHeroPortrait } = {}) {
             <div className="flex items-center gap-8 pt-4">
               <Link
                 href="/booking"
-                className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-sm text-[11px] md:text-xs tracking-[0.22em] uppercase font-label transition-colors duration-500 ease-cinematic"
+                className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-sm text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
               >
                 Book Allan
               </Link>
               <Link
                 href="/services"
-                className="text-link !text-[11px] !tracking-[0.22em] text-muted-foreground hover:text-champagne"
+                className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
               >
                 View Services
               </Link>

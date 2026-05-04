@@ -87,10 +87,10 @@ function OfferingCard({ offering }: { offering: Offering }) {
       </div>
 
       {/* Category label */}
-      <p className="label-caps !text-[10px] !tracking-[0.3em] mb-4">
+      <p className="label-caps !text-xs !tracking-[0.18em] mb-4">
         {offering.label}
         {offering.featured && (
-          <span className="ml-3 text-champagne/55 italic tracking-normal normal-case text-[10px] font-display">
+          <span className="ml-3 text-champagne italic tracking-normal normal-case text-xs font-display">
             · Most Requested
           </span>
         )}
@@ -102,7 +102,7 @@ function OfferingCard({ offering }: { offering: Offering }) {
       </h3>
 
       {/* Tagline */}
-      <p className="font-display italic text-sm md:text-[15px] text-muted-foreground/75 leading-relaxed mb-7">
+      <p className="font-display italic text-base md:text-lg text-foreground/85 leading-relaxed mb-7">
         {offering.tagline}
       </p>
 
@@ -114,7 +114,7 @@ function OfferingCard({ offering }: { offering: Offering }) {
         {offering.features.map((feature) => (
           <li
             key={feature}
-            className="flex items-baseline gap-3 font-display text-sm md:text-[15px] text-foreground/80 leading-relaxed"
+            className="flex items-baseline gap-3 font-display text-base md:text-[17px] text-foreground leading-relaxed"
           >
             <span
               aria-hidden="true"
@@ -131,7 +131,7 @@ function OfferingCard({ offering }: { offering: Offering }) {
       <Link
         href={offering.href}
         aria-label={`Explore ${offering.label}`}
-        className="group/cta text-link !text-[11px] !tracking-[0.22em] text-champagne hover:text-cream mt-auto self-start inline-flex items-center gap-2 label-caps !text-[11px]"
+        className="group/cta text-link !text-sm !tracking-[0.18em] text-champagne hover:text-cream mt-auto self-start inline-flex items-center gap-2 label-caps !text-sm"
       >
         Explore
         <span
@@ -164,7 +164,7 @@ export function HomeOfferings() {
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               The Offerings
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -185,7 +185,7 @@ export function HomeOfferings() {
           </motion.h2>
 
           <motion.p
-            className="mt-6 font-display italic text-sm md:text-base text-muted-foreground/70 leading-relaxed"
+            className="mt-6 font-display italic text-base md:text-lg text-muted-foreground leading-relaxed"
             initial={reduced ? { opacity: 1 } : { opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={viewOnce}

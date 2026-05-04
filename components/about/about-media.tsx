@@ -31,7 +31,7 @@ export function AboutMedia({
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               In Conversation
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -66,10 +66,10 @@ export function AboutMedia({
         >
           <div className="border border-champagne/20 rounded-sm overflow-hidden">
             <div className="flex items-center justify-between px-5 md:px-6 py-3 border-b border-champagne/15">
-              <span className="label-caps !text-[10px] !tracking-[0.3em]">
+              <span className="label-caps !text-xs !tracking-[0.18em]">
                 Podcast Interview
               </span>
-              <span className="label-caps !text-[10px] !tracking-[0.2em] !text-muted-foreground/55">
+              <span className="label-caps !text-xs !tracking-[0.18em] !text-muted-foreground">
                 YouTube
               </span>
             </div>
