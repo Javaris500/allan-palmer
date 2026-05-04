@@ -92,17 +92,17 @@ function SectionEyebrow({ label }: { label: string }) {
 export default async function GalleryPage() {
   // The DB is the source of truth — run `npm run db:seed-gallery` /
   // `db:seed-videos` to populate it from /public/images/gallery + the
-  // legacy Mux IDs. Hardcoded defaults are kept ONLY as a DB-outage
-  // safety net (query throws → render defaults instead of 500ing).
-  // An empty DB renders an empty gallery, not the defaults — otherwise
-  // Allan's first upload silently hides the 30 stock photos.
+  // legacy Mux IDs. When the DB is empty OR the query fails we fall back
+  // to the hardcoded defaults so the section never renders as a row of
+  // empty white cells. Once Allan uploads any photos via /admin, his
+  // uploads take over completely and the stock list disappears.
   const [photoResult, videoResult] = await Promise.allSettled([
     getPhotosByPlacement("GALLERY_CAROUSEL"),
     getVideosByPlacement("GALLERY_GRID"),
   ]);
 
   let photos: CarouselPhoto[];
-  if (photoResult.status === "fulfilled") {
+  if (photoResult.status === "fulfilled" && photoResult.value.length > 0) {
     photos = photoResult.value.map((p) => ({
       id: p.id,
       src: p.blobUrl,
@@ -111,7 +111,9 @@ export default async function GalleryPage() {
       description: p.description ?? "",
     }));
   } else {
-    console.error("[gallery] photo query failed, using defaults:", photoResult.reason);
+    if (photoResult.status === "rejected") {
+      console.error("[gallery] photo query failed, using defaults:", photoResult.reason);
+    }
     photos = defaultGalleryPhotos;
   }
 
