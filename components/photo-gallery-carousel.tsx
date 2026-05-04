@@ -15,9 +15,14 @@ import {
 export { defaultGalleryPhotos };
 export type { CarouselPhoto };
 
-function getTileClass(index: number): string {
+function getTileClass(index: number, total: number): string {
   // Hero feature tile
   if (index === 0) return "col-span-2 row-span-2";
+  // Don't apply spans to the trailing tail — a tall/wide tile near the
+  // end leaves cells that nothing later can backfill, even with
+  // grid-auto-flow:dense. Keeping the last 4 tiles as plain 1×1 lets the
+  // grid finish flush with no white gaps.
+  if (index >= total - 4) return "";
   // Wide landscape tiles — cadence every 9
   if (index > 0 && index % 9 === 0) return "col-span-2";
   // Tall portrait tiles — cadence every 7
@@ -37,11 +42,11 @@ export function PhotoGalleryCarousel({
     <div className="relative">
       {/* Masonry grid */}
       <div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[180px] md:auto-rows-[220px] lg:auto-rows-[240px]"
+        className="grid grid-flow-row-dense grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 auto-rows-[180px] md:auto-rows-[220px] lg:auto-rows-[240px]"
         role="list"
       >
         {photos.map((photo, index) => {
-          const tileClass = getTileClass(index);
+          const tileClass = getTileClass(index, photos.length);
           const isHero = index === 0;
 
           return (
