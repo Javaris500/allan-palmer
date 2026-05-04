@@ -122,7 +122,7 @@ function AboutClosingCta() {
         <div className="max-w-xl mx-auto text-center">
           <div className="divider-gold-sm mb-10" />
 
-          <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground leading-[1.35] tracking-tight mb-10">
+          <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground leading-[1.45] mb-10">
             Music for occasions that deserve to be remembered.
           </blockquote>
 

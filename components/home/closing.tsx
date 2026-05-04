@@ -51,7 +51,7 @@ export function HomeClosing() {
 
         {/* Pull quote */}
         <motion.blockquote
-          className="font-display italic font-light text-2xl md:text-4xl lg:text-[2.75rem] text-foreground leading-[1.3] tracking-tight mb-12 md:mb-14"
+          className="font-display italic font-light text-2xl md:text-4xl lg:text-[2.75rem] text-foreground leading-[1.45] mb-12 md:mb-14"
           initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewOnce}

@@ -32,7 +32,7 @@ export function HomeAnchor() {
         </motion.div>
 
         <motion.p
-          className="font-display font-light italic text-2xl md:text-4xl lg:text-[2.75rem] text-foreground/90 leading-[1.25] tracking-tight"
+          className="font-display font-light italic text-2xl md:text-4xl lg:text-[2.75rem] text-foreground/90 leading-[1.4]"
           initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewOnce}

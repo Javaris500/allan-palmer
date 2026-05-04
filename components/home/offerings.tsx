@@ -81,7 +81,7 @@ function OfferingCard({ offering }: { offering: Offering }) {
       {/* Ghost numeral */}
       <div
         aria-hidden="true"
-        className="font-display text-[5rem] md:text-[6rem] leading-[0.8] font-light text-champagne/[0.12] select-none pointer-events-none tracking-tight -mb-4 md:-mb-6"
+        className="font-display text-[5rem] md:text-[6rem] leading-none font-light text-champagne/[0.12] select-none pointer-events-none tracking-tight mb-2"
       >
         {offering.number}
       </div>

@@ -205,21 +205,11 @@
     @apply font-serif font-normal tracking-tight;
   }
   
-  /* Section headings - Bold for impact at smaller sizes */
+  /* Heading defaults — kept minimal so per-component editorial styles
+     (font-light display, custom tracking) actually win. Pages that want
+     a bold/tight heading apply it explicitly. */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif tracking-tight;
-  }
-  
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
-  }
-  
-  h2 {
-    @apply text-3xl md:text-4xl font-semibold;
-  }
-  
-  h3 {
-    @apply text-xl md:text-2xl font-semibold;
+    @apply font-serif;
   }
   
   /* Body text optimization */

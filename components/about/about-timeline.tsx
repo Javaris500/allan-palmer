@@ -44,7 +44,7 @@ const timelineEvents = [
     age: "Age 22",
     title: "A Recognised Voice",
     description:
-      "Now among Winnipeg's most sought-after violinists for weddings, ceremonies, and private events.",
+      "Now among Winnipeg’s most sought-after violinists for weddings, ceremonies, and private events.",
   },
 ];
 

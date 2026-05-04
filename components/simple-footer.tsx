@@ -133,7 +133,7 @@ export function SimpleFooter() {
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Mail className="h-4 w-4" />
-                  <span className="break-all">{CONTACT_INFO.email}</span>
+                  <span className="[overflow-wrap:anywhere]">{CONTACT_INFO.email}</span>
                 </a>
               </li>
               <li>

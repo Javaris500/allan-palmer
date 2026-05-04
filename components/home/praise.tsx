@@ -133,7 +133,7 @@ export function HomePraise() {
                 &ldquo;
               </span>
 
-              <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground leading-[1.35] tracking-tight mt-4 md:mt-6">
+              <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground leading-[1.45] mt-4 md:mt-6">
                 {current.quote}
               </p>
 

@@ -80,7 +80,7 @@ export function AboutPhilosophy() {
               : { duration: 1, ease: EASE_OUT, delay: 0.15 }
           }
         >
-          <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground leading-[1.35] tracking-tight">
+          <p className="font-display italic font-light text-2xl md:text-3xl lg:text-[2.25rem] text-foreground leading-[1.45]">
             &ldquo;Music is a language of emotion. My work is finding the right
             words for each moment.&rdquo;
           </p>

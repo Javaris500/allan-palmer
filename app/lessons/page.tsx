@@ -61,7 +61,7 @@ export default function LessonsPage() {
         </div>
 
         {/* Heading */}
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4 tracking-tight">
+        <h1 className="font-display font-light text-4xl sm:text-5xl md:text-6xl text-center mb-4 leading-[1.05]">
           Violin Lessons
         </h1>
         <p className="text-xl sm:text-2xl text-gold font-serif mb-6 text-center">

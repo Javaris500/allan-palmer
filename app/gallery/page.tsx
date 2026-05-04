@@ -207,7 +207,7 @@ export default async function GalleryPage() {
         <section className="py-24 md:py-32 border-t border-champagne/10">
           <div className="container max-w-xl text-center">
             <div className="divider-gold-sm mb-10" />
-            <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground/85 leading-[1.35] tracking-tight mb-10">
+            <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground/85 leading-[1.45] mb-10">
               Music for occasions that deserve to be remembered.
             </blockquote>
             <div className="flex items-center justify-center gap-8">

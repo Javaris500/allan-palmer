@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     question: "Can you learn new songs for my event?",
-    answer: "Absolutely! I love learning new pieces for special occasions. With adequate notice (typically 4-6 weeks), I can prepare custom arrangements of your favorite songs. Share your song list during our consultation."
+    answer: "Absolutely! I love learning new pieces for special occasions. With adequate notice (typically 4-6 weeks), I can prepare custom arrangements of your favourite songs. Share your song list during our consultation."
   },
   {
     question: "What's your cancellation policy?",

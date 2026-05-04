@@ -92,7 +92,7 @@ export function SimpleContactSection() {
                       <p className="font-medium text-sm">Email</p>
                       <a
                         href={`mailto:${CONTACT_INFO.email}`}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors break-all"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors [overflow-wrap:anywhere]"
                       >
                         {CONTACT_INFO.email}
                       </a>

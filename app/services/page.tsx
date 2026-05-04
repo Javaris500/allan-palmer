@@ -137,7 +137,7 @@ function OfferingCard({ offering }: { offering: Offering }) {
       {/* Ghost numeral — engraved feel */}
       <div
         aria-hidden="true"
-        className="font-display text-[5rem] md:text-[6rem] leading-[0.8] font-light text-champagne/[0.12] select-none pointer-events-none tracking-tight -mb-4 md:-mb-6"
+        className="font-display text-[5rem] md:text-[6rem] leading-none font-light text-champagne/[0.12] select-none pointer-events-none tracking-tight mb-2"
       >
         {offering.number}
       </div>
@@ -251,7 +251,7 @@ export default function ServicesPage() {
         <section className="py-24 md:py-32 border-t border-champagne/10">
           <div className="container max-w-xl text-center">
             <div className="divider-gold-sm mb-10" />
-            <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground/85 leading-[1.35] tracking-tight mb-10">
+            <blockquote className="font-display italic font-light text-2xl md:text-[2rem] text-foreground/85 leading-[1.45] mb-10">
               Every occasion is unique. Let&rsquo;s find the right music for
               yours.
             </blockquote>
