@@ -29,7 +29,7 @@
     
     /* Muted - For less prominent text and backgrounds */
     --muted: 30 10% 94%;                /* #F2EFEB */
-    --muted-foreground: 30 10% 40%;     /* #6B6259 */
+    --muted-foreground: 30 12% 30%;     /* #4D453E — darker for legibility on cream */
     
     /* Accent - Distinct from secondary */
     --accent: 30 8% 88%;                /* #E3DFD9 */
@@ -108,7 +108,7 @@
 
     /* Muted */
     --muted: 24 10% 12%;
-    --muted-foreground: 38 14% 62%;      /* softer for long-form body */
+    --muted-foreground: 38 18% 78%;      /* lifted for legibility on warm-black */
 
     /* Accent */
     --accent: 24 12% 14%;
@@ -163,8 +163,12 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Optimize font rendering */
+  /* Optimize font rendering. Bumping the root font-size from the
+     browser default (16px) to 17.5px scales every rem-based size in the
+     Tailwind type scale up ~9% — bigger body copy, eyebrows, and
+     headings without touching individual classes. */
   html {
+    font-size: 17.5px;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -240,7 +244,7 @@
     font-family: var(--font-label), system-ui, sans-serif;
     font-variant: small-caps;
     letter-spacing: 0.12em;
-    font-size: 0.7rem;
+    font-size: 0.78rem;
     font-weight: 500;
     text-transform: uppercase;
     color: hsl(var(--champagne));
