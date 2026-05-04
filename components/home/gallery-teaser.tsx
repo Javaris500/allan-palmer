@@ -23,18 +23,22 @@ export type TeaserTile = {
 };
 
 // Allan's uploads come in flat, without a `size` hint. We project them onto
-// the same masonry rhythm as the curated default — the first image becomes
-// the hero block, then alternating tall/default/wide so the grid keeps its
-// visual cadence regardless of how many photos he uploads.
+// this masonry rhythm — the first image becomes the hero block, the second
+// is a tall accent, the rest are uniform.
+//
+// The total area MUST equal 12 cells (4+2+1×6) so the grid tiles exactly
+// in 4-col (3 rows), 3-col (4 rows), and 2-col (6 rows) layouts. Any other
+// total leaves empty trailing cells that show through as black gaps against
+// the dark section background.
 const MASONRY_RHYTHM: TeaserTileSize[] = [
   "hero",
   "tall",
   "default",
   "default",
-  "wide",
   "default",
   "default",
-  "tall",
+  "default",
+  "default",
 ];
 
 export function rhythmSize(index: number): TeaserTileSize {
@@ -66,8 +70,17 @@ function getTileClass(size: TeaserTileSize): string {
 }
 
 export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
-  const renderedTiles: readonly TeaserTile[] =
-    tiles && tiles.length > 0 ? tiles : fallbackTiles;
+  // Always render exactly 8 tiles so the calibrated 12-cell rhythm tiles
+  // cleanly in every breakpoint. Allan's uploads fill the front; curated
+  // defaults pad the rest if he has fewer than 8. Sizes are reassigned by
+  // position so the hero block is always the first uploaded photo.
+  const adminTiles = tiles ?? [];
+  const renderedTiles: readonly TeaserTile[] = [
+    ...adminTiles,
+    ...fallbackTiles,
+  ]
+    .slice(0, 8)
+    .map((tile, index) => ({ ...tile, size: rhythmSize(index) }));
   const reduced = useReducedMotion();
   const viewOnce = { once: true, margin: "-80px" } as const;
 
@@ -86,7 +99,7 @@ export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
             }
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
-            <span className="label-caps !text-[10px] md:!text-xs !tracking-[0.35em]">
+            <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
               In Frame
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
@@ -107,7 +120,7 @@ export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
           </motion.h2>
 
           <motion.p
-            className="mt-6 font-display italic text-sm md:text-base text-muted-foreground/70 leading-relaxed"
+            className="mt-6 font-display italic text-base md:text-lg text-muted-foreground leading-relaxed"
             initial={reduced ? { opacity: 1 } : { opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={viewOnce}
@@ -188,9 +201,9 @@ export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
         <div className="text-center mt-12 md:mt-14">
           <Link
             href="/gallery"
-            className="text-link !text-[11px] !tracking-[0.22em] text-champagne hover:text-cream inline-flex items-center gap-2"
+            className="text-link !text-sm !tracking-[0.18em] text-champagne hover:text-cream inline-flex items-center gap-2"
           >
-            <span className="label-caps !text-[11px]">
+            <span className="label-caps !text-sm">
               View the Full Portfolio
             </span>
             <span
