@@ -175,7 +175,7 @@ export function PhotoUploader({ placement, placementLabel, isReplace }: Props) {
           id={inputId}
           name="file"
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/avif"
+          accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif"
           className="sr-only"
           onChange={(e) => {
             const f = e.currentTarget.files?.[0];
@@ -204,12 +204,16 @@ export function PhotoUploader({ placement, placementLabel, isReplace }: Props) {
       {error && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          className="flex items-start gap-2 rounded-md border border-destructive/50 bg-destructive/15 px-3 py-3 text-sm text-destructive"
         >
-          <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
           <div className="flex-1">
-            <p className="font-medium">Upload failed</p>
-            <p className="mt-0.5 break-words">{error}</p>
+            <p className="font-semibold">Upload failed — photo NOT saved</p>
+            <p className="mt-1 break-words">{error}</p>
+            <p className="mt-1.5 text-[11px] text-destructive/80">
+              The error is logged. Try again, or pick a smaller / different
+              file. iPhone photos may need to be exported as JPEG.
+            </p>
           </div>
         </div>
       )}

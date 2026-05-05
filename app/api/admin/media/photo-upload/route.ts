@@ -37,15 +37,20 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       onBeforeGenerateToken: async () => ({
-        // Server-side allowlist — Blob will reject any other type
+        // Server-side allowlist — Blob will reject any other type.
+        // image/heic + image/heif are included so iPhone photos go through
+        // (iOS defaults to HEIC unless the user has "Most Compatible" on).
         allowedContentTypes: [
           "image/jpeg",
           "image/png",
           "image/webp",
           "image/avif",
+          "image/heic",
+          "image/heif",
         ],
-        // 10 MB cap per file; gallery photos shouldn't be huge
-        maximumSizeInBytes: 10 * 1024 * 1024,
+        // 25 MB cap per file. iPhone Live Photos / DSLR exports can exceed
+        // 10 MB, and rejecting them silently was Allan's biggest pain point.
+        maximumSizeInBytes: 25 * 1024 * 1024,
         addRandomSuffix: true,
         // Stamp the uploader so onUploadCompleted (production) knows who did it
         tokenPayload: JSON.stringify({ userId: session.user.id }),

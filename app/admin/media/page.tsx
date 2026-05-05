@@ -16,6 +16,7 @@ import { PhotoUploader } from "@/components/admin/media/photo-uploader";
 import { PhotoCard } from "@/components/admin/media/photo-card";
 import { VideoUploader } from "@/components/admin/media/video-uploader";
 import { VideoCard } from "@/components/admin/media/video-card";
+import { UploadFailuresPanel } from "@/components/admin/media/upload-failures-panel";
 import type {
   PhotoPlacement,
   VideoPlacement,
@@ -105,6 +106,8 @@ export default async function AdminMediaPage() {
       </div>
 
       <div className="container py-8 space-y-12">
+        <UploadFailuresPanel />
+
         <div>
           <div className="flex items-center gap-2 mb-5">
             <ImageIcon className="h-5 w-5 text-gold" />
