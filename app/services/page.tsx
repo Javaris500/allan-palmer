@@ -258,7 +258,7 @@ export default function ServicesPage() {
             <div className="flex items-center justify-center gap-8">
               <Link
                 href="/booking"
-                className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-sm text-[11px] md:text-xs tracking-[0.22em] uppercase font-label transition-colors duration-500 ease-cinematic"
+                className="inline-block bg-gold hover:bg-champagne text-ink px-8 py-3.5 rounded-full text-[11px] md:text-xs tracking-[0.22em] uppercase font-label transition-colors duration-500 ease-cinematic"
               >
                 Book Allan
               </Link>

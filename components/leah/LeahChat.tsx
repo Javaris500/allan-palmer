@@ -108,7 +108,7 @@ export function LeahChat({ isLoggedIn, isAdmin, userName }: LeahChatProps) {
           </p>
           <Link
             href="/sign-in"
-            className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-6 py-3 rounded-sm font-label text-xs tracking-[0.22em] uppercase transition-colors duration-500 ease-cinematic"
+            className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-6 py-3 rounded-full font-label text-xs tracking-[0.22em] uppercase transition-colors duration-500 ease-cinematic"
           >
             <LogIn className="h-4 w-4" />
             Sign in to chat

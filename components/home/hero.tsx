@@ -245,7 +245,7 @@ export function HomeHero({
           >
             <Link
               href="/booking"
-              className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-sm text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
+              className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-full text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
             >
               Book Allan
             </Link>
@@ -270,13 +270,13 @@ export function HomeHero({
           }
         >
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-6 md:gap-10 text-center mb-6 md:mb-8">
+          <div className="grid grid-cols-3 gap-3 sm:gap-6 md:gap-10 text-center mb-6 md:mb-8">
             {stats.map((s) => (
-              <div key={s.label}>
+              <div key={s.label} className="min-w-0 px-1">
                 <div className="font-display font-light text-2xl md:text-4xl text-champagne leading-none tabular-nums drop-shadow">
                   {s.value}
                 </div>
-                <div className="label-caps !text-xs md:!text-sm !tracking-[0.18em] !text-cream/90 mt-2 md:mt-3 leading-tight">
+                <div className="label-caps !text-[10.5px] sm:!text-xs md:!text-sm !tracking-[0.04em] sm:!tracking-[0.14em] md:!tracking-[0.18em] !text-cream/90 mt-2 md:mt-3 leading-tight break-words">
                   {s.label}
                 </div>
               </div>

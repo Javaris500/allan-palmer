@@ -78,7 +78,7 @@ export function HomeClosing() {
         >
           <Link
             href="/booking"
-            className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-sm text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
+            className="inline-block bg-gold hover:bg-champagne text-ink px-9 py-4 rounded-full text-sm tracking-[0.18em] uppercase font-label font-medium transition-colors duration-500 ease-cinematic"
           >
             Book Allan
           </Link>

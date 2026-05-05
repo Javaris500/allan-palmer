@@ -46,7 +46,7 @@ export function LeahToolCard({ toolName, result }: ToolCardProps) {
             {mailto && (
               <a
                 href={mailto}
-                className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-4 py-2 rounded-sm font-label text-xs tracking-[0.22em] uppercase transition-colors duration-300"
+                className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-4 py-2 rounded-full font-label text-xs tracking-[0.22em] uppercase transition-colors duration-300"
               >
                 <Mail className="h-4 w-4" />
                 Email Allan{adminEmail ? ` (${adminEmail})` : ""}
@@ -257,7 +257,7 @@ export function LeahToolCard({ toolName, result }: ToolCardProps) {
           {mailto && (
             <a
               href={mailto}
-              className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-4 py-2 rounded-sm font-label text-xs tracking-[0.22em] uppercase transition-colors duration-300"
+              className="inline-flex items-center gap-2 bg-gold hover:bg-champagne text-ink px-4 py-2 rounded-full font-label text-xs tracking-[0.22em] uppercase transition-colors duration-300"
             >
               <Mail className="h-4 w-4" />
               Email Allan{adminEmail ? ` (${adminEmail})` : ""}

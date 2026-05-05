@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium ring-offset-background transition-all duration-300 ease-cinematic focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:opacity-80 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all duration-300 ease-cinematic focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:opacity-80 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -22,10 +22,10 @@ const buttonVariants = cva(
         // Editorial — wide-tracked small-caps on flat gold.
         // Used for primary conversion CTAs (Book, Donate, Sign In).
         editorial:
-          "bg-gold text-gold-foreground font-label uppercase tracking-[0.2em] text-xs hover:bg-champagne hover:text-ink rounded-sm",
+          "bg-gold text-gold-foreground font-label uppercase tracking-[0.2em] text-xs hover:bg-champagne hover:text-ink rounded-full",
         // Champagne outline — secondary editorial CTA, hairline border.
         "editorial-outline":
-          "border border-champagne/40 bg-transparent text-champagne font-label uppercase tracking-[0.2em] text-xs hover:bg-champagne/10 hover:border-champagne rounded-sm",
+          "border border-champagne/40 bg-transparent text-champagne font-label uppercase tracking-[0.2em] text-xs hover:bg-champagne/10 hover:border-champagne rounded-full",
       },
       size: {
         default: "h-10 px-4 py-2",

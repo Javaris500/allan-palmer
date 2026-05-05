@@ -102,7 +102,7 @@ export function StatusUpdateForm({ booking }: { booking: CustomerInfo }) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-gold text-ink text-xs uppercase tracking-wider font-medium hover:bg-champagne transition-colors disabled:opacity-60"
+        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-gold text-ink text-xs uppercase tracking-wider font-medium hover:bg-champagne transition-colors disabled:opacity-60"
       >
         <Mail className="w-3.5 h-3.5" />
         {isPending ? "Saving…" : "Save & email customer"}
@@ -170,7 +170,7 @@ export function AdminMessageForm({ booking }: { booking: CustomerInfo }) {
         <button
           type="submit"
           disabled={isPending || !message.trim()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gold text-ink text-xs uppercase tracking-wider font-medium hover:bg-champagne transition-colors disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold text-ink text-xs uppercase tracking-wider font-medium hover:bg-champagne transition-colors disabled:opacity-60"
         >
           <Mail className="w-3.5 h-3.5" />
           {isPending ? "Saving…" : "Save & email"}
