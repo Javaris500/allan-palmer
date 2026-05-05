@@ -12,8 +12,9 @@ export type PlacementMeta = {
 
 export const PHOTO_PLACEMENTS: Record<PhotoPlacement, PlacementMeta> = {
   GALLERY_CAROUSEL: {
-    label: "Gallery Carousel",
-    description: "Photos in the main gallery slideshow visitors browse on the gallery page.",
+    label: "Gallery Carousel (Gallery page only)",
+    description:
+      "Photos shown on the dedicated /gallery page. These DO NOT appear on the homepage. To make a photo show on the homepage, upload it to \"Selected Stills (Homepage)\" below.",
     appearsOn: "Gallery page",
     viewUrl: "/gallery",
     isSingleton: false,
@@ -39,10 +40,11 @@ export const PHOTO_PLACEMENTS: Record<PhotoPlacement, PlacementMeta> = {
     recommendedAspect: "16:9 wide",
   },
   FEATURED_TEASER: {
-    label: "Featured Teaser (Homepage)",
-    description: "A small set of standout photos that appear on the homepage gallery teaser.",
-    appearsOn: "Homepage — gallery teaser",
-    viewUrl: "/#gallery",
+    label: "Selected Stills (Homepage)",
+    description:
+      "Photos shown in the \"Selected Stills\" section on the homepage (under the \"In Frame\" eyebrow). Add up to 8; your uploads appear first, with the largest tile reserved for your most recent. Upload here — NOT to \"Gallery Carousel\" — to make a photo show up on the homepage.",
+    appearsOn: "Homepage — Selected Stills section",
+    viewUrl: "/#selected-stills",
     isSingleton: false,
     recommendedAspect: "4:3 or 16:9",
   },
@@ -71,10 +73,10 @@ export const VIDEO_PLACEMENTS: Record<VideoPlacement, PlacementMeta> = {
     isSingleton: true,
   },
   FEATURED_TEASER: {
-    label: "Featured Teaser (Homepage)",
-    description: "Featured video preview on the homepage.",
-    appearsOn: "Homepage — featured section",
-    viewUrl: "/",
+    label: "Selected Stills (Homepage) — Video",
+    description: "Featured video preview on the homepage Selected Stills area.",
+    appearsOn: "Homepage — Selected Stills section",
+    viewUrl: "/#selected-stills",
     isSingleton: false,
   },
   HOMEPAGE_ON_STAGE: {

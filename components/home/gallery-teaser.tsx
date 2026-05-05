@@ -85,7 +85,10 @@ export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
   const viewOnce = { once: true, margin: "-80px" } as const;
 
   return (
-    <section className="relative py-24 md:py-32 border-t border-champagne/10 bg-background">
+    <section
+      id="selected-stills"
+      className="relative py-24 md:py-32 border-t border-champagne/10 bg-background scroll-mt-24"
+    >
       <div className="container px-6">
         {/* Section header */}
         <header className="text-center mb-12 md:mb-16 max-w-xl mx-auto">
