@@ -200,7 +200,7 @@ export function HomePraise() {
           {/* Link to full reviews (Google) */}
           <div className="text-center mt-10">
             <Link
-              href="https://g.page/r/allan-palmer-violinist"
+              href="https://share.google/Is3zGxDosgqbQbqEk"
               target="_blank"
               rel="noopener noreferrer"
               className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
