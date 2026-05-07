@@ -100,9 +100,18 @@ export function PhotoCard({
         startTransition(() => router.refresh());
       }, 350);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Delete failed";
+      const raw = err instanceof Error ? err.message : "Delete failed";
       console.error("[photo-card] delete failed", err);
-      setError(`Delete failed: ${message}`);
+      // Stale JWT / expired session is the most common silent failure here
+      // — surface a fix-it instruction instead of just the raw error.
+      const looksLikeAuth = /unauthorized|forbidden|sign[\s-]?in|session/i.test(
+        raw,
+      );
+      setError(
+        looksLikeAuth
+          ? "Your admin session expired. Click 'Sign out' (top-right) and sign back in, then try again."
+          : `Delete failed: ${raw}`,
+      );
       setDeleting(false);
       setConfirmingDelete(false);
     }
