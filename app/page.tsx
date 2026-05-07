@@ -147,10 +147,19 @@ async function loadOnStageIds(): Promise<string[]> {
 }
 
 async function loadTeaserTiles(): Promise<TeaserTile[] | undefined> {
+  // Allan kept uploading to "Gallery Carousel" expecting them to surface on
+  // the homepage Selected Stills section. They wouldn't, because the homepage
+  // only read from FEATURED_TEASER. Now we fall through: curated
+  // FEATURED_TEASER wins when set, otherwise the most recent GALLERY_CAROUSEL
+  // uploads stand in. Static fixtures still kick in when both are empty.
   try {
-    const rows = await getPhotosByPlacement("FEATURED_TEASER");
-    if (rows.length === 0) return undefined;
-    return rows.map((row, index) => ({
+    const curated = await getPhotosByPlacement("FEATURED_TEASER");
+    const source =
+      curated.length > 0
+        ? curated
+        : (await getPhotosByPlacement("GALLERY_CAROUSEL")).slice(0, 8);
+    if (source.length === 0) return undefined;
+    return source.map((row, index) => ({
       src: row.blobUrl,
       alt: row.altText,
       title: row.title,

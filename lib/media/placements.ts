@@ -12,10 +12,10 @@ export type PlacementMeta = {
 
 export const PHOTO_PLACEMENTS: Record<PhotoPlacement, PlacementMeta> = {
   GALLERY_CAROUSEL: {
-    label: "Gallery Carousel (Gallery page only)",
+    label: "Gallery Carousel",
     description:
-      "Photos shown on the dedicated /gallery page. These DO NOT appear on the homepage. To make a photo show on the homepage, upload it to \"Selected Stills (Homepage)\" below.",
-    appearsOn: "Gallery page",
+      "Photos shown on the /gallery page. Your 8 most recent uploads here also appear in the homepage \"Selected Stills\" section by default — so just upload here and the photos will surface on both pages. To pin specific photos to the homepage instead, use \"Selected Stills (Homepage)\" below; anything there overrides the default.",
+    appearsOn: "Gallery page + homepage Selected Stills",
     viewUrl: "/gallery",
     isSingleton: false,
     recommendedAspect: "4:3 or 16:9 landscape",
@@ -40,10 +40,10 @@ export const PHOTO_PLACEMENTS: Record<PhotoPlacement, PlacementMeta> = {
     recommendedAspect: "16:9 wide",
   },
   FEATURED_TEASER: {
-    label: "Selected Stills (Homepage)",
+    label: "Selected Stills (Homepage) — pinned",
     description:
-      "Photos shown in the \"Selected Stills\" section on the homepage (under the \"In Frame\" eyebrow). Add up to 8; your uploads appear first, with the largest tile reserved for your most recent. Upload here — NOT to \"Gallery Carousel\" — to make a photo show up on the homepage.",
-    appearsOn: "Homepage — Selected Stills section",
+      "Optional: pin specific photos to the homepage \"Selected Stills\" section. Anything here overrides the default (your most recent Gallery Carousel uploads). Leave empty to just show your latest gallery uploads automatically.",
+    appearsOn: "Homepage — Selected Stills section (overrides default)",
     viewUrl: "/#selected-stills",
     isSingleton: false,
     recommendedAspect: "4:3 or 16:9",
