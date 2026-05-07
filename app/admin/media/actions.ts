@@ -251,10 +251,20 @@ export async function updatePhoto(input: z.infer<typeof updateSchema>) {
   revalidatePhotoSurfaces();
 }
 
-export async function deletePhoto(formData: FormData) {
+const deleteSchema = z.object({ id: z.string().min(1) });
+
+export async function deletePhoto(input: z.infer<typeof deleteSchema> | FormData) {
+  // Accept either a plain { id } object (called from client component) or a
+  // FormData (legacy <form action={deletePhoto}> path). Allan reported
+  // delete buttons that "don't do anything" — under the old form-action
+  // path, any thrown error vanished into the void. The object-input path
+  // lets the client component try/catch and surface a real error.
   const session = await requireAdmin();
-  const id = String(formData.get("id") ?? "");
-  if (!id) return;
+  const raw =
+    input instanceof FormData
+      ? { id: String(input.get("id") ?? "") }
+      : input;
+  const { id } = deleteSchema.parse(raw);
 
   // Soft-delete in DB (recoverable metadata) and hard-delete from Blob
   // (no storage charge for invisible files). If the Blob delete fails we
@@ -263,7 +273,15 @@ export async function deletePhoto(formData: FormData) {
     where: { id },
     select: { blobUrl: true, deletedAt: true },
   });
-  if (!photo || photo.deletedAt) return;
+  if (!photo) {
+    throw new Error("Photo not found.");
+  }
+  if (photo.deletedAt) {
+    // Already deleted — treat as success so the UI can clear itself
+    // instead of looping on a phantom row.
+    revalidatePhotoSurfaces();
+    return { ok: true } as const;
+  }
 
   await del(photo.blobUrl).catch((e) =>
     console.error("[photo.delete] blob delete failed", id, e),
@@ -283,6 +301,7 @@ export async function deletePhoto(formData: FormData) {
   });
 
   revalidatePhotoSurfaces();
+  return { ok: true } as const;
 }
 
 const replaceBlobSchema = z.object({

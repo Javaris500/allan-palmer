@@ -78,6 +78,35 @@ export function PhotoCard({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
+  // Two-step delete: first click arms the confirm button, second click
+  // commits. Allan was clicking a single Delete button and seeing nothing
+  // happen — sometimes because the action errored silently, sometimes
+  // because the photo cache hadn't refreshed. The arm step gives him a
+  // visible "yes, this registered" beat and the deleting/deleted/error
+  // states make every outcome obvious.
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+
+  async function onDelete() {
+    setError(null);
+    setDeleting(true);
+    try {
+      await deletePhoto({ id });
+      setDeleted(true);
+      // Brief "Deleted" flash, then refresh — gives Allan a beat of feedback
+      // before the card vanishes.
+      setTimeout(() => {
+        startTransition(() => router.refresh());
+      }, 350);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Delete failed";
+      console.error("[photo-card] delete failed", err);
+      setError(`Delete failed: ${message}`);
+      setDeleting(false);
+      setConfirmingDelete(false);
+    }
+  }
 
   async function onReplace(file: File) {
     setError(null);
@@ -229,18 +258,55 @@ export function PhotoCard({
               View
             </Link>
           )}
-          <form action={deletePhoto} className="ml-auto">
-            <input type="hidden" name="id" value={id} />
-            <button
-              type="submit"
-              disabled={busy || pending}
-              className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
-              aria-label="Delete photo"
-            >
-              <Trash2 className="h-3 w-3" />
-              Delete
-            </button>
-          </form>
+          <div className="ml-auto flex items-center gap-1">
+            {deleted ? (
+              <span className="inline-flex items-center gap-1 text-xs px-2 py-1 text-emerald-600">
+                Deleted
+              </span>
+            ) : confirmingDelete ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setConfirmingDelete(false)}
+                  disabled={deleting}
+                  className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded text-muted-foreground hover:bg-muted/40 transition-colors disabled:opacity-50"
+                  aria-label="Cancel delete"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void onDelete()}
+                  disabled={deleting}
+                  className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors disabled:opacity-50"
+                  aria-label="Confirm delete photo"
+                >
+                  {deleting ? (
+                    <>
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Deleting…
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-3 w-3" />
+                      Confirm delete
+                    </>
+                  )}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={busy || pending}
+                className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
+                aria-label="Delete photo"
+              >
+                <Trash2 className="h-3 w-3" />
+                Delete
+              </button>
+            )}
+          </div>
         </div>
 
         {error && (
