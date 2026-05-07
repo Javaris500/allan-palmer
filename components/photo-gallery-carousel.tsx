@@ -38,6 +38,15 @@ export function PhotoGalleryCarousel({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const reduced = useReducedMotion();
 
+  // Empty DB → render nothing instead of an awkward zero-image grid.
+  if (photos.length === 0) {
+    return (
+      <p className="text-center font-display italic text-sm md:text-base text-muted-foreground/60 py-8">
+        New stills coming soon.
+      </p>
+    );
+  }
+
   return (
     <div className="relative">
       {/* Masonry grid */}

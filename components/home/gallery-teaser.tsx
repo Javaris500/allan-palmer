@@ -5,12 +5,12 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { defaultFeaturedTeaserTiles } from "@/lib/media/default-placements";
 
 // ═══════════════════════════════════════════════════════
-// Gallery teaser — 8 curated tiles from /gallery.
-// Single masonry strip, hover caption reveal, text-link CTA.
-// Mirrors the /gallery treatment so the jump feels seamless.
+// Gallery teaser — up to 8 curated tiles, sourced entirely from the
+// admin-managed Photo table. Single masonry strip, hover caption
+// reveal, text-link CTA. Mirrors the /gallery treatment so the jump
+// feels seamless.
 // ═══════════════════════════════════════════════════════
 
 export type TeaserTileSize = "hero" | "wide" | "tall" | "default";
@@ -24,12 +24,8 @@ export type TeaserTile = {
 
 // Allan's uploads come in flat, without a `size` hint. We project them onto
 // this masonry rhythm — the first image becomes the hero block, the second
-// is a tall accent, the rest are uniform.
-//
-// The total area MUST equal 12 cells (4+2+1×6) so the grid tiles exactly
-// in 4-col (3 rows), 3-col (4 rows), and 2-col (6 rows) layouts. Any other
-// total leaves empty trailing cells that show through as black gaps against
-// the dark section background.
+// is a tall accent, the rest are uniform. With 8 tiles the grid tiles cleanly
+// in 4-col, 3-col, and 2-col layouts; with fewer tiles the section shrinks.
 const MASONRY_RHYTHM: TeaserTileSize[] = [
   "hero",
   "tall",
@@ -45,17 +41,6 @@ export function rhythmSize(index: number): TeaserTileSize {
   return MASONRY_RHYTHM[index % MASONRY_RHYTHM.length] ?? "default";
 }
 
-const fallbackTiles: readonly TeaserTile[] = defaultFeaturedTeaserTiles.map(
-  (tile, index) => ({
-    src: tile.src,
-    alt: tile.alt,
-    title: tile.title,
-    size: rhythmSize(index),
-  }),
-);
-
-export const defaultTeaserTiles = fallbackTiles;
-
 function getTileClass(size: TeaserTileSize): string {
   switch (size) {
     case "hero":
@@ -70,15 +55,14 @@ function getTileClass(size: TeaserTileSize): string {
 }
 
 export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
-  // Always render exactly 8 tiles so the calibrated 12-cell rhythm tiles
-  // cleanly in every breakpoint. Allan's uploads fill the front; curated
-  // defaults pad the rest if he has fewer than 8. Sizes are reassigned by
-  // position so the hero block is always the first uploaded photo.
+  // No DB photos = no section. We deliberately do NOT pad with hard-coded
+  // /images/gallery/* fallbacks anymore — those couldn't be deleted from
+  // admin, so Allan would delete every photo from the admin and still see
+  // 8 photos on the homepage. The whole Selected Stills section now hides
+  // until there are real DB rows to show.
   const adminTiles = tiles ?? [];
-  const renderedTiles: readonly TeaserTile[] = [
-    ...adminTiles,
-    ...fallbackTiles,
-  ]
+  if (adminTiles.length === 0) return null;
+  const renderedTiles: readonly TeaserTile[] = adminTiles
     .slice(0, 8)
     .map((tile, index) => ({ ...tile, size: rhythmSize(index) }));
   const reduced = useReducedMotion();

@@ -5,10 +5,7 @@ import { GalleryPreloadImages } from "@/components/gallery-preload-images";
 import { PageTransition } from "@/components/page-transition";
 import { getPhotosByPlacement } from "@/lib/media/photos";
 import { getVideosByPlacement } from "@/lib/media/videos";
-import {
-  defaultGalleryPhotos,
-  type CarouselPhoto,
-} from "@/components/photo-gallery-carousel";
+import { type CarouselPhoto } from "@/components/photo-gallery-carousel";
 import type { VideoConfig } from "@/lib/video-thumbnails";
 
 // Dynamic imports for heavy components
@@ -101,8 +98,13 @@ export default async function GalleryPage() {
     getVideosByPlacement("GALLERY_GRID"),
   ]);
 
+  // Only render DB-managed photos. We deliberately do NOT fall back to
+  // hard-coded /public/images/gallery/* fixtures anymore — those couldn't
+  // be deleted from admin, so Allan would delete every photo from the
+  // admin and still see a wall of images on the public gallery, looking
+  // exactly like delete didn't work. Empty DB = empty Stills section.
   let photos: CarouselPhoto[];
-  if (photoResult.status === "fulfilled" && photoResult.value.length > 0) {
+  if (photoResult.status === "fulfilled") {
     photos = photoResult.value.map((p) => ({
       id: p.id,
       src: p.blobUrl,
@@ -111,10 +113,8 @@ export default async function GalleryPage() {
       description: p.description ?? "",
     }));
   } else {
-    if (photoResult.status === "rejected") {
-      console.error("[gallery] photo query failed, using defaults:", photoResult.reason);
-    }
-    photos = defaultGalleryPhotos;
+    console.error("[gallery] photo query failed:", photoResult.reason);
+    photos = [];
   }
 
   // Videos: until `db:seed-videos` populates the Video table, an empty
