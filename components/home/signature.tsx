@@ -10,46 +10,74 @@ import { useBackgroundMusic } from "@/contexts/background-music-context";
 import { EASE_OUT } from "@/lib/motion";
 
 // ═══════════════════════════════════════════════════════
-// The Signature Moment — ONE featured audio card, cinematic,
-// full-bleed within its section. Uses the shared audio store so
-// background music ducks properly when the clip plays.
+// On Record — four branded singles displayed as a tasteful 2×2
+// of square covers. Each card is a play/pause button. Uses the
+// shared audio store so background music ducks while a clip plays.
 // ═══════════════════════════════════════════════════════
 
-const SIGNATURE = {
-  id: "somewhere-over-the-rainbow",
-  title: "Over the Rainbow",
-  composer: "Harold Arlen",
-  genre: "Classic · Wedding",
-  image: "/images/songs/somewhere-over-the-rainbow.jpg",
-  audioUrl:
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Somewhere%20Over%20the%20Rainbow%20Mix%202-LkxgMx5yX3tj6LBGYGddBsd5DjS1Kw.mp3",
+type Single = {
+  id: string;
+  title: string;
+  composer: string;
+  image: string;
+  audioUrl: string;
 };
+
+const SINGLES: readonly Single[] = [
+  {
+    id: "you-are-the-reason",
+    title: "You Are the Reason",
+    composer: "Calum Scott",
+    image: "/images/songs/you-are-the-reason.jpg",
+    audioUrl: "/audio/you-are-the-reason.mp3",
+  },
+  {
+    id: "hallelujah",
+    title: "Hallelujah",
+    composer: "Leonard Cohen",
+    image: "/images/songs/hallelujah.jpg",
+    audioUrl: "/audio/hallelujah.mp3",
+  },
+  {
+    id: "what-a-wonderful-world",
+    title: "What a Wonderful World",
+    composer: "Louis Armstrong",
+    image: "/images/songs/what-a-wonderful-world.jpg",
+    audioUrl: "/audio/wonderful-world.mp3",
+  },
+  {
+    id: "bella-ciao",
+    title: "Bella Ciao",
+    composer: "Italian Folk Song",
+    image: "/images/songs/bella-ciao.jpg",
+    audioUrl: "/audio/bella-ciao.mp3",
+  },
+];
 
 export function HomeSignature() {
   const reduced = useReducedMotion();
   const viewOnce = { once: true, margin: "-80px" } as const;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
   const { muteForOtherAudio, unmuteAfterOtherAudio } = useBackgroundMusic();
   const { currentlyPlaying, isPlaying, playAudio, pauseAudio } =
     useAudioStore();
 
-  const isActive = currentlyPlaying === SIGNATURE.id && isPlaying;
-
-  const toggle = async () => {
+  const toggle = async (single: Single) => {
+    const isActive = currentlyPlaying === single.id && isPlaying;
     if (isActive) {
       pauseAudio();
       unmuteAfterOtherAudio();
       return;
     }
-    setIsLoading(true);
+    setLoadingId(single.id);
     muteForOtherAudio();
     try {
-      await playAudio(SIGNATURE.id, SIGNATURE.audioUrl);
+      await playAudio(single.id, single.audioUrl);
     } catch (err) {
-      console.error("Signature playback failed", err);
+      console.error("Single playback failed", err);
     } finally {
-      setIsLoading(false);
+      setLoadingId(null);
     }
   };
 
@@ -69,7 +97,7 @@ export function HomeSignature() {
           >
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
             <span className="label-caps !text-xs md:!text-sm !tracking-[0.22em]">
-              The Signature Piece
+              On Record
             </span>
             <div className="h-px w-10 md:w-16 bg-champagne/50" />
           </motion.div>
@@ -99,125 +127,103 @@ export function HomeSignature() {
                 : { duration: 0.9, ease: EASE_OUT, delay: 0.2 }
             }
           >
-            One piece from the programme — the rest live in the repertoire.
+            A handful of singles from the catalogue — the rest live in the
+            repertoire.
           </motion.p>
         </header>
 
-        {/* Cinematic signature card */}
-        <motion.div
-          className="max-w-5xl mx-auto"
-          initial={reduced ? { opacity: 1 } : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={viewOnce}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { duration: 1, ease: EASE_OUT, delay: 0.2 }
-          }
-        >
-          <div className="relative aspect-[21/9] md:aspect-[5/2] rounded-sm overflow-hidden ring-1 ring-champagne/20 group">
-            {/* Background image */}
-            <Image
-              src={SIGNATURE.image}
-              alt={`${SIGNATURE.title} — cover`}
-              fill
-              sizes="(max-width: 1024px) 100vw, 1024px"
-              priority={false}
-              className="object-cover object-center transition-transform duration-[1200ms] ease-cinematic group-hover:scale-[1.02]"
-            />
+        {/* 2×2 singles grid */}
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+          {SINGLES.map((single, index) => {
+            const isActive = currentlyPlaying === single.id && isPlaying;
+            const isLoading = loadingId === single.id;
 
-            {/* Cinematic gradient stack */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 to-black/55"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20"
-            />
-
-            {/* Content grid — left: text, right: play button */}
-            <div className="absolute inset-0 flex items-center px-6 md:px-12 lg:px-16">
-              <div className="flex items-center gap-6 md:gap-12 w-full">
-                {/* Left: text */}
-                <div className="flex-1 min-w-0">
-                  <p className="label-caps !text-xs !tracking-[0.18em] !text-champagne mb-3 md:mb-4">
-                    {SIGNATURE.genre}
-                  </p>
-
-                  <h3 className="font-display font-light text-3xl md:text-5xl lg:text-6xl tracking-tight leading-[1.05] text-cream drop-shadow-[0_2px_16px_rgba(0,0,0,0.6)]">
-                    {SIGNATURE.title}
-                  </h3>
-
-                  <p className="mt-3 md:mt-4 font-display italic text-base md:text-lg text-cream/90 drop-shadow">
-                    {SIGNATURE.composer}
-                  </p>
-
-                  {/* Hairline */}
-                  <div className="h-px w-10 bg-champagne/60 mt-6 md:mt-8 mb-5" />
-
-                  {/* Quote */}
-                  <p className="font-display italic text-sm md:text-base text-cream/85 max-w-md leading-relaxed drop-shadow hidden sm:block">
-                    &ldquo;A song everyone knows, played the way no one
-                    expects.&rdquo;
-                  </p>
-                </div>
-
-                {/* Right: thin-stroke play button — signature of the site */}
+            return (
+              <motion.figure
+                key={single.id}
+                initial={reduced ? { opacity: 1 } : { opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewOnce}
+                transition={
+                  reduced
+                    ? { duration: 0 }
+                    : {
+                        duration: 0.9,
+                        ease: EASE_OUT,
+                        delay: 0.1 + index * 0.08,
+                      }
+                }
+                className="group"
+              >
+                {/* Cover — entire square is the play/pause button */}
                 <button
                   type="button"
-                  onClick={toggle}
+                  onClick={() => toggle(single)}
                   disabled={isLoading}
                   aria-label={
-                    isActive
-                      ? `Pause ${SIGNATURE.title}`
-                      : `Play ${SIGNATURE.title}`
+                    isActive ? `Pause ${single.title}` : `Play ${single.title}`
                   }
                   aria-pressed={isActive}
-                  className="shrink-0 group/play relative flex items-center justify-center w-20 h-20 md:w-28 md:h-28 rounded-full border border-cream/70 hover:border-champagne bg-black/25 backdrop-blur-[2px] transition-all duration-500 ease-cinematic hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:hover:scale-100 motion-reduce:transition-none"
+                  className="relative block w-full aspect-square overflow-hidden rounded-sm ring-1 ring-champagne/15 hover:ring-champagne/40 transition-[box-shadow,transform] duration-500 ease-cinematic focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-champagne focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
-                  {/* Soft halo on active */}
-                  {isActive && !reduced && (
-                    <span
-                      className="absolute inset-0 rounded-full bg-champagne/20 animate-ping"
-                      style={{ animationDuration: "2.4s" }}
-                      aria-hidden="true"
-                    />
-                  )}
+                  <Image
+                    src={single.image}
+                    alt={`${single.title} — cover art`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 480px"
+                    className="object-cover transition-transform duration-700 ease-cinematic group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                  />
 
-                  {isLoading ? (
-                    <span
-                      className="w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-cream/30 border-t-champagne animate-spin motion-reduce:animate-none"
-                      aria-hidden="true"
-                    />
-                  ) : isActive ? (
-                    <Pause
-                      className="w-6 h-6 md:w-8 md:h-8 text-cream group-hover/play:text-champagne transition-colors duration-500 ease-cinematic"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <Play
-                      className="w-6 h-6 md:w-8 md:h-8 text-cream group-hover/play:text-champagne transition-colors duration-500 ease-cinematic ml-1"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                  )}
+                  {/* Play badge — bottom-right, always visible. Pulses
+                      gently while playing. */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute bottom-3 right-3 md:bottom-4 md:right-4 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full border border-cream/80 bg-black/45 backdrop-blur-[3px] shadow-lg transition-all duration-500 ease-cinematic group-hover:scale-105 group-hover:border-champagne motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                  >
+                    {isActive && !reduced && (
+                      <span
+                        className="absolute inset-0 rounded-full bg-champagne/25 animate-ping"
+                        style={{ animationDuration: "2.4s" }}
+                      />
+                    )}
+                    {isLoading ? (
+                      <span className="w-4 h-4 rounded-full border-2 border-cream/30 border-t-champagne animate-spin motion-reduce:animate-none" />
+                    ) : isActive ? (
+                      <Pause
+                        className="w-5 h-5 md:w-6 md:h-6 text-cream"
+                        strokeWidth={1.5}
+                      />
+                    ) : (
+                      <Play
+                        className="w-5 h-5 md:w-6 md:h-6 text-cream ml-0.5"
+                        strokeWidth={1.5}
+                      />
+                    )}
+                  </span>
                 </button>
-              </div>
-            </div>
-          </div>
 
-          {/* Footer — text link to full repertoire */}
-          <div className="mt-8 md:mt-10 text-center">
-            <Link
-              href="/repertoire"
-              className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
-            >
-              Browse the full repertoire
-            </Link>
-          </div>
-        </motion.div>
+                <figcaption className="mt-4 text-center">
+                  <p className="font-display italic text-lg md:text-xl text-foreground leading-tight">
+                    {single.title}
+                  </p>
+                  <p className="mt-1 label-caps !text-xs !tracking-[0.14em] md:!tracking-[0.18em] text-muted-foreground">
+                    {single.composer}
+                  </p>
+                </figcaption>
+              </motion.figure>
+            );
+          })}
+        </div>
+
+        {/* Footer — text link to full repertoire */}
+        <div className="mt-12 md:mt-14 text-center">
+          <Link
+            href="/repertoire"
+            className="text-link !text-sm !tracking-[0.18em] text-muted-foreground hover:text-champagne"
+          >
+            Browse the full repertoire
+          </Link>
+        </div>
       </div>
     </section>
   );

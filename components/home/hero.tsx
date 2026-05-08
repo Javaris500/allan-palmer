@@ -276,14 +276,14 @@ export function HomeHero({
                 <div className="font-display font-light text-2xl md:text-4xl text-champagne leading-none tabular-nums drop-shadow">
                   {s.value}
                 </div>
-                <div className="label-caps !text-[10.5px] sm:!text-xs md:!text-sm !tracking-[0.04em] sm:!tracking-[0.14em] md:!tracking-[0.18em] !text-cream/90 mt-2 md:mt-3 leading-tight break-words">
+                <div className="label-caps !text-xs md:!text-sm !tracking-[0.12em] sm:!tracking-[0.16em] md:!tracking-[0.18em] !text-cream mt-2 md:mt-3 leading-tight break-words">
                   {s.label}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Scroll indicator */}
+          {/* Scroll indicator — at-least-44px tap target, full-opacity text */}
           <button
             type="button"
             onClick={() =>
@@ -292,10 +292,10 @@ export function HomeHero({
                 behavior: "smooth",
               })
             }
-            className="flex flex-col items-center gap-2 mx-auto text-cream/70 hover:text-champagne transition-colors duration-500 ease-cinematic group"
+            className="flex flex-col items-center gap-2 mx-auto px-4 py-2 min-h-[44px] text-cream hover:text-champagne transition-colors duration-500 ease-cinematic group"
             aria-label="Scroll to next section"
           >
-            <span className="label-caps !text-xs !tracking-[0.22em] !text-cream/80 group-hover:!text-champagne transition-colors">
+            <span className="label-caps !text-xs !tracking-[0.22em] !text-cream group-hover:!text-champagne transition-colors">
               Scroll
             </span>
             <motion.div
@@ -306,7 +306,7 @@ export function HomeHero({
                 ease: "easeInOut",
               }}
             >
-              <ChevronDown className="h-3 w-3" strokeWidth={1.5} />
+              <ChevronDown className="h-4 w-4" strokeWidth={1.5} />
             </motion.div>
           </button>
         </motion.div>

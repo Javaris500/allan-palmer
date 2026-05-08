@@ -12,6 +12,7 @@ import {
   Music,
   Film,
   Calendar,
+  CalendarDays,
   ArrowUp,
   Lock,
 } from "lucide-react";
@@ -26,6 +27,7 @@ const navIcons: Record<string, React.ElementType> = {
   "/": Home,
   "/about": User,
   "/repertoire": Music,
+  "/events": CalendarDays,
   "/gallery": Film,
   "/booking": Calendar,
   "/services": Calendar,

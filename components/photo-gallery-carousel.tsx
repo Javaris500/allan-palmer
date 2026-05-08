@@ -107,7 +107,7 @@ export function PhotoGalleryCarousel({
                 aria-hidden="true"
               >
                 <div className="h-px w-8 bg-champagne/80 mb-2" />
-                <p className="font-display italic text-sm md:text-base text-cream leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
+                <p className="font-display italic text-sm md:text-base text-cream leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
                   {photo.title}
                 </p>
               </div>

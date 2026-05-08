@@ -166,12 +166,13 @@ export function HomePraise() {
               type="button"
               onClick={prev}
               aria-label="Previous testimonial"
-              className="group w-9 h-9 flex items-center justify-center rounded-full border border-champagne/30 text-champagne/70 hover:text-champagne hover:border-champagne/60 transition-colors duration-500 ease-cinematic"
+              className="group w-11 h-11 flex items-center justify-center rounded-full border border-champagne/40 text-champagne hover:border-champagne/70 transition-colors duration-500 ease-cinematic"
             >
-              <ChevronLeft className="w-4 h-4" strokeWidth={1.5} />
+              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
-            {/* Indicator dots */}
+            {/* Indicator dots — visual stays a hairline bar, but the button
+                gets a 44px hit area so it's actually tappable on mobile. */}
             <div className="flex items-center gap-2">
               {praise.map((_, i) => (
                 <button
@@ -180,10 +181,15 @@ export function HomePraise() {
                   onClick={() => setIndex(i)}
                   aria-label={`Show testimonial ${i + 1} of ${praise.length}`}
                   aria-current={i === index ? "true" : undefined}
-                  className={`h-px transition-all duration-500 ease-cinematic ${
-                    i === index ? "w-8 bg-champagne" : "w-3 bg-foreground/25"
-                  }`}
-                />
+                  className="flex items-center justify-center min-h-[44px] px-1"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`block h-px transition-all duration-500 ease-cinematic ${
+                      i === index ? "w-8 bg-champagne" : "w-3 bg-foreground/40"
+                    }`}
+                  />
+                </button>
               ))}
             </div>
 
@@ -191,9 +197,9 @@ export function HomePraise() {
               type="button"
               onClick={next}
               aria-label="Next testimonial"
-              className="group w-9 h-9 flex items-center justify-center rounded-full border border-champagne/30 text-champagne/70 hover:text-champagne hover:border-champagne/60 transition-colors duration-500 ease-cinematic"
+              className="group w-11 h-11 flex items-center justify-center rounded-full border border-champagne/40 text-champagne hover:border-champagne/70 transition-colors duration-500 ease-cinematic"
             >
-              <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
+              <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
             </button>
           </div>
 

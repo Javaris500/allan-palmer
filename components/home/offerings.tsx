@@ -70,7 +70,7 @@ function OfferingCard({ offering }: { offering: Offering }) {
       className={cn(
         "group relative flex flex-col h-full p-8 md:p-10 rounded-sm border transition-colors duration-500 ease-cinematic",
         offering.featured
-          ? "border-champagne/35 bg-champagne/[0.02] hover:border-champagne/55"
+          ? "border-gold/50 bg-gold/[0.04] ring-1 ring-gold/20 hover:border-gold/70"
           : "border-champagne/15 hover:border-champagne/35",
       )}
       initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }}
@@ -78,6 +78,20 @@ function OfferingCard({ offering }: { offering: Offering }) {
       viewport={{ once: true, margin: "-60px" }}
       transition={reduced ? { duration: 0 } : { duration: 0.9, ease: EASE_OUT }}
     >
+      {/* Most Requested badge — visible chip, not an inline italic. Sits
+          in the top-right so it reads at a glance even on small screens. */}
+      {offering.featured && (
+        <div className="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/15 border border-gold/40">
+          <span
+            aria-hidden="true"
+            className="h-1.5 w-1.5 rounded-full bg-gold"
+          />
+          <span className="label-caps !text-xs !tracking-[0.18em] text-gold">
+            Most Requested
+          </span>
+        </div>
+      )}
+
       {/* Ghost numeral */}
       <div
         aria-hidden="true"
@@ -89,11 +103,6 @@ function OfferingCard({ offering }: { offering: Offering }) {
       {/* Category label */}
       <p className="label-caps !text-xs !tracking-[0.18em] mb-4">
         {offering.label}
-        {offering.featured && (
-          <span className="ml-3 text-champagne italic tracking-normal normal-case text-xs font-display">
-            · Most Requested
-          </span>
-        )}
       </p>
 
       {/* Title */}

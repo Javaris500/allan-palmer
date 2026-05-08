@@ -59,7 +59,7 @@ export function HomeAnchor() {
         />
 
         <motion.p
-          className="label-caps !text-xs md:!text-sm !tracking-[0.18em] !text-muted-foreground"
+          className="label-caps !text-xs md:!text-sm !tracking-[0.18em] !text-foreground/75"
           initial={reduced ? { opacity: 1 } : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={viewOnce}

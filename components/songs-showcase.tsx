@@ -21,28 +21,30 @@ export function SongsShowcase({
   const { muteForOtherAudio, unmuteAfterOtherAudio, setStopFeaturedPerformances } = useBackgroundMusic()
   const { currentlyPlaying, isPlaying, playAudio, pauseAudio, stopAudio } = useAudioStore()
 
+  // Allan's branded singles. Cover art and masters are shipped from
+  // /public/audio + /public/images/songs so the homepage stays in sync
+  // with the artwork on streaming platforms. The full 200+ track
+  // catalogue lives at /repertoire.
   const featuredSongs = [
     {
-      id: "somewhere-over-the-rainbow",
-      title: "Somewhere Over the Rainbow",
-      artist: "Harold Arlen",
-      genre: "Classic/Folk",
-      duration: "3:45",
-      description: "A timeless classic performed against the stunning Irish countryside",
-      coverImage: "/images/songs/somewhere-over-the-rainbow.jpg",
-      audioUrl:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Somewhere%20Over%20the%20Rainbow%20Mix%202-LkxgMx5yX3tj6LBGYGddBsd5DjS1Kw.mp3",
+      id: "you-are-the-reason",
+      title: "You Are the Reason",
+      artist: "Calum Scott",
+      genre: "Pop Ballad",
+      duration: "3:32",
+      description: "A heartfelt rendition that lingers — Allan's signature wedding-aisle piece.",
+      coverImage: "/images/songs/you-are-the-reason.jpg",
+      audioUrl: "/audio/you-are-the-reason.mp3",
     },
     {
-      id: "historia-de-un-amor",
-      title: "Historia de un Amor",
-      artist: "Carlos Eleta Almarán",
-      genre: "Latin/Classical",
-      duration: "4:12",
-      description: "Passionate Latin ballad with rich emotional depth and beautiful violin arrangements",
-      coverImage: "/images/songs/historia-de-un-amor.jpg",
-      audioUrl:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hdua%20master-E4v3tqBtfOoS5LTpV4b1Yggm4UT2jJ.mp3",
+      id: "hallelujah",
+      title: "Hallelujah",
+      artist: "Leonard Cohen",
+      genre: "Classic/Spiritual",
+      duration: "3:48",
+      description: "Recorded against the cliffs of Sliabh Liag — soaring, reverent, unforgettable.",
+      coverImage: "/images/songs/hallelujah.jpg",
+      audioUrl: "/audio/hallelujah.mp3",
     },
     {
       id: "what-a-wonderful-world",
@@ -50,10 +52,9 @@ export function SongsShowcase({
       artist: "Louis Armstrong",
       genre: "Jazz Standard",
       duration: "3:28",
-      description: "Uplifting jazz standard that celebrates life's beautiful moments",
+      description: "Uplifting jazz standard that celebrates life's beautiful moments.",
       coverImage: "/images/songs/what-a-wonderful-world.jpg",
-      audioUrl:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/What%20a%20Wonderful%20World%20Master-JABmURSW0VZ53HYwZV3wGjLkjrgUcE.mp3",
+      audioUrl: "/audio/wonderful-world.mp3",
     },
     {
       id: "bella-ciao",
@@ -61,32 +62,9 @@ export function SongsShowcase({
       artist: "Italian Folk Song",
       genre: "Folk/Traditional",
       duration: "3:52",
-      description: "Passionate Italian folk song with deep cultural significance and beautiful melodic lines",
+      description: "Defiant, dancing, unmistakably Italian — a crowd favourite at receptions.",
       coverImage: "/images/songs/bella-ciao.jpg",
-      audioUrl:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/7494-ec49-4177-b1d8-9f9050281eef-z3fhi0xnkvLcwbVHLJfejIs5W8Ki9t.mp3",
-    },
-    {
-      id: "fly-me-to-the-moon",
-      title: "Fly Me to the Moon",
-      artist: "Frank Sinatra",
-      genre: "Jazz Standard",
-      duration: "4:05",
-      description: "Romantic jazz standard that captures the magic of love and dreams",
-      coverImage: "/images/songs/fly-me-to-the-moon.jpg",
-      audioUrl:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bd9e-0e62-408f-9954-d7de2da8f574-QJ0QV5BvfAdP40Lf4qkmkOPOJQ2DKe.mp3",
-    },
-    {
-      id: "cant-help-falling-in-love",
-      title: "Can't Help Falling in Love",
-      artist: "Elvis Presley",
-      genre: "Romance/Pop",
-      duration: "3:15",
-      description: "Tender romantic ballad perfect for weddings and intimate moments",
-      coverImage: "/images/songs/cant-help-falling-in-love.png",
-      audioUrl:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Cant%20Help%20Falling%20in%20Love-gdzO839wZruU5nHq2wwSwsabROGJhT.mp3",
+      audioUrl: "/audio/bella-ciao.mp3",
     },
   ]
 
@@ -154,7 +132,7 @@ export function SongsShowcase({
         </div>
 
         <div className="mx-auto mt-12 max-w-4xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {featuredSongs.map((song, index) => (
               <div key={song.id} className="hover:-translate-y-1 transition-transform duration-200">
                 <Card className="group overflow-hidden border-none bg-background/80 backdrop-blur-sm transition-all duration-300 hover:bg-background/90 hover:shadow-xl dark:bg-background/60 dark:hover:bg-background/80">
