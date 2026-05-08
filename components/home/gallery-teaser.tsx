@@ -165,17 +165,19 @@ export function HomeGalleryTeaser({ tiles }: { tiles?: TeaserTile[] } = {}) {
                   className="object-cover transition-transform duration-700 ease-cinematic group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
 
-                {/* Hover caption gradient + title */}
+                {/* Caption gradient + title — always visible. The previous
+                    hover-only reveal was invisible on mobile (no hover) and
+                    unreadable against light photos even on desktop. */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-cinematic"
+                  className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-500 ease-cinematic group-hover:from-black/90"
                   aria-hidden="true"
                 />
                 <div
-                  className="absolute inset-x-0 bottom-0 p-4 md:p-5 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-cinematic motion-reduce:transition-none"
+                  className="absolute inset-x-0 bottom-0 p-4 md:p-5 transition-transform duration-500 ease-cinematic group-hover:-translate-y-0.5 motion-reduce:transition-none"
                   aria-hidden="true"
                 >
                   <div className="h-px w-8 bg-champagne/80 mb-2" />
-                  <p className="font-display italic text-sm md:text-base text-cream leading-tight drop-shadow">
+                  <p className="font-display italic text-sm md:text-base text-cream leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                     {tile.title}
                   </p>
                 </div>

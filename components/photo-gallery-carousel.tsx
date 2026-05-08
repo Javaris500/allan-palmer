@@ -41,7 +41,7 @@ export function PhotoGalleryCarousel({
   // Empty DB → render nothing instead of an awkward zero-image grid.
   if (photos.length === 0) {
     return (
-      <p className="text-center font-display italic text-sm md:text-base text-muted-foreground/60 py-8">
+      <p className="text-center font-display italic text-sm md:text-base text-muted-foreground py-8">
         New stills coming soon.
       </p>
     );
@@ -95,18 +95,19 @@ export function PhotoGalleryCarousel({
                 priority={index < 3}
               />
 
-              {/* Hover gradient + caption */}
+              {/* Gradient + caption — always visible. Hover-only captions
+                  were unreadable on mobile and on bright photos. */}
               <div
-                className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-500 group-hover:from-black/90"
                 aria-hidden="true"
               />
 
               <div
-                className="absolute inset-x-0 bottom-0 p-4 md:p-5 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-cinematic motion-reduce:transition-none"
+                className="absolute inset-x-0 bottom-0 p-4 md:p-5 transition-transform duration-500 ease-cinematic group-hover:-translate-y-0.5 motion-reduce:transition-none"
                 aria-hidden="true"
               >
                 <div className="h-px w-8 bg-champagne/80 mb-2" />
-                <p className="font-display italic text-sm md:text-base text-cream leading-tight drop-shadow">
+                <p className="font-display italic text-sm md:text-base text-cream leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                   {photo.title}
                 </p>
               </div>
@@ -116,7 +117,7 @@ export function PhotoGalleryCarousel({
       </div>
 
       {/* Editorial footer */}
-      <p className="mt-10 md:mt-12 text-center font-display italic text-xs md:text-sm text-muted-foreground/50 tracking-wide">
+      <p className="mt-10 md:mt-12 text-center font-display italic text-xs md:text-sm text-muted-foreground tracking-wide">
         A selection of {photos.length} images
       </p>
 

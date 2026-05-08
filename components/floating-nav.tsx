@@ -108,7 +108,7 @@ export function FloatingNav() {
     setIsOpen(false);
   };
 
-  if (pathname?.startsWith("/booking") || hasOverlay) {
+  if (hasOverlay) {
     return null;
   }
 
